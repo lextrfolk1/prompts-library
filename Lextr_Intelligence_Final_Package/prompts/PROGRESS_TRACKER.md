@@ -14,7 +14,7 @@
 | **Wave 02** | /run contracts, OPA policy foundation, SLM resolver | 5 | 5 | 0 | 0 | ✅ **DELIVERED** |
 | **Wave 03** | Control-plane persist, Review Queue, Knowledge Hub | 13 | 13 | 0 | 0 | ✅ **DELIVERED** |
 | **Wave 04** | Skills 1/2/3, Masking boundary, Concept resolution | 12 | 12 | 0 | 0 | ✅ **DELIVERED** |
-| **Wave 05** | Graph walk, Lineage, Calc-chain, Cytoscape DAG | 16 | 8 | 1 | 7 | 🔄 **IN PROGRESS** |
+| **Wave 05** | Graph walk, Lineage, Calc-chain, Cytoscape DAG | 16 | 9 | 1 | 6 | 🔄 **IN PROGRESS** |
 | **Wave 06** | Assembly, Preset Management, Variance flagging | 25 | 0 | 0 | 25 | ⏳ **NOT STARTED** |
 | **Wave 07** | Evidence Ledger, Merkle trees, AU-9 compliance | 58 | 0 | 0 | 58 | ⏳ **NOT STARTED** |
 | **Wave 08** | Reasoning engine, Locale tokens, Multi-tenancy | 24 | 0 | 0 | 24 | ⏳ **NOT STARTED** |
@@ -28,7 +28,7 @@
 | **Wave 16** | Use Case 11 (Rule Drafting & Edit-Checks) | 22 | 0 | 0 | 22 | ⏳ **NOT STARTED** |
 | **Wave 17** | Use Case 12 (Audit & Model Risk Governance) | 11 | 0 | 0 | 11 | ⏳ **NOT STARTED** |
 | **Wave 18** | Packaging, End-to-End Hardening & Golden Tests | 11 | 0 | 0 | 11 | ⏳ **NOT STARTED** |
-| **TOTAL** | | **246** | **41** | **1** | **204** | **16.7% Complete** |
+| **TOTAL** | | **246** | **42** | **1** | **203** | **17.1% Complete** |
 ---
 
 ## Detailed Status by Wave
@@ -94,7 +94,7 @@
 
 ---
 
-### Wave 05 — Graph Walk, Lineage & Cytoscape DAG (8/16 Complete)
+### Wave 05 — Graph Walk, Lineage & Cytoscape DAG (9/16 Complete)
 
 | Prompt ID | File | Target Repo / Layer | Status | Commit / Notes |
 | :--- | :--- | :--- | :---: | :--- |
@@ -106,7 +106,7 @@
 | `LP-15.1_TS` | `prompts/wave_05/LP-15.1_TS.md` | `intelligence-ui` (TS) | ✅ **DELIVERED** | `VarianceWorkspace`, `VarianceResult` with `showReviewBanner`, `DriverFindingCard`, `varianceStore`, `resolveLevelLabel` (`8148fa2`) |
 | `LP-16.1_PY` | `prompts/wave_05/LP-16.1_PY.md` | `lexie-ai` (Python) | ✅ **DELIVERED** | `VarianceGraphWalkSkill`, bounded BFS walk, report-aware presets, multi-parent convergence, whole-DAG trace (`a0eec8d`) |
 | `LP-16.3_TEST` | `prompts/wave_05/LP-16.3_TEST.md` | Cross-Layer (Test) | ✅ **DELIVERED** | Cross-layer vertical DAG wire-through suite (Python skill -> OPA -> Coordinator -> Persistence -> Review) (`5863cc9`, `ac7fba7`) |
-| `LP-17.1_TS` | `prompts/wave_05/LP-17.1_TS.md` | `intelligence-ui` (TS) | ⏳ **NOT_STARTED** |
+| `LP-17.1_TS` | `prompts/wave_05/LP-17.1_TS.md` | `intelligence-ui` (TS) | ✅ **DELIVERED** | `VarianceDrillWorkspace`, whole-drill review banner, honest bounded stop banners, convergent provenance note, per-node `VarianceResult` reuse (`9f72119`) |
 | `LP-17.2_CYTO` | `prompts/wave_05/LP-17.2_CYTO.md` | `intelligence-ui` (Cytoscape / ELK) | ⏳ **NOT_STARTED** |
 | `LP-18.1_PY` | `prompts/wave_05/LP-18.1_PY.md` | `lexie-ai` (Python) | ⏳ **NOT_STARTED** |
 | `LP-19.1_PY` | `prompts/wave_05/LP-19.1_PY.md` | `lexie-ai` (Python) | ⏳ **NOT_STARTED** |
