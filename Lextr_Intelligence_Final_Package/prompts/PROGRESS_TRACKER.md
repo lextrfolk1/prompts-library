@@ -8,27 +8,27 @@
 
 ## Executive Summary
 
-| Wave | Description | Total Prompts | Delivered | In Progress | Not Started | Wave Status |
-| :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **Wave 01** | Database baseline, DDL, UI foundations | 3 | 3 | 0 | 0 | ✅ **DELIVERED** |
-| **Wave 02** | /run contracts, OPA policy foundation, SLM resolver | 5 | 5 | 0 | 0 | ✅ **DELIVERED** |
-| **Wave 03** | Control-plane persist, Review Queue, Knowledge Hub | 13 | 13 | 0 | 0 | ✅ **DELIVERED** |
-| **Wave 04** | Skills 1/2/3, Masking boundary, Concept resolution | 12 | 12 | 0 | 0 | ✅ **DELIVERED** |
-| **Wave 05** | Graph walk, Lineage, Calc-chain, Cytoscape DAG | 16 | 1 | 0 | 15 | 🔄 **IN PROGRESS** |
-| **Wave 06** | Assembly, Preset Management, Variance flagging | 25 | 0 | 0 | 25 | ⏳ **NOT STARTED** |
-| **Wave 07** | Evidence Ledger, Merkle trees, AU-9 compliance | 58 | 0 | 0 | 58 | ⏳ **NOT STARTED** |
-| **Wave 08** | Reasoning engine, Locale tokens, Multi-tenancy | 24 | 0 | 0 | 24 | ⏳ **NOT STARTED** |
-| **Wave 09** | *(No prompts assigned)* | 0 | 0 | 0 | 0 | — |
-| **Wave 10** | Use Case 1a/1b (Variance analysis & drivers) | 23 | 0 | 0 | 23 | ⏳ **NOT STARTED** |
-| **Wave 11** | Use Case 2 (Deterministic Cell Resolution) | 4 | 0 | 0 | 4 | ⏳ **NOT STARTED** |
-| **Wave 12** | Use Case 3 (Time-Series & Trend Analysis) | 5 | 0 | 0 | 5 | ⏳ **NOT STARTED** |
-| **Wave 13** | Use Case 4 (Cross-Period Reconciliation) | 4 | 0 | 0 | 4 | ⏳ **NOT STARTED** |
-| **Wave 14** | Use Case 5 (Graph & Lineage Inquiries) | 6 | 0 | 0 | 6 | ⏳ **NOT STARTED** |
-| **Wave 15** | Use Case 9 (Regulatory Text Analysis) | 9 | 0 | 0 | 9 | ⏳ **NOT STARTED** |
-| **Wave 16** | Use Case 11 (Rule Drafting & Edit-Checks) | 22 | 0 | 0 | 22 | ⏳ **NOT STARTED** |
-| **Wave 17** | Use Case 12 (Audit & Model Risk Governance) | 11 | 0 | 0 | 11 | ⏳ **NOT STARTED** |
-| **Wave 18** | Packaging, End-to-End Hardening & Golden Tests | 11 | 0 | 0 | 11 | ⏳ **NOT STARTED** |
-| **TOTAL** | | **246** | **34** | **0** | **212** | **13.8% Complete** |
+| Wave | Description | Total | Delivered Prompts | Delivered | In Progress | Not Started | Wave Status |
+| :--- | :--- | :---: | :--- | :---: | :---: | :---: | :--- |
+| **Wave 01** | Database baseline, DDL, UI foundations | 3 | `LP-01.1_SQL`, `LP-02.1_TS`, `LP-02.2_TS` | 3 | 0 | 0 | ✅ **DELIVERED** |
+| **Wave 02** | /run contracts, OPA policy foundation, SLM resolver | 5 | `LP-03.2_JAVA`, `LP-03.3_JAVA`, `LP-03.5_TEST`, `LP-04.1_REGO`, `LP-05.1_JAVA` | 5 | 0 | 0 | ✅ **DELIVERED** |
+| **Wave 03** | Control-plane persist, Review Queue, Knowledge Hub | 13 | `LP-06.1_SQL`, `LP-06.2_JAVA`, `LP-06.4_TEST`, `LP-06.5_SQL`, `LP-06.6_JAVA`, `LP-06.7_TEST`, `LP-07.1_SQL`, `LP-07.2_JAVA`, `LP-07.4_JAVA`, `LP-08.1_SQL`, `LP-08.2_JAVA`, `LP-08.3_JAVA`, `LP-08.6_TEST` | 13 | 0 | 0 | ✅ **DELIVERED** |
+| **Wave 04** | Skills 1/2/3, Masking boundary, Concept resolution | 12 | `LP-09.1_PY`, `LP-10.1_PY`, `LP-10.4_PY`, `LP-11.1_PY`, `LP-12.1_SQL`, `LP-12.2_JAVA`, `LP-12.3_JAVA`, `LP-12.4_JAVA`, `LP-12.5_TS`, `LP-12.7_TEST`, `LP-12.8_PY`, `LP-13.3_TEST` | 12 | 0 | 0 | ✅ **DELIVERED** |
+| **Wave 05** | Graph walk, Lineage, Calc-chain, Cytoscape DAG | 16 | `LP-14.0_SQL`, `LP-14.1_PY`, `LP-14.2_JAVA`, `LP-14.3_REGO`, `LP-14.4_TEST`, `LP-15.1_TS` | 6 | 1 | 9 | 🔄 **IN PROGRESS** |
+| **Wave 06** | Assembly, Preset Management, Variance flagging | 25 | *(None)* | 0 | 0 | 25 | ⏳ **NOT STARTED** |
+| **Wave 07** | Evidence Ledger, Merkle trees, AU-9 compliance | 58 | *(None)* | 0 | 0 | 58 | ⏳ **NOT STARTED** |
+| **Wave 08** | Reasoning engine, Locale tokens, Multi-tenancy | 24 | *(None)* | 0 | 0 | 24 | ⏳ **NOT STARTED** |
+| **Wave 09** | *(No prompts assigned)* | 0 | — | 0 | 0 | 0 | — |
+| **Wave 10** | Use Case 1a/1b (Variance analysis & drivers) | 23 | *(None)* | 0 | 0 | 23 | ⏳ **NOT STARTED** |
+| **Wave 11** | Use Case 2 (Deterministic Cell Resolution) | 4 | *(None)* | 0 | 0 | 4 | ⏳ **NOT STARTED** |
+| **Wave 12** | Use Case 3 (Time-Series & Trend Analysis) | 5 | *(None)* | 0 | 0 | 5 | ⏳ **NOT STARTED** |
+| **Wave 13** | Use Case 4 (Cross-Period Reconciliation) | 4 | *(None)* | 0 | 0 | 4 | ⏳ **NOT STARTED** |
+| **Wave 14** | Use Case 5 (Graph & Lineage Inquiries) | 6 | *(None)* | 0 | 0 | 6 | ⏳ **NOT STARTED** |
+| **Wave 15** | Use Case 9 (Regulatory Text Analysis) | 9 | *(None)* | 0 | 0 | 9 | ⏳ **NOT STARTED** |
+| **Wave 16** | Use Case 11 (Rule Drafting & Edit-Checks) | 22 | *(None)* | 0 | 0 | 22 | ⏳ **NOT STARTED** |
+| **Wave 17** | Use Case 12 (Audit & Model Risk Governance) | 11 | *(None)* | 0 | 0 | 11 | ⏳ **NOT STARTED** |
+| **Wave 18** | Packaging, End-to-End Hardening & Golden Tests | 11 | *(None)* | 0 | 0 | 11 | ⏳ **NOT STARTED** |
+| **TOTAL** | | **246** | **39 Completed Prompts** | **39** | **1** | **206** | **15.9% Complete** |
 
 ---
 
@@ -95,7 +95,7 @@
 
 ---
 
-### Wave 05 — Graph Walk, Lineage & Cytoscape DAG (1/16 Complete)
+### Wave 05 — Graph Walk, Lineage & Cytoscape DAG (6/16 Complete)
 
 | Prompt ID | File | Target Repo / Layer | Status | Commit / Notes |
 | :--- | :--- | :--- | :---: | :--- |
@@ -104,7 +104,7 @@
 | `LP-14.2_JAVA` | `prompts/wave_05/LP-14.2_JAVA.md` | `intelligence-service` (Java) | ✅ **DELIVERED** | `VarianceRunCoordinator`, thin resolve-run-persist-enqueue seam, fail-closed policy (`7af662c`) |
 | `LP-14.3_REGO` | `prompts/wave_05/LP-14.3_REGO.md` | `intelligence-service` (OPA) | ✅ **DELIVERED** | `lextr.ai.tool_scope_variance`, 3 denial branches, LP-14/16/18 op registrations (`1fe896f`) |
 | `LP-14.4_TEST` | `prompts/wave_05/LP-14.4_TEST.md` | Cross-Layer (Test) | ✅ **DELIVERED** | Cross-layer wire-through suite (3-sided seam: Skill -> OPA -> Coordinator -> Persistence -> Review) (`6a67465`, `c26e6b6`) |
-| `LP-15.1_TS` | `prompts/wave_05/LP-15.1_TS.md` | `intelligence-ui` (TS) | ⏳ **NOT_STARTED** |
+| `LP-15.1_TS` | `prompts/wave_05/LP-15.1_TS.md` | `intelligence-ui` (TS) | ✅ **DELIVERED** | `VarianceWorkspace`, `VarianceResult` with `showReviewBanner`, `DriverFindingCard`, `varianceStore`, `resolveLevelLabel` (`8148fa2`) |
 | `LP-16.1_PY` | `prompts/wave_05/LP-16.1_PY.md` | `lexie-ai` (Python) | ⏳ **NOT_STARTED** |
 | `LP-16.3_TEST` | `prompts/wave_05/LP-16.3_TEST.md` | Cross-Layer (Test) | ⏳ **NOT_STARTED** |
 | `LP-17.1_TS` | `prompts/wave_05/LP-17.1_TS.md` | `intelligence-ui` (TS) | ⏳ **NOT_STARTED** |
