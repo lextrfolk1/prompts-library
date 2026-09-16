@@ -6,6 +6,8 @@ configured with active branch `semantic-feature-delta` and exposed repositories:
 - `database-migration-platform` (Flyway DDL migrations)
 - `frontend-service` (React 18 / TypeScript / MUI / AG Grid)
 
+> 📊 **Live Implementation Tracker**: See [`PROGRESS_TRACKER.md`](./PROGRESS_TRACKER.md) for full delivery status, wave summaries, and commit histories across all 127 sub-tasks.
+
 ## Waves Summary
 
 | Wave | Points | Total Sub-tasks | Primary Service Targets |
