@@ -6,4 +6,5 @@
 target/
 prompt_compare/
 .vscode/
-prompts/
+/prompts/
+!Lextr_Intelligence_Final_Package/prompts/**
