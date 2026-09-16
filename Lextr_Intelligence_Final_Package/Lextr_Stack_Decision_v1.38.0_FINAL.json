@@ -1,0 +1,661 @@
+{
+  "artifact": "lextr-stack-decision",
+  "version": 1,
+  "reviewer": "Akhil (2026-09-13 export; ELK standard; 2026-09-14 OpenTelemetry adoption and db-access ruling)",
+  "takenAt": "2026-09-14T04:29:28.367Z",
+  "clientId": null,
+  "totals": {
+    "jobs": 32,
+    "items": 68,
+    "settled": 29,
+    "selected": 51,
+    "rejected": 6,
+    "warnStop": 0,
+    "warnSoft": 8,
+    "match": 22,
+    "diverge": 1,
+    "deferred": 1,
+    "ownerDecided": 6,
+    "total": 32
+  },
+  "jobs": [
+    {
+      "id": "api-python",
+      "layer": "Runtime and API",
+      "name": "Serving the AI service's web API",
+      "kind": "AGREED",
+      "selected": [
+        "fastapi",
+        "starlette",
+        "uvicorn",
+        "python-multipart",
+        "Python 3"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "fastapi",
+        "starlette",
+        "uvicorn",
+        "python-multipart",
+        "Python 3"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "api-java",
+      "layer": "Runtime and API",
+      "name": "A second service that owns all database writes",
+      "kind": "MANIFEST_ONLY",
+      "selected": [
+        "Java 17",
+        "Spring Boot",
+        "Jackson"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": "deferred to the owner",
+      "agreesWithRecommendation": "ownerDecided",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "push",
+      "layer": "Runtime and API",
+      "name": "Telling the browser when a long job has finished",
+      "kind": "MANIFEST_ONLY",
+      "selected": [
+        "STOMP"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "STOMP"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "agents",
+      "layer": "Agent and orchestration",
+      "name": "Deciding what the AI does next",
+      "kind": "RUNNING_ONLY",
+      "selected": [
+        "agno"
+      ],
+      "rejected": [],
+      "undecided": [
+        "langgraph"
+      ],
+      "nothingDeliberately": false,
+      "recommended": [
+        "agno"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "gen-model",
+      "layer": "Models - generation",
+      "name": "The model that writes the answer",
+      "kind": "CHOICE",
+      "selected": [
+        "openai",
+        "Qwen3-4B"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "openai",
+        "Qwen3-4B"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": [
+        "info: Both sides are selected, and that IS the recommendation here — one behind the other, or routed by input. Recorded so it does not read as an oversight.",
+        "warn: This is a genuine choice between two answers and no reason is recorded. In six months the selection will be visible and the reasoning will not."
+      ]
+    },
+    {
+      "id": "local-runtime",
+      "layer": "Models - generation",
+      "name": "Running a model on your own machine",
+      "kind": "RUNNING_ONLY",
+      "selected": [],
+      "rejected": [],
+      "undecided": [
+        "torch",
+        "transformers",
+        "tokenizers",
+        "huggingface-hub",
+        "safetensors"
+      ],
+      "nothingDeliberately": false,
+      "recommended": "deferred to the owner",
+      "agreesWithRecommendation": "deferred",
+      "comment": null,
+      "warningsAtExport": [
+        "warn: Nothing selected yet, and 'nothing' has not been chosen either."
+      ]
+    },
+    {
+      "id": "embed-model",
+      "layer": "Models - embedding",
+      "name": "Turning text into numbers so it can be searched",
+      "kind": "CHOICE",
+      "selected": [
+        "all-MiniLM-L6-v2"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": "deferred to the owner",
+      "agreesWithRecommendation": "ownerDecided",
+      "comment": "all-MiniLM-L6-v2 at 384 decided. V20260910_06 registers Qwen3-Embedding at 768 in a sibling table as a candidate; the decision stands until the measurement replaces it.",
+      "warningsAtExport": []
+    },
+    {
+      "id": "relational-vector",
+      "layer": "Data store and vector index",
+      "name": "Where everything is stored, and how similar-document search works",
+      "kind": "AGREED",
+      "selected": [
+        "PostgreSQL 16",
+        "pgvector"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "PostgreSQL 16",
+        "pgvector"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "other-vector-store",
+      "layer": "Data store and vector index",
+      "name": "A second, separate search system",
+      "kind": "RUNNING_ONLY",
+      "selected": [],
+      "rejected": [],
+      "undecided": [
+        "weaviate-client"
+      ],
+      "nothingDeliberately": false,
+      "recommended": [],
+      "agreesWithRecommendation": "undecided",
+      "comment": null,
+      "warningsAtExport": [
+        "warn: Nothing selected yet, and 'nothing' has not been chosen either."
+      ]
+    },
+    {
+      "id": "db-access",
+      "layer": "Data access and migration",
+      "name": "How code talks to the database",
+      "kind": "CHOICE",
+      "selected": [
+        "NamedParameterJdbcTemplate"
+      ],
+      "rejected": [
+        "SQLAlchemy",
+        "asyncpg",
+        "psycopg",
+        "psycopg2-binary"
+      ],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": "deferred to the owner",
+      "agreesWithRecommendation": "ownerDecided",
+      "comment": "Follows the control-plane ruling: the Java service is the sole DB writer, so NamedParameterJdbcTemplate is the access path and the four Python DB libraries retire with it.",
+      "warningsAtExport": []
+    },
+    {
+      "id": "migration-runner",
+      "layer": "Data access and migration",
+      "name": "Applying database changes safely",
+      "kind": "CHOICE",
+      "selected": [
+        "Flyway"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "Flyway"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": [
+        "warn: This is a genuine choice between two answers and no reason is recorded. In six months the selection will be visible and the reasoning will not."
+      ]
+    },
+    {
+      "id": "migration-testing",
+      "layer": "Data access and migration",
+      "name": "Checking database changes before they run",
+      "kind": "RUNNING_ONLY",
+      "selected": [
+        "pglast"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "pglast"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "pdf-read",
+      "layer": "Document parsing and OCR",
+      "name": "Getting the text out of a PDF",
+      "kind": "CHOICE",
+      "selected": [
+        "pypdf",
+        "Docling",
+        "docling-serve"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "Docling",
+        "docling-serve",
+        "pypdf"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": [
+        "info: Both sides are selected, and that IS the recommendation here — one behind the other, or routed by input. Recorded so it does not read as an oversight.",
+        "warn: This is a genuine choice between two answers and no reason is recorded. In six months the selection will be visible and the reasoning will not."
+      ]
+    },
+    {
+      "id": "table-structure",
+      "layer": "Document parsing and OCR",
+      "name": "Recognising that a table IS a table",
+      "kind": "MANIFEST_ONLY",
+      "selected": [
+        "TableFormer"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "TableFormer"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "word-docs",
+      "layer": "Document parsing and OCR",
+      "name": "Reading Word documents",
+      "kind": "RUNNING_ONLY",
+      "selected": [
+        "python-docx"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "python-docx"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "ocr",
+      "layer": "Document parsing and OCR",
+      "name": "Reading a scanned page that has no text in it",
+      "kind": "CHOICE",
+      "selected": [
+        "RapidOCR"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "RapidOCR"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": [
+        "warn: This is a genuine choice between two answers and no reason is recorded. In six months the selection will be visible and the reasoning will not."
+      ]
+    },
+    {
+      "id": "object-store",
+      "layer": "Object storage",
+      "name": "Keeping the original uploaded file",
+      "kind": "RUNNING_ONLY",
+      "selected": [
+        "boto3",
+        "google-cloud-storage"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "boto3",
+        "google-cloud-storage"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "cache",
+      "layer": "Cache",
+      "name": "Keeping frequently-used data close by",
+      "kind": "RUNNING_ONLY",
+      "selected": [
+        "redis"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "redis"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "policy",
+      "layer": "Policy and authorization",
+      "name": "Deciding what is and is not allowed",
+      "kind": "MANIFEST_ONLY",
+      "selected": [
+        "OPA/Rego"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "OPA/Rego"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "identity",
+      "layer": "Identity, config and secrets",
+      "name": "Proving who is asking",
+      "kind": "CHOICE",
+      "selected": [
+        "Keycloak",
+        "service-JWT"
+      ],
+      "rejected": [],
+      "undecided": [
+        "Authlib",
+        "cryptography"
+      ],
+      "nothingDeliberately": false,
+      "recommended": "deferred to the owner",
+      "agreesWithRecommendation": "ownerDecided",
+      "comment": null,
+      "warningsAtExport": [
+        "warn: This is a genuine choice between two answers and no reason is recorded. In six months the selection will be visible and the reasoning will not."
+      ]
+    },
+    {
+      "id": "config-validation",
+      "layer": "Identity, config and secrets",
+      "name": "Checking that settings and inputs are valid",
+      "kind": "AGREED",
+      "selected": [
+        "pydantic",
+        "pydantic-settings"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "pydantic",
+        "pydantic-settings"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "config-files-secrets",
+      "layer": "Identity, config and secrets",
+      "name": "Where settings and passwords live",
+      "kind": "RUNNING_ONLY",
+      "selected": [
+        "PyYAML"
+      ],
+      "rejected": [],
+      "undecided": [
+        "python-dotenv"
+      ],
+      "nothingDeliberately": false,
+      "recommended": [
+        "PyYAML"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "llm-tracing",
+      "layer": "Observability",
+      "name": "Recording what the AI was asked and what it said",
+      "kind": "RUNNING_ONLY",
+      "selected": [
+        "langfuse"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "langfuse"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "telemetry",
+      "layer": "Observability",
+      "name": "Knowing whether the system is healthy",
+      "kind": "CHOICE",
+      "selected": [
+        "opentelemetry-*"
+      ],
+      "rejected": [
+        "Prometheus"
+      ],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "opentelemetry-*",
+        "Prometheus"
+      ],
+      "agreesWithRecommendation": "diverge",
+      "comment": "Owner ruling 2026-09-14: OpenTelemetry is the observability standard, Prometheus is not adopted. Recorded as a DIVERGENCE from the review, which recommended both on the grounds that they are different layers - OTel instruments, a backend stores. The ruling stands; what it defers is where metrics land, and that is now a deployment concern rather than a stack entry.",
+      "warningsAtExport": []
+    },
+    {
+      "id": "logging",
+      "layer": "Observability",
+      "name": "Writing down what happened",
+      "kind": "RUNNING_ONLY",
+      "selected": [
+        "loguru"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "loguru"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "frontend",
+      "layer": "Front end",
+      "name": "The screens themselves",
+      "kind": "MANIFEST_ONLY",
+      "selected": [
+        "React 18",
+        "MUI",
+        "TypeScript",
+        "Zustand",
+        "recharts",
+        "lucide-react"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "React 18",
+        "MUI",
+        "TypeScript",
+        "Zustand",
+        "recharts",
+        "lucide-react"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "embed-ui",
+      "layer": "Front end",
+      "name": "Putting Lextr screens inside someone else's application",
+      "kind": "MANIFEST_ONLY",
+      "selected": [
+        "Module Federation"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": "deferred to the owner",
+      "agreesWithRecommendation": "ownerDecided",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "graph-store",
+      "layer": "Graph",
+      "name": "Storing how figures are calculated from one another",
+      "kind": "MANIFEST_ONLY",
+      "selected": [
+        "Neo4j"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": "deferred to the owner",
+      "agreesWithRecommendation": "ownerDecided",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "graph-viz",
+      "layer": "Graph",
+      "name": "Drawing the calculation chain on screen",
+      "kind": "MANIFEST_ONLY",
+      "selected": [
+        "Cytoscape.js",
+        "ELK"
+      ],
+      "rejected": [
+        "Dagre"
+      ],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "Cytoscape.js",
+        "ELK"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": "ELK is the owner's standard for graph layout and replaces Dagre. Cytoscape.js remains the renderer; the two engines are alternatives, not a pair.",
+      "warningsAtExport": []
+    },
+    {
+      "id": "deploy",
+      "layer": "Packaging and deployment",
+      "name": "How the software is shipped and run",
+      "kind": "MANIFEST_ONLY",
+      "selected": [
+        "Docker",
+        "Kubernetes",
+        "Helm"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "Docker",
+        "Kubernetes",
+        "Helm"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "dataframes",
+      "layer": "Supporting libraries",
+      "name": "Working with tables of numbers in code",
+      "kind": "RUNNING_ONLY",
+      "selected": [
+        "pandas",
+        "numpy"
+      ],
+      "rejected": [],
+      "undecided": [],
+      "nothingDeliberately": false,
+      "recommended": [
+        "pandas",
+        "numpy"
+      ],
+      "agreesWithRecommendation": "match",
+      "comment": null,
+      "warningsAtExport": []
+    },
+    {
+      "id": "serialization",
+      "layer": "Supporting libraries",
+      "name": "A particular file format for structured data",
+      "kind": "RUNNING_ONLY",
+      "selected": [],
+      "rejected": [],
+      "undecided": [
+        "fastavro"
+      ],
+      "nothingDeliberately": false,
+      "recommended": [],
+      "agreesWithRecommendation": "undecided",
+      "comment": null,
+      "warningsAtExport": [
+        "warn: Nothing selected yet, and 'nothing' has not been chosen either."
+      ]
+    }
+  ]
+}
