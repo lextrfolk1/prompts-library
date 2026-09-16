@@ -103,7 +103,7 @@
 | `LP-14.1_PY` | `prompts/wave_05/LP-14.1_PY.md` | `lexie-ai` (Python) | ✅ **DELIVERED** | `VarianceHorizontalSkill`, 6-method adapter ceiling, 4-tier pyramid, `is_horizontal_weak` verdict (`4e3f485`) |
 | `LP-14.2_JAVA` | `prompts/wave_05/LP-14.2_JAVA.md` | `intelligence-service` (Java) | ✅ **DELIVERED** | `VarianceRunCoordinator`, thin resolve-run-persist-enqueue seam, fail-closed policy (`7af662c`) |
 | `LP-14.3_REGO` | `prompts/wave_05/LP-14.3_REGO.md` | `intelligence-service` (OPA) | ✅ **DELIVERED** | `lextr.ai.tool_scope_variance`, 3 denial branches, LP-14/16/18 op registrations (`1fe896f`) |
-| `LP-14.4_TEST` | `prompts/wave_05/LP-14.4_TEST.md` | Cross-Layer (Test) | ⏳ **NOT_STARTED** |
+| `LP-14.4_TEST` | `prompts/wave_05/LP-14.4_TEST.md` | Cross-Layer (Test) | ✅ **DELIVERED** | Cross-layer wire-through suite (3-sided seam: Skill -> OPA -> Coordinator -> Persistence -> Review) (`6a67465`, `c26e6b6`) |
 | `LP-15.1_TS` | `prompts/wave_05/LP-15.1_TS.md` | `intelligence-ui` (TS) | ⏳ **NOT_STARTED** |
 | `LP-16.1_PY` | `prompts/wave_05/LP-16.1_PY.md` | `lexie-ai` (Python) | ⏳ **NOT_STARTED** |
 | `LP-16.3_TEST` | `prompts/wave_05/LP-16.3_TEST.md` | Cross-Layer (Test) | ⏳ **NOT_STARTED** |
