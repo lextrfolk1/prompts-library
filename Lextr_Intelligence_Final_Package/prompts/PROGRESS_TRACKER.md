@@ -73,9 +73,9 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-03.2_JAVA` | `intelligence-service` | `/run` DTO contract and SemVer package | Copilot/Tejal | `DELIVERED` | Contract DTOs in `com.lextr.intelligence.contract.run.*` with SemVer Jackson serialization | 2026-09-19 | Conformance to snake_case wire schema verified |
+| `LP-03.2_JAVA` | `intelligence-service` | `/run` DTO contract and SemVer package | Copilot/Tejal | `DELIVERED` | Contract DTOs in `com.lextr.intelligence.contract.run.*`, rich `VarianceExplanation`, first-class `use_case` wire field | 2026-09-19 | Conformance to snake_case wire schema verified |
 | `LP-03.3_JAVA` | `intelligence-service` | Synchronous `/run` service and cache semantics | Copilot/Tejal | `DELIVERED` | `RunController` & `RunServiceImpl`, `RunControllerTest` (1/1 pass) | 2026-09-19 | In-memory cache + zero-persistence controller verified |
-| `LP-03.5_TEST` | `intelligence-service` | Wire-through serialization test | Copilot/Tejal | `DELIVERED` | `RunCrossLayerWireThroughTest` (3/3 pass) | 2026-09-19 | Byte-level snake_case serialization conformance verified |
+| `LP-03.5_TEST` | `intelligence-service` | Wire-through serialization test | Copilot/Tejal | `DELIVERED` | `RunCrossLayerWireThroughTest` (5/5 pass) | 2026-09-19 | Byte-level snake_case, N/N-1 backward compat, rich VarianceExplanation, and use_case wire conformance verified |
 | `LP-04.1_REGO` | `intelligence-service` | OPA root + shared policy bundles | Copilot/Tejal | `DELIVERED` | `tool_scope.rego`, `mrm_sod.rego`, `OpaPolicyBundleTest` (4/4 pass), `MrmSodPolicyTest` (3/3 pass) | 2026-09-19 | Fail-closed defaults & 5 capability gates verified |
 | `LP-05.1_JAVA` | `intelligence-service` | Model resolution and routing | Copilot/Tejal | `DELIVERED` | `ModelResolutionServiceImpl`, `ModelResolutionTest` (4/4 pass) | 2026-09-19 | Zero-config Qwen3-4B default and 384-dim check verified |
 
