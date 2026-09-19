@@ -39,7 +39,7 @@ Required fields per prompt:
 | **Wave 02** | Run Protocol, Policy & SLM Baseline | 5 | 0 | 0 | 0 | 5 | 0 | ✅ DELIVERED |
 | **Wave 03** | Persistence, Human Review & Knowledge Hub | 13 | 0 | 0 | 0 | 13 | 0 | ✅ DELIVERED |
 | **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 0 | 0 | 0 | 12 | 0 | ✅ DELIVERED |
-| **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 16 | 0 | 0 | 0 | 0 | 🟡 Planning |
+| **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 0 | 0 | 0 | 16 | 0 | ✅ DELIVERED |
 | **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 25 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 58 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 24 | 0 | 0 | 0 | 0 | 🟡 Planning |
@@ -118,22 +118,22 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-14.0_SQL` | `intelligence-service` | Reporting cycle tables and thresholds | — | `PENDING` | — | — | — |
-| `LP-14.1_PY` | `lexie-ai` | Horizontal variance skill | — | `PENDING` | — | — | — |
-| `LP-14.2_JAVA` | `intelligence-service` | Variance run coordinator | — | `PENDING` | — | — | — |
-| `LP-14.3_REGO` | `intelligence-service` | `tool_scope_variance` policy | — | `PENDING` | — | — | — |
-| `LP-14.4_TEST` | `intelligence-service` | Variance wire-through tests | — | `PENDING` | — | — | — |
-| `LP-15.1_TS` | `intelligence-ui` | Variance workspace UI | — | `PENDING` | — | — | — |
-| `LP-16.1_PY` | `lexie-ai` | SkillTwo vertical DAG walk | — | `PENDING` | — | — | — |
-| `LP-16.3_TEST` | `intelligence-service` | Vertical cross-layer tests | — | `PENDING` | — | — | — |
-| `LP-17.1_TS` | `intelligence-ui` | Drill workspace shell | — | `PENDING` | — | — | — |
-| `LP-17.2_CYTO` | `intelligence-ui` | Cytoscape/ELK DAG renderer | — | `PENDING` | — | — | — |
-| `LP-18.1_PY` | `lexie-ai` | Evidence substeps | — | `PENDING` | — | — | — |
-| `LP-19.1_PY` | `lexie-ai` | Re-run with analyst hypothesis | — | `PENDING` | — | — | — |
-| `LP-19.2_SQL` | `intelligence-service` | Rerun audit schema | — | `PENDING` | — | — | — |
-| `LP-19.3_JAVA` | `intelligence-service` | Re-run service and lineage preservation | — | `PENDING` | — | — | — |
-| `LP-19.4_TS` | `intelligence-ui` | Re-run overlay UI | — | `PENDING` | — | — | — |
-| `LP-19.5_TEST` | `intelligence-service` | Rerun wire-through tests | — | `PENDING` | — | — | — |
+| `LP-14.0_SQL` | `intelligence-service` | Reporting cycle tables and thresholds | Copilot/Tejal | `DELIVERED` | `V20260916_02__reporting_cycles.sql`, `V20260916_03__materiality_thresholds.sql`, `ReportingCycleMaterialityMigrationTest` (2/2 pass) | 2026-09-19 | Immutable trigger per tenant, externalized queries in queries.properties, Part-M naming conformant |
+| `LP-14.1_PY` | `lexie-ai` | Horizontal variance skill | Copilot/Tejal | `DELIVERED` | `VarianceHorizontalSkill`, `test_variance_horizontal_skill.py` (7/7 pass) | 2026-09-19 | 6 live adapter ops (no 7th), 4-level pyramid, KG domain resolution, published is_horizontal_weak, DriverCategory scoping |
+| `LP-14.2_JAVA` | `intelligence-service` | Variance run coordinator | Copilot/Tejal | `DELIVERED` | `VarianceRunCoordinatorImpl`, `VarianceRunCoordinatorTest` (7/7 pass) | 2026-09-19 | Single coordinator seam, pass-through trace, separate persist and enqueue txns, no driver decisions in Java |
+| `LP-14.3_REGO` | `intelligence-service` | `tool_scope_variance` policy | Copilot/Tejal | `DELIVERED` | `tool_scope_variance.rego`, `ToolScopeVariancePolicyTest` (6/6 pass) | 2026-09-19 | Declared ops across LP-14/16/18, readiness gating (kg_ready, series_ready, etc.), distinct denial codes, variance_ prefix |
+| `LP-14.4_TEST` | `intelligence-service` / `lexie-ai` | Variance wire-through tests | Copilot/Tejal | `DELIVERED` | `VarianceCrossLayerWireThroughTest` (2/2 pass), `test_variance_horizontal_wire_through.py` (8/8 pass) | 2026-09-19 | End-to-end wire through, policy refusal handling, trace integrity across Java and Python |
+| `LP-15.1_TS` | `intelligence-ui` | Variance workspace UI | Copilot/Tejal | `DELIVERED` | `VarianceWorkspace.tsx`, `VarianceWorkspace.test.tsx` (8/8 pass), `DriverFindingCard.test.tsx` (3/3 pass) | 2026-09-19 | showReviewBanner prop, 4 roles, trend evidence label, honest category rendering, completed -> reviewing, STOPPED distinct from ERROR |
+| `LP-16.1_PY` | `lexie-ai` | SkillTwo vertical DAG walk | Copilot/Tejal | `DELIVERED` | `VarianceGraphWalkSkill`, `test_variance_graph_walk_skill.py` (8/8 pass) | 2026-09-19 | Bounded BFS over calc chains, multi-parent convergence-once, 4 recorded stops (depth, breadth, ceiling, tokens), kg_ready gate |
+| `LP-16.3_TEST` | `intelligence-service` / `lexie-ai` | Vertical cross-layer tests | Copilot/Tejal | `DELIVERED` | `VarianceVerticalCrossLayerWireThroughTest` (2/2 pass), `test_variance_vertical_wire_through.py` (3/3 pass) | 2026-09-19 | Cross-layer BFS walk, one-rung descent, multi-parent convergence, 4 recorded stops, kg denial leaves root horizontal standing |
+| `LP-17.1_TS` | `intelligence-ui` | Drill workspace shell | Copilot/Tejal | `DELIVERED` | `VarianceDrillWorkspace.tsx`, `VarianceDrillWorkspace.test.tsx` (5/5 pass) | 2026-09-19 | Whole-drill review banner once (never per-node), honest stop banners over partial DAG, incomingCount > 1 provenance note, node drill result |
+| `LP-17.2_CYTO` | `intelligence-ui` | Cytoscape/ELK DAG renderer | Copilot/Tejal | `DELIVERED` | `DrillGraph.tsx`, `DrillGraph.test.tsx` (4/4 pass) | 2026-09-19 | Cytoscape.js + ELK layout (no react-cytoscapejs), convergence-once by id=key, theme tokens only, masking-safe node labels |
+| `LP-18.1_PY` | `lexie-ai` | Evidence substeps | Copilot/Tejal | `DELIVERED` | `EvidenceSubStepsEvaluator`, `test_evidence_substeps.py` (7/7 pass) | 2026-09-19 | Signal-only trend (window 6), anchor (model_raw only, reg-vs-GAAP caveat, flag not correction), recon (closed DriverCategory set, calc-chain without kg_ready) |
+| `LP-19.1_PY` | `lexie-ai` | Re-run with analyst hypothesis | Copilot/Tejal | `DELIVERED` | `DriverProvenance`, `test_variance_rerun_provenance.py` (7/7 pass) | 2026-09-19 | Analyst hypothesis is annotation (driver=None), counted out of is_horizontal_weak, analyst_input masked via MaskingBoundary.mask_text, no new tool op |
+| `LP-19.2_SQL` | `intelligence-service` | Rerun audit schema | Copilot/Tejal | `DELIVERED` | `V20260916_04__lp19_agent_run_rerun_audit.sql`, `RerunAuditMigrationTest` (7/7 pass) | 2026-09-19 | Additive nullable rerun_audit jsonb, separate rerun_lineage_run_id FK (no parent_run_id overload), bounded lineage walk queries |
+| `LP-19.3_JAVA` | `intelligence-service` | Re-run service and lineage preservation | Copilot/Tejal | `DELIVERED` | `RerunServiceImpl`, `RerunController`, `RerunServiceTest` (10/10 pass) | 2026-09-19 | Re-resolves LATEST governed preset (not snapshot), lineage preservation, additive rerun_audit records preset change, parent run unchanged |
+| `LP-19.4_TS` | `intelligence-ui` | Re-run overlay UI | Copilot/Tejal | `DELIVERED` | `VarianceResult.tsx`, `DriverFindingCard.tsx`, `VarianceRerunConformance.test.tsx` (6/6 pass) | 2026-09-19 | Analyst annotation rendered distinctly with driver=None, server count rendered without client tally, parent lineage link, preset difference banner |
+| `LP-19.5_TEST` | `intelligence-service` / `lexie-ai` | Rerun wire-through tests | Copilot/Tejal | `DELIVERED` | `RerunCrossLayerWireThroughTest` (4/4 pass), `test_variance_rerun_cross_layer_wire_through.py` (4/4 pass) | 2026-09-19 | 4-hand annotation survival (skill -> controller -> dao -> ui), masked text persistence, latest preset re-resolution, no new tool op |
 
 ### Wave 06 — Assembly, Preset Management & Semantic Queries
 
