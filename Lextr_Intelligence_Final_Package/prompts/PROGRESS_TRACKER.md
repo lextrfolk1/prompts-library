@@ -36,7 +36,7 @@ Required fields per prompt:
 | Wave | Feature Domain | Total Prompts | PENDING | IN_PROGRESS | BLOCKED | DELIVERED | DEFERRED | Status |
 |:---:|---|:---:|:---:|:---:|:---:|:---:|:---:|---|
 | **Wave 01** | Baseline Schema & UI Core Foundations | 3 | 0 | 0 | 0 | 3 | 0 | ✅ DELIVERED |
-| **Wave 02** | Run Protocol, Policy & SLM Baseline | 5 | 5 | 0 | 0 | 0 | 0 | 🟡 Planning |
+| **Wave 02** | Run Protocol, Policy & SLM Baseline | 5 | 0 | 0 | 0 | 5 | 0 | ✅ DELIVERED |
 | **Wave 03** | Persistence, Human Review & Knowledge Hub | 13 | 13 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 12 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 16 | 0 | 0 | 0 | 0 | 🟡 Planning |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 22 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 11 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 11 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **248** | **0** | **0** | **3** | **0** | **1.2% structured baseline** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **243** | **0** | **0** | **8** | **0** | **3.2% structured baseline** |
 
 ---
 
@@ -73,11 +73,11 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-03.2_JAVA` | `intelligence-service` | `/run` DTO contract and SemVer package | — | `PENDING` | — | — | — |
-| `LP-03.3_JAVA` | `intelligence-service` | Synchronous `/run` service and cache semantics | — | `PENDING` | — | — | — |
-| `LP-03.5_TEST` | `intelligence-service` | Wire-through serialization test | — | `PENDING` | — | — | — |
-| `LP-04.1_REGO` | `intelligence-service` | OPA root + shared policy bundles | — | `PENDING` | — | — | — |
-| `LP-05.1_JAVA` | `intelligence-service` | Model resolution and routing | — | `PENDING` | — | — | — |
+| `LP-03.2_JAVA` | `intelligence-service` | `/run` DTO contract and SemVer package | Copilot/Tejal | `DELIVERED` | Contract DTOs in `com.lextr.intelligence.contract.run.*` with SemVer Jackson serialization | 2026-09-19 | Conformance to snake_case wire schema verified |
+| `LP-03.3_JAVA` | `intelligence-service` | Synchronous `/run` service and cache semantics | Copilot/Tejal | `DELIVERED` | `RunController` & `RunServiceImpl`, `RunControllerTest` (1/1 pass) | 2026-09-19 | In-memory cache + zero-persistence controller verified |
+| `LP-03.5_TEST` | `intelligence-service` | Wire-through serialization test | Copilot/Tejal | `DELIVERED` | `RunCrossLayerWireThroughTest` (3/3 pass) | 2026-09-19 | Byte-level snake_case serialization conformance verified |
+| `LP-04.1_REGO` | `intelligence-service` | OPA root + shared policy bundles | Copilot/Tejal | `DELIVERED` | `tool_scope.rego`, `mrm_sod.rego`, `OpaPolicyBundleTest` (4/4 pass), `MrmSodPolicyTest` (3/3 pass) | 2026-09-19 | Fail-closed defaults & 5 capability gates verified |
+| `LP-05.1_JAVA` | `intelligence-service` | Model resolution and routing | Copilot/Tejal | `DELIVERED` | `ModelResolutionServiceImpl`, `ModelResolutionTest` (4/4 pass) | 2026-09-19 | Zero-config Qwen3-4B default and 384-dim check verified |
 
 ### Wave 03 — Persistence, Human Review & Knowledge Hub
 
