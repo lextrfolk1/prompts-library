@@ -84,7 +84,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
 | `LP-06.1_SQL` | `intelligence-service` | Control-plane persistence SQL | Copilot/Tejal | `DELIVERED` | Externalized SQL in `queries.properties` (`agent_run.*`, `agent_run_step.*`), `SQLQueryLoaderTest` (6/6 pass) | 2026-09-19 | No JPA, raw NamedParameterJdbcTemplate, snake_case column aliases verified |
-| `LP-06.2_JAVA` | `intelligence-service` | Persist run writer consumer path | — | `PENDING` | — | — | — |
+| `LP-06.2_JAVA` | `intelligence-service` | Persist run writer consumer path | Copilot/Tejal | `DELIVERED` | `ControlPlanePersistenceServiceImpl`, `ControlPlanePersistenceTest` (7/7 pass) | 2026-09-19 | Single transaction persist, RFC 8785 hash verification, idempotent flush, recovery sweep, absent correlation_id preserved |
 | `LP-06.4_TEST` | `intelligence-service` | Producer-to-consumer buffer test | — | `PENDING` | — | — | — |
 | `LP-06.5_SQL` | `intelligence-service` | Archive row + hash persistence | — | `PENDING` | — | — | — |
 | `LP-06.6_JAVA` | `intelligence-service` | Archive write and fail-open refused path | — | `PENDING` | — | — | — |
