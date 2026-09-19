@@ -37,8 +37,8 @@ Required fields per prompt:
 |:---:|---|:---:|:---:|:---:|:---:|:---:|:---:|---|
 | **Wave 01** | Baseline Schema & UI Core Foundations | 3 | 0 | 0 | 0 | 3 | 0 | ✅ DELIVERED |
 | **Wave 02** | Run Protocol, Policy & SLM Baseline | 5 | 0 | 0 | 0 | 5 | 0 | ✅ DELIVERED |
-| **Wave 03** | Persistence, Human Review & Knowledge Hub | 13 | 13 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 12 | 0 | 0 | 0 | 0 | 🟡 Planning |
+| **Wave 03** | Persistence, Human Review & Knowledge Hub | 13 | 0 | 0 | 0 | 13 | 0 | ✅ DELIVERED |
+| **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 0 | 0 | 0 | 12 | 0 | ✅ DELIVERED |
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 16 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 25 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 58 | 0 | 0 | 0 | 0 | 🟡 Planning |
@@ -53,11 +53,11 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 22 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 11 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 11 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **243** | **0** | **0** | **8** | **0** | **3.2% structured baseline** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **218** | **0** | **0** | **33** | **0** | **13.1% structured baseline** |
 
 ---
 
-## 3. Prompt Register
+## 3. Wave Execution & Verification Detail
 
 This section is the operational tracker. Each prompt gets a row and must be updated independently.
 
@@ -101,18 +101,18 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-09.1_PY` | `lexie-ai` | Skill 1 deterministic resolution | — | `PENDING` | — | — | — |
-| `LP-10.1_PY` | `lexie-ai` | Masking boundary and classification | — | `PENDING` | — | — | — |
-| `LP-10.4_PY` | `lexie-ai` | Prompt composition / grounding payload | — | `PENDING` | — | — | — |
-| `LP-11.1_PY` | `lexie-ai` | Skill 3 SLM assembly path | — | `PENDING` | — | — | — |
-| `LP-12.1_SQL` | `intelligence-service` | Preset and envelope SQL | — | `PENDING` | — | — | — |
-| `LP-12.2_JAVA` | `intelligence-service` | Preset API and SoD controls | — | `PENDING` | — | — | — |
-| `LP-12.3_JAVA` | `intelligence-service` | Governed preset service lifecycle | — | `PENDING` | — | — | — |
-| `LP-12.4_JAVA` | `intelligence-service` | Preset DAO layer | — | `PENDING` | — | — | — |
-| `LP-12.5_TS` | `intelligence-ui` | Preset authoring UI | — | `PENDING` | — | — | — |
-| `LP-12.7_TEST` | `intelligence-service` | Four-eyes preset wire-through tests | — | `PENDING` | — | — | — |
-| `LP-12.8_PY` | `lexie-ai` | Instruction resolution and slot validation | — | `PENDING` | — | — | — |
-| `LP-13.3_TEST` | `intelligence-service` | Host adapter seam tests | — | `PENDING` | — | — | — |
+| `LP-09.1_PY` | `lexie-ai` | Skill 1 deterministic resolution | Copilot/Tejal | `DELIVERED` | `SkillOne`, `test_skill_one.py` (7/7 pass) | 2026-09-19 | No model port, pure deterministic cell lookup, requester mandatory, fails closed if C1 unwired |
+| `LP-10.1_PY` | `lexie-ai` | Masking boundary and classification | Copilot/Tejal | `DELIVERED` | `MaskingBoundary`, `test_masking_boundary.py` (7/7 pass) | 2026-09-19 | Model form only guarded, display form ignored, PII masked, fails closed on egress for RESTRICTED/MNPI |
+| `LP-10.4_PY` | `lexie-ai` | Prompt composition / grounding payload | Copilot/Tejal | `DELIVERED` | `GroundingPayload`, `PromptComposer`, `test_grounding_payload.py` (7/7 pass) | 2026-09-19 | Schema-only grounding, real ledger rows refused, user text in data slot only, cardinality bands |
+| `LP-11.1_PY` | `lexie-ai` | Skill 3 SLM assembly path | Copilot/Tejal | `DELIVERED` | `SkillThree`, `test_skill_three.py` (7/7 pass) | 2026-09-19 | Sole SLM caller, strict 8-step ceiling (9th step halts with stopped trace), closed driver categories |
+| `LP-12.1_SQL` | `intelligence-service` | Preset and envelope SQL | Copilot/Tejal | `DELIVERED` | `V20260916_01__lp12_preset_operational_axis_partial_unique.sql`, `queries.properties`, `PresetManagementSqlTest` (5/5 pass) | 2026-09-19 | Operational axis partial unique index (NULLS NOT DISTINCT), envelope reads/writes externalized |
+| `LP-12.2_JAVA` | `intelligence-service` | Preset API and SoD controls | Copilot/Tejal | `DELIVERED` | `PresetController`, `PresetControllerTest` (6/6 pass) | 2026-09-19 | Preset DTOs, Four-Eyes SoD, transition controller advice mapping, immutable versioning |
+| `LP-12.3_JAVA` | `intelligence-service` | Governed preset service lifecycle | Copilot/Tejal | `DELIVERED` | `PresetServiceImpl`, `VariancePresetResolverImpl`, `VariancePresetResolverTest` (7/7 pass) | 2026-09-19 | OPA lextr/ai/mrm_sod integration, approver != author, fail-closed unapproved, freeze PresetSnapshot |
+| `LP-12.4_JAVA` | `intelligence-service` | Preset DAO layer | Copilot/Tejal | `DELIVERED` | `PresetDaoImpl`, `PresetDaoTest` (4/4 pass) | 2026-09-19 | NamedParameterJdbcTemplate, JSONB config serialization, optimistic concurrency on version bump |
+| `LP-12.5_TS` | `intelligence-ui` | Preset authoring UI | Copilot/Tejal | `DELIVERED` | `PresetWizard.tsx`, `GovernanceEnvelope.tsx`, `PresetWizard.test.tsx` (8/8 pass) | 2026-09-19 | 7-step wizard, single draft on abandon, no client-side authorization/coercion, token-only styling |
+| `LP-12.7_TEST` | `intelligence-service` / `lexie-ai` | Four-eyes preset wire-through tests | Copilot/Tejal | `DELIVERED` | `PresetManagementWireThroughTest` (4/4 pass), `test_preset_management_wire_through.py` (4/4 pass) | 2026-09-19 | Cross-layer SoD author forgery rejection, API direct bypass prevention, snapshot freeze immutability |
+| `LP-12.8_PY` | `lexie-ai` | Instruction resolution and slot validation | Copilot/Tejal | `DELIVERED` | `InstructionResolver`, `test_instruction_resolver.py` (11/11 pass) | 2026-09-19 | No DB/network/fs ports, remote store observability matched pair, empty slot refusal, bidirectional slot validation, content hash on exact rendered body |
+| `LP-13.3_TEST` | `intelligence-service` / `lexie-ai` | Host adapter seam tests | Copilot/Tejal | `DELIVERED` | `HostAdapterWireThroughTest` (3/3 pass), `test_host_adapter_wire_through.py` (5/5 pass) | 2026-09-19 | Requester threaded on all fetches, display differs while model form identical (LP-10.3), capability handshake fail-closed |
 
 ### Wave 05 — Graph Walk, Lineage & Cytoscape DAG
 
