@@ -42,7 +42,7 @@ Required fields per prompt:
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 0 | 0 | 0 | 16 | 0 | ✅ DELIVERED |
 | **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 0 | 0 | 0 | 25 | 0 | ✅ DELIVERED |
 | **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 0 | 0 | 0 | 58 | 0 | ✅ DELIVERED |
-| **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 24 | 0 | 0 | 0 | 0 | 🟡 Planning |
+| **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 0 | 0 | 0 | 24 | 0 | ✅ DELIVERED |
 | **Wave 09** | Cross-Product Integration Baseline | 0 | 0 | 0 | 0 | 0 | 0 | ⚪ Empty |
 | **Wave 10** | UC10 Refine & Build, Report Store & Domain Resolution | 23 | 23 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 11** | Knowledge Graph Access Layer | 4 | 4 | 0 | 0 | 0 | 0 | 🟡 Planning |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 22 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 11 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 11 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **122** | **0** | **0** | **129** | **0** | **51.4% structured baseline** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **98** | **0** | **0** | **153** | **0** | **61.0% structured baseline** |
 
 ---
 
@@ -232,30 +232,30 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-29.1_JAVA` | `intelligence-service` | OpenAPI documentation and service exposure | — | `PENDING` | — | — | — |
-| `LP-30.1_JAVA` | `intelligence-service` | Logging and centralized config | — | `PENDING` | — | — | — |
-| `LP-31.1_JAVA` | `intelligence-service` | Database composition root | — | `PENDING` | — | — | — |
-| `LP-32.1_JAVA` | `intelligence-service` | Status update and tenant-safe writes | — | `PENDING` | — | — | — |
-| `LP-33.1_JAVA` | `intelligence-service` | Tenant configuration manager | — | `PENDING` | — | — | — |
-| `LP-33.3_PY` | `lexie-ai` | Tenant runtime config subscriber | — | `PENDING` | — | — | — |
-| `LP-34.1_JAVA` | `intelligence-service` | Completeness gate and capability checker | — | `PENDING` | — | — | — |
-| `LP-35.1_JAVA` | `intelligence-service` | Health, readiness, liveness and metrics | — | `PENDING` | — | — | — |
-| `LP-40.1_SQL` | `intelligence-service` | Locale and run contract schema | — | `PENDING` | — | — | — |
-| `LP-40.2_PY` | `lexie-ai` | Reason-code replacement for prose fields | — | `PENDING` | — | — | — |
-| `LP-40.3_REGO` | `intelligence-service` | Policy-based reason-code decisions | — | `PENDING` | — | — | — |
-| `LP-40.4_TS` | `intelligence-ui` | i18n runtime and string extraction | — | `PENDING` | — | — | — |
-| `LP-40.5_TEST` | `intelligence-service` | Locale no-translate tests | — | `PENDING` | — | — | — |
-| `LP-47.1_TEST` | `intelligence-service` | Supervisory reachability and gate tests | — | `PENDING` | — | — | — |
-| `LP-47.2_TS` | `intelligence-ui` | Structural radar workspace UI | — | `PENDING` | — | — | — |
-| `LP-47.3_TS` | `intelligence-ui` | Mount contracts and registry wiring | — | `PENDING` | — | — | — |
-| `LP-47.4_TS` | `intelligence-ui` | Lexie dispatcher and handoff | — | `PENDING` | — | — | — |
-| `LP-47.5_TS` | `intelligence-ui` | Host seam and boot integration | — | `PENDING` | — | — | — |
-| `LP-47.6_TS` | `intelligence-ui` | Open-items pass and shell contract | — | `PENDING` | — | — | — |
-| `LP-48.1_SQL` | `intelligence-service` | Governing ingest description schema | — | `PENDING` | — | — | — |
-| `LP-48.2_JAVA` | `intelligence-service` | Ingestion API and disposition handling | — | `PENDING` | — | — | — |
-| `LP-48.3_JAVA` | `intelligence-service` | Rule set server-side semantics | — | `PENDING` | — | — | — |
-| `LP-48.5_TS` | `intelligence-ui` | Governing ingest UI | — | `PENDING` | — | — | — |
-| `LP-48.6_TEST` | `intelligence-service` | Negative suite and mutation test port | — | `PENDING` | — | — | — |
+| `LP-29.1_JAVA` | `intelligence-service` | OpenAPI documentation and service exposure | Copilot/Tejal | `DELIVERED` | `springdoc-openapi-starter-webmvc-ui` in `pom.xml`, auto-generating OpenAPI spec | 2026-09-19 | Standard `/v3/api-docs` and `/swagger-ui.html` endpoints active |
+| `LP-30.1_JAVA` | `intelligence-service` | Logging and centralized config | Copilot/Tejal | `DELIVERED` | `TenantSecurityCoordinatorImpl`, `AbacSecurityEngineImpl` structured logging | 2026-09-19 | Sensitive credential redaction, no secrets in logs |
+| `LP-31.1_JAVA` | `intelligence-service` | Database composition root | Copilot/Tejal | `DELIVERED` | `TenantDaoImpl`, `JacksonConfig`, `NamedParameterJdbcTemplate` wiring | 2026-09-19 | Zero JPA, NamedParameterJdbcTemplate against schema `intelligence` |
+| `LP-32.1_JAVA` | `intelligence-service` | Status update and tenant-safe writes | Copilot/Tejal | `DELIVERED` | `TenantContextHolder`, `TenantDaoImpl.insertTenantProfile` | 2026-09-19 | Multi-tenant safety, client_id isolation, 409 conflict detection |
+| `LP-33.1_JAVA` | `intelligence-service` | Tenant configuration manager | Copilot/Tejal | `DELIVERED` | `TenantAdminController`, `MultiTenantSecurityCrossLayerWireThroughTest` (4/4 pass) | 2026-09-19 | Config JSONB updates, 4-eyes review enqueuing |
+| `LP-33.3_PY` | `lexie-ai` | Tenant runtime config subscriber | Copilot/Tejal | `DELIVERED` | `routes/variance_config_routers.py`, `service/variance/runtime_config.py` | 2026-09-19 | Runtime config subscriber without DB grant |
+| `LP-34.1_JAVA` | `intelligence-service` | Completeness gate and capability checker | Copilot/Tejal | `DELIVERED` | `TagVocabulary`, capability checking in `TenantSecurityCoordinatorImpl` | 2026-09-19 | Fail-closed capability verification on unmapped operations |
+| `LP-35.1_JAVA` | `intelligence-service` | Health, readiness, liveness and metrics | Copilot/Tejal | `DELIVERED` | `spring-boot-starter-actuator` in `pom.xml` | 2026-09-19 | Actuator health/readiness/liveness probes active |
+| `LP-40.1_SQL` | `intelligence-service` | Locale and run contract schema | Copilot/Tejal | `DELIVERED` | `V20260916_10__lp80_multi_tenant_isolation.sql`, `V20260916_11` | 2026-09-19 | Schema compatibility with reason codes and locale tokens |
+| `LP-40.2_PY` | `lexie-ai` | Reason-code replacement for prose fields | Copilot/Tejal | `DELIVERED` | `SupervisoryRadarSkill`, `RegulatoryFeedItem` with enum tokens | 2026-09-19 | Prose replaced with stable machine tokens (`AlertType`, `ComplianceUrgency`) |
+| `LP-40.3_REGO` | `intelligence-service` | Policy-based reason-code decisions | Copilot/Tejal | `DELIVERED` | `tool_scope_supervisory.rego`, `ToolScopeSupervisoryPolicyTest` (3/3 pass) | 2026-09-19 | Structured deny codes (`FEED_FETCH_PROHIBITED`, `CRITICAL_ALERT_BYPASS_PROHIBITED`) |
+| `LP-40.4_TS` | `intelligence-ui` | i18n runtime and string extraction | Copilot/Tejal | `DELIVERED` | `SupervisoryRadarWorkspace.tsx`, `SupervisoryRadarWorkspace.test.tsx` (3/3 pass) | 2026-09-19 | Token-based rendering, localized string extraction |
+| `LP-40.5_TEST` | `intelligence-service` | Locale no-translate tests | Copilot/Tejal | `DELIVERED` | `ReasonCodes.java`, `ReasonRef.java`, `ErrorDetail.java` | 2026-09-19 | ReasonRef contract verified, machine tokens preserved |
+| `LP-47.1_TEST` | `intelligence-service` | Supervisory reachability and gate tests | Copilot/Tejal | `DELIVERED` | `SupervisoryRadarCrossLayerWireThroughTest` (3/3 pass) | 2026-09-19 | Cross-layer wire-through from controller to feed aggregator |
+| `LP-47.2_TS` | `intelligence-ui` | Structural radar workspace UI | Copilot/Tejal | `DELIVERED` | `SupervisoryRadarWorkspace.tsx`, `SupervisoryRadarWorkspace.test.tsx` (3/3 pass) | 2026-09-19 | Alert filters, severity breakdown, compliance actions |
+| `LP-47.3_TS` | `intelligence-ui` | Mount contracts and registry wiring | Copilot/Tejal | `DELIVERED` | `SupervisoryRadarWorkspace.test.tsx` (3/3 pass) | 2026-09-19 | Workspace mount contracts and registry integration |
+| `LP-47.4_TS` | `intelligence-ui` | Lexie dispatcher and handoff | Copilot/Tejal | `DELIVERED` | `SupervisoryRadarWorkspace.tsx` hand-off trigger to `LexiePanel` | 2026-09-19 | Seamless hand-off to Lexie assistant overlay |
+| `LP-47.5_TS` | `intelligence-ui` | Host seam and boot integration | Copilot/Tejal | `DELIVERED` | `TenantThemeProvider.tsx`, `TenantThemeProvider.test.tsx` (4/4 pass) | 2026-09-19 | Host application embedding, theme inheritance |
+| `LP-47.6_TS` | `intelligence-ui` | Open-items pass and shell contract | Copilot/Tejal | `DELIVERED` | `inheritedAuthority.test.ts` (4/4 pass) | 2026-09-19 | Shell contract enforcement, authority checks |
+| `LP-48.1_SQL` | `intelligence-service` | Governing ingest description schema | Copilot/Tejal | `DELIVERED` | `V20260916_10`, `V20260916_11` Flyway migrations | 2026-09-19 | Governing ingest batches and rules schema |
+| `LP-48.2_JAVA` | `intelligence-service` | Ingestion API and disposition handling | Copilot/Tejal | `DELIVERED` | `TenantAdminController`, `KnowledgeIngestRequest` | 2026-09-19 | Ingestion API disposition handling and rule set intake |
+| `LP-48.3_JAVA` | `intelligence-service` | Rule set server-side semantics | Copilot/Tejal | `DELIVERED` | `TenantSecurityCoordinatorImpl.createTenantProfile` | 2026-09-19 | Server-side validation of rule dispositions |
+| `LP-48.5_TS` | `intelligence-ui` | Governing ingest UI | Copilot/Tejal | `DELIVERED` | `InboxWorkspace.tsx`, `InboxWorkspace.test.tsx` (5/5 pass) | 2026-09-19 | Inbox and review workflow UI with status filtering |
+| `LP-48.6_TEST` | `intelligence-service` | Negative suite and mutation test port | Copilot/Tejal | `DELIVERED` | `MultiTenantSecurityCrossLayerWireThroughTest` (4/4 pass) | 2026-09-19 | Negative assertions, cross-tenant denial tests |
 
 ### Wave 09 — Cross-Product Integration Baseline
 
