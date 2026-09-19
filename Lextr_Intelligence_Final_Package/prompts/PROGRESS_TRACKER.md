@@ -44,16 +44,16 @@ Required fields per prompt:
 | **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 0 | 0 | 0 | 58 | 0 | ✅ DELIVERED |
 | **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 0 | 0 | 0 | 24 | 0 | ✅ DELIVERED |
 | **Wave 09** | Cross-Product Integration Baseline | 0 | 0 | 0 | 0 | 0 | 0 | ⚪ Empty |
-| **Wave 10** | UC10 Refine & Build, Report Store & Domain Resolution | 23 | 23 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **Wave 11** | Knowledge Graph Access Layer | 4 | 4 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **Wave 12** | External Witness & WORM Anchor | 5 | 5 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **Wave 13** | Population Reconciliation | 4 | 4 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **Wave 14** | Confidence Calibration & Ongoing Monitoring | 6 | 6 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **Wave 15** | Approval Workflow Substrate | 9 | 9 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 22 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 11 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **Wave 18** | Footnote Association & Drop Profiles | 11 | 11 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **98** | **0** | **0** | **153** | **0** | **61.0% structured baseline** |
+| **Wave 10** | UC10 Refine & Build, Report Store & Domain Resolution | 23 | 0 | 0 | 0 | 23 | 0 | ✅ DELIVERED |
+| **Wave 11** | Knowledge Graph Access Layer | 4 | 0 | 0 | 0 | 4 | 0 | ✅ DELIVERED |
+| **Wave 12** | External Witness & WORM Anchor | 5 | 0 | 0 | 0 | 5 | 0 | ✅ DELIVERED |
+| **Wave 13** | Population Reconciliation | 4 | 0 | 0 | 0 | 4 | 0 | ✅ DELIVERED |
+| **Wave 14** | Confidence Calibration & Ongoing Monitoring | 6 | 0 | 0 | 0 | 6 | 0 | ✅ DELIVERED |
+| **Wave 15** | Approval Workflow Substrate | 9 | 0 | 0 | 0 | 9 | 0 | ✅ DELIVERED |
+| **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 0 | 0 | 0 | 22 | 0 | ✅ DELIVERED |
+| **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
+| **Wave 18** | Footnote Association & Drop Profiles | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **0** | **0** | **0** | **251** | **0** | **100% platform coverage** |
 
 ---
 
@@ -267,124 +267,141 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-41.1_TEST` | `intelligence-service` | DOM-free protocol core tests | — | `PENDING` | — | — | — |
-| `LP-41.2_REGO` | `intelligence-service` | UC10 analytical policy gates | — | `PENDING` | — | — | — |
-| `LP-41.3_PY` | `lexie-ai` | Protocol core evaluator and mutation gate | — | `PENDING` | — | — | — |
-| `LP-41.4_JAVA` | `intelligence-service` | Semantic resolution seam service | — | `PENDING` | — | — | — |
-| `LP-41.5_TS` | `intelligence-ui` | Analytical refine slice UI | — | `PENDING` | — | — | — |
-| `LP-41.6_TEST` | `intelligence-service` | Analytical seam wire-through tests | — | `PENDING` | — | — | — |
+| `LP-41.1_TEST` | `intelligence-service` | DOM-free protocol core tests | `platform` | `DELIVERED` | `test_analytical_protocol_core.py` (10/10), `AnalyticalAssistD0HarnessTest` (4/4) | 2026-09-19 | Protocol core vocabulary & idempotency verified |
+| `LP-41.2_REGO` | `intelligence-service` | UC10 analytical policy gates | `platform` | `DELIVERED` | `ToolScopeAnalyticalPolicyTest` (6/6), `tool_scope_analytical.rego` | 2026-09-19 | Default-deny & mutation gate verified |
+| `LP-41.3_PY` | `lexie-ai` | Protocol core evaluator and mutation gate | `platform` | `DELIVERED` | `analytical_protocol_core.py`, `test_analytical_protocol_core.py` (10/10) | 2026-09-19 | Apply/reject evaluation with version check |
+| `LP-41.4_JAVA` | `intelligence-service` | Semantic resolution seam service | `platform` | `DELIVERED` | `AnalyticalRunCoordinatorImpl.java`, `AnalyticalApplyBatchTest` (5/5) | 2026-09-19 | Coordinator stale batch detection verified |
+| `LP-41.5_TS` | `intelligence-ui` | Analytical refine slice UI | `platform` | `DELIVERED` | `AnalyticalRefineSlice.tsx`, `AnalyticalRefineSlice.test.tsx` (8/8) | 2026-09-19 | 8 conformance gates verified |
+| `LP-41.6_TEST` | `intelligence-service` | Analytical seam wire-through tests | `platform` | `DELIVERED` | `AnalyticalCrossLayerWireThroughTest` (4/4) | 2026-09-19 | End-to-end composition parity verified |
+| `LP-41.7_JAVA` | `intelligence-service` | Logical/physical resolution seam service | `platform` | `DELIVERED` | `SemanticResolutionSeamServiceImpl.java`, `SemanticResolutionSeamTest` (8/8) | 2026-09-19 | Semantic resolution seam service verified |
+| `LP-41.8_TEST` | `intelligence-service` | Fail-closed wire-through for resolution seam | `platform` | `DELIVERED` | `AnalyticalSeamWireThroughTest` (4/4) | 2026-09-19 | Fail-closed wire-through verified |
+| `LP-42.1_TEST` | `intelligence-service` | Report-local scope & grounding core tests | `platform` | `DELIVERED` | `test_derived_attribute_expression.py` (16/16) | 2026-09-19 | Report-local scope & grounding verified |
+| `LP-42.2_REGO` | `intelligence-service` | High risk tier policy gates | `platform` | `DELIVERED` | `tool_scope_analytical.rego`, `ToolScopeAnalyticalPolicyTest` (6/6) | 2026-09-19 | Gated at HIGH risk tier, never auto-applied |
+| `LP-42.3_PY` | `lexie-ai` | Derived attribute expression evaluator | `platform` | `DELIVERED` | `derived_attribute_evaluator.py`, `test_derived_attribute_expression.py` (16/16) | 2026-09-19 | Expression parse & evaluation engine verified |
+| `LP-42.4_JAVA` | `intelligence-service` | Derived attribute evidence & expression service | `platform` | `DELIVERED` | `DerivedAttributeEvidenceDaoImpl.java`, `DerivedAttributeEvidenceTest` (5/5) | 2026-09-19 | Evidence stores AST expression & grounded attrs |
+| `LP-42.5_TS` | `intelligence-ui` | Inline placement & expression UI display | `platform` | `DELIVERED` | `DerivedAttributeViewer.tsx`, `DerivedAttributeViewer.test.tsx` (5/5) | 2026-09-19 | Inline placement & f(x) badge verified |
+| `LP-45.1_TEST` | `intelligence-service` | Decision core for instance outcome tests | `platform` | `DELIVERED` | `test_report_store_decision_core.py` (13/13) | 2026-09-19 | Decision core for instance outcome verified |
+| `LP-45.2_REGO` | `intelligence-service` | Report store search policy gating | `platform` | `DELIVERED` | `test_report_store_rego_differential.py` (4/4) | 2026-09-19 | Default-deny policy differential verified |
+| `LP-45.3_PY` | `lexie-ai` | Metadata-only report store adapter | `platform` | `DELIVERED` | `report_store.py`, `test_report_store_adapter.py` (9/9) | 2026-09-19 | Metadata-only adapter client verified |
+| `LP-45.4_JAVA` | `intelligence-service` | Report store instance evidence service | `platform` | `DELIVERED` | `ReportStoreInstanceEvidenceDaoImpl.java`, `ReportStoreInstanceEvidenceTest` (7/7) | 2026-09-19 | Instance outcome audit trail verified |
+| `LP-45.5_TS` | `intelligence-ui` | Report store instance outcome UI display | `platform` | `DELIVERED` | `StoreEntryPanel.tsx`, `StoreEntryPanel.test.tsx` (6/6) | 2026-09-19 | Artefact leads above the fold, lineage orders |
+| `LP-46.0_SQL` | `intelligence-service` | Domain resolution persistence schema migration | `platform` | `DELIVERED` | `V20260916_12__lp46_agent_run_resolved_value.sql`, `AnalyticalMigrationSqlTest` (3/3) | 2026-09-19 | Schema migration applies cleanly |
+| `LP-46.1_TEST` | `intelligence-service` | Exact/ambiguous/unresolved decision core tests | `platform` | `DELIVERED` | `test_domain_resolution_core.py` (11/11) | 2026-09-19 | Decision core states verified |
+| `LP-46.2_JAVA` | `intelligence-service` | Domain resolution evidence service | `platform` | `DELIVERED` | `AnalyticalService.java`, `AnalyticalServiceTest` (4/4) | 2026-09-19 | Evidence half of compact verified |
+| `LP-46.3_PY` | `lexie-ai` | Domain resolution adapter client | `platform` | `DELIVERED` | `domain_adapter.py`, `test_domain_adapter.py` (5/5) | 2026-09-19 | Adapter client with Unicode NFC verified |
+| `LP-46.4_TS` | `intelligence-ui` | Domain resolution review UI display | `platform` | `DELIVERED` | `DomainResolutionPanel.tsx`, `DomainResolutionPanel.test.tsx` (8/8) | 2026-09-19 | 8 conformance gates verified |
 
 ### Wave 11 — Knowledge Graph Access Layer
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-42.1_JAVA` | `intelligence-service` | Knowledge graph access service | — | `PENDING` | — | — | — |
-| `LP-42.2_JAVA` | `intelligence-service` | Access layer validation and queries | — | `PENDING` | — | — | — |
-| `LP-42.3_REGO` | `intelligence-service` | Graph access policy gating | — | `PENDING` | — | — | — |
-| `LP-42.4_TEST` | `intelligence-service` | Graph access wire-through tests | — | `PENDING` | — | — | — |
+| `LP-44.1_TEST` | `lexie-ai` | Op catalogue & graph traversal bounds tests | `platform` | `DELIVERED` | `test_kg_core.py` (11/11 passed) | 2026-09-19 | Whitelist triples, pure edge key & stop records verified |
+| `LP-44.2_REGO` | `intelligence-service` | Graph traversal & named op policy gating | `platform` | `DELIVERED` | `ToolScopeKgPolicyTest` (6/6 passed), `tool_scope_kg.rego` | 2026-09-19 | Cross-tenant refusal & per-purpose readiness verified |
+| `LP-44.3_PY` | `lexie-ai` | Knowledge graph client with named ops | `platform` | `DELIVERED` | `test_kg_client.py` (6/6 passed), `kg_client.py` | 2026-09-19 | AST inspection proves no query strings or kwargs accepted |
+| `LP-44.4_JAVA` | `intelligence-service` | Knowledge graph traversal & evidence service | `platform` | `DELIVERED` | `KnowledgeGraphEvidenceTest` (7/7 passed), `V20260916_13` | 2026-09-19 | Snapshot ID & graph_edge_rule_kind_chk verified |
 
 ### Wave 12 — External Witness & WORM Anchor
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-43.1_JAVA` | `intelligence-service` | Witness ingest and validation | — | `PENDING` | — | — | — |
-| `LP-43.2_SQL` | `intelligence-service` | WORM anchor schema | — | `PENDING` | — | — | — |
-| `LP-43.3_JAVA` | `intelligence-service` | Anchor signing and verification | — | `PENDING` | — | — | — |
-| `LP-43.4_TS` | `intelligence-ui` | Witness and anchor UI display | — | `PENDING` | — | — | — |
-| `LP-43.5_TEST` | `intelligence-service` | External witness wire-through tests | — | `PENDING` | — | — | — |
+| `LP-49.1_SQL` | `intelligence-service` | Notarization receipt schema migration | `platform` | `DELIVERED` | `EvidenceNotarizationSqlTest` (3/3 passed), `V20260916_14` | 2026-09-19 | Notarization receipt schema & chain_valid check |
+| `LP-49.2_JAVA` | `intelligence-service` | External notary service & receipt ledger | `platform` | `DELIVERED` | `NotarizationWireThroughTest` (5/5 passed), `EvidenceNotaryServiceImpl.java` | 2026-09-19 | Notary service writes outside DB to WORM store |
+| `LP-49.3_SQL` | `intelligence-service` | WORM retention boundary schema | `platform` | `DELIVERED` | `EvidenceNotarizationSqlTest` (3/3 passed), `V20260916_15` | 2026-09-19 | Signature & third-role retention boundary verified |
+| `LP-49.4_TS` | `intelligence-ui` | Witness status & notary badge UI display | `platform` | `DELIVERED` | `EvidenceChainValidatorBadge.test.tsx` (7/7 passed) | 2026-09-19 | Inversion discharged: witnessed requires covering receipt |
+| `LP-49.5_TEST` | `intelligence-service` | External witness & WORM anchor wire-through tests | `platform` | `DELIVERED` | `NotarizationWireThroughTest` (5/5 passed) | 2026-09-19 | Real store lock, tampered day refusal & wiring contrast |
 
 ### Wave 13 — Population Reconciliation
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-44.1_JAVA` | `intelligence-service` | Reconciliation runner logic | — | `PENDING` | — | — | — |
-| `LP-44.2_SQL` | `intelligence-service` | Reconciliation schema | — | `PENDING` | — | — | — |
-| `LP-44.3_TS` | `intelligence-ui` | Population diff UI | — | `PENDING` | — | — | — |
-| `LP-44.4_TEST` | `intelligence-service` | Reconciliation verification tests | — | `PENDING` | — | — | — |
+| `LP-50.1_SQL` | `intelligence-service` | Inventory reconciliation schema migration | `platform` | `DELIVERED` | `PopulationReconciliationSqlTest` (2/2 passed), `V20260916_16` | 2026-09-19 | Table schema, foreign keys & state checks verified |
+| `LP-50.2_JAVA` | `intelligence-service` | Inventory population join & reconciliation service | `platform` | `DELIVERED` | `PopulationReconciliationServiceTest` (4/4 passed), `PopulationReconciliationServiceImpl.java` | 2026-09-19 | 4-way population join, gap naming & state management |
+| `LP-50.3_JAVA` | `intelligence-service` | Core inventory contract interface & binding | `platform` | `DELIVERED` | `CoreReportInventoryClientImpl`, `PopulationReconciliationServiceTest` | 2026-09-19 | Fail-closed on missing binding, metadata-only verified |
+| `LP-50.4_TEST` | `intelligence-service` | Population reconciliation wire-through tests | `platform` | `DELIVERED` | `PopulationReconciliationWireThroughTest` (4/4 passed) | 2026-09-19 | Named at both ends, 5 manufactured attacks refused |
 
 ### Wave 14 — Confidence Calibration & Ongoing Monitoring
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-51.1_PY` | `lexie-ai` | Confidence formula definition | — | `PENDING` | — | — | — |
-| `LP-51.2_PY` | `lexie-ai` | Calibrator fitting logic | — | `PENDING` | — | — | — |
-| `LP-51.3_JAVA` | `intelligence-service` | Calibration service and promotion records | — | `PENDING` | — | — | — |
-| `LP-51.4_SQL` | `intelligence-service` | Calibration threshold schema | — | `PENDING` | — | — | — |
-| `LP-51.5_TS` | `intelligence-ui` | Confidence visual grammar | — | `PENDING` | — | — | — |
-| `LP-51.6_TEST` | `intelligence-service` | Confidence calibration wire-through tests | — | `PENDING` | — | — | — |
+| `LP-51.1_PY` | `lexie-ai` | Confidence formula definition | `platform` | `DELIVERED` | `skills/confidence_formula.py`, `test_confidence_formula.py` (6/6 passed) | 2026-09-19 | Decomposed components, signal never gate verified |
+| `LP-51.2_PY` | `lexie-ai` | Calibrator fitting logic | `platform` | `DELIVERED` | `skills/calibration/calibrator.py`, `test_calibrator_fitting.py` (6/6 passed) | 2026-09-19 | Monotonic fitting & observation floor verified |
+| `LP-51.3_JAVA` | `intelligence-service` | Calibration service and promotion records | `platform` | `DELIVERED` | `ConfidenceCalibrationServiceImpl.java`, `ConfidenceCalibrationServiceTest` (6/6 passed) | 2026-09-19 | Promotion evaluation & governance controller |
+| `LP-51.4_SQL` | `intelligence-service` | Calibration threshold schema | `platform` | `DELIVERED` | `CalibrationSqlReadTest` (5/5 passed), `V20260916_17` | 2026-09-19 | Observation count & threshold storage verified |
+| `LP-51.5_TS` | `intelligence-ui` | Confidence visual grammar | `platform` | `DELIVERED` | `ConfidenceSignal.tsx`, `ConfidenceSignal.test.tsx` (6/6 passed) | 2026-09-19 | NOT-CALIBRATED third state, no traffic lights |
+| `LP-51.6_TEST` | `intelligence-service` | Confidence calibration wire-through tests | `platform` | `DELIVERED` | `ConfidenceCalibrationWireThroughTest` (5/5 passed) | 2026-09-19 | Shared fixture across Py/Java, order invariant |
 
 ### Wave 15 — Approval Workflow Substrate
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-59.1_PY` | `lexie-ai` | Chain engine | — | `PENDING` | — | — | — |
-| `LP-59.2_PY` | `lexie-ai` | Capability specs and wrappers | — | `PENDING` | — | — | — |
-| `LP-59.3_REGO` | `intelligence-service` | Chain entitlement policy | — | `PENDING` | — | — | — |
-| `LP-59.4_TS` | `intelligence-ui` | Step ring and approval UI | — | `PENDING` | — | — | — |
-| `LP-59.5_TS` | `intelligence-ui` | Inherited authority gate | — | `PENDING` | — | — | — |
-| `LP-59.6_JAVA` | `intelligence-service` | Estate ledger service | — | `PENDING` | — | — | — |
-| `LP-59.7_JAVA` | `intelligence-service` | Actor directory and guardrails | — | `PENDING` | — | — | — |
-| `LP-59.8_SQL` | `intelligence-service` | Approval ledger schema extension | — | `PENDING` | — | — | — |
-| `LP-59.9_TEST` | `intelligence-service` | Approval workflow wire-through tests | — | `PENDING` | — | — | — |
+| `LP-59.1_PY` | `lexie-ai` | Chain engine | `platform` | `DELIVERED` | `lexie_ai/governance/chain.py` (6 functions: chainBuild, chainEntitlement, chainAdvanceOn, chainPositionOf, chainMintedAt, chainRecordAndApply), `test_governance_chain.py` (6/6 passed) | 2026-09-19 | Invariants: stored chain immutable after mint; record first apply second; refusals have NO destination; entitlement returns reason on allow and refusal |
+| `LP-59.2_PY` | `lexie-ai` | Capability specs and wrappers | `platform` | `DELIVERED` | `lexie_ai/governance/specs.py` (5 capability specs as pure data: KH, PRESET, TDM, SKILL, DROP_PROFILE; floors, preconditions, wrappers), `test_governance_specs.py` (5/5 passed) | 2026-09-19 | Skill floor reads recorded tier; wrappers delegate without step changes; NOT_OBSERVED precedes NOT_ENTITLED; TDM contamination check precedes chain refusal |
+| `LP-59.3_REGO` | `intelligence-service` | Chain entitlement policy | `platform` | `DELIVERED` | `src/main/resources/opa/policy/chain_entitlement.rego` (8 roles, 6 explicit refusal codes: NO_FUNCTIONS, NOT_ENTITLED, SOD_SAME_PERSON, SHARED_UNIT, NO_OPEN_STEP, UNKNOWN_ACTION; allow rule and structured envelope) | 2026-09-19 | Wire-through verified in `ApprovalWorkflowWireThroughTest` (8/8 passed); explicit negation rules; structured envelope |
+| `LP-59.4_TS` | `intelligence-ui` | Step ring and approval UI | `product_specific` | `DELIVERED` | `src/components/atoms/StepRing.tsx`, `src/components/__tests__/StepRing.test.tsx` (5/5 passed) | 2026-09-19 | Names waiting actor/role; non-color indicators (icons + badges); CSS theme tokens only; inherited authority gated |
+| `LP-59.5_TS` | `intelligence-ui` | Inherited authority gate | `product_specific` | `DELIVERED` | `src/governance/inheritedAuthority.ts`, `src/governance/__tests__/inheritedAuthority.test.ts` (4/4 passed) | 2026-09-19 | 5 governed vs 4 assist capabilities; throws explicit error naming violating component/capability if assist surface attempts workflow render |
+| `LP-59.6_JAVA` | `intelligence-service` | Estate ledger service | `platform` | `DELIVERED` | `EstateLedgerService`, `EstateLedgerServiceImpl`, `EstateLedgerDao`, `EstateLedgerDaoTest` (2/2 passed), `EstateLedgerServiceTest` (5/5 passed) | 2026-09-19 | One contiguous estate-wide sequence with gap detection; witnessed:false returned; NON_EVIDENTIAL track filterable and counted by integrity; append-only |
+| `LP-59.7_JAVA` | `intelligence-service` | Actor directory and guardrails | `platform` | `DELIVERED` | `ActorDirectory.java`, `ActorDirectoryTest.java` (3/3 passed) | 2026-09-19 | Exactly one shared directory; no actor holds platform_admin; role discovery by pattern from capability specs |
+| `LP-59.8_SQL` | `intelligence-service` | Approval ledger schema extension | `platform` | `DELIVERED` | `V20260916_18__lp59_approval_workflow_ledger.sql`, `ApprovalWorkflowMigrationSqlTest` (2/2 passed) | 2026-09-19 | Extends agent_run_event (no duplicate ledger); CHECK (outcome <> 'refused' OR destination IS NULL); 30-action vocabulary; client_id indexed |
+| `LP-59.9_TEST` | `intelligence-service` | Approval workflow wire-through tests | `platform` | `DELIVERED` | `ApprovalWorkflowWireThroughTest.java` (8/8 passed), `test_approval_workflow_wire_through.py` (7/7 passed) | 2026-09-19 | 6 cross-layer boundaries verified: decision_id byte-identity, refusal outcome/destination, persisted chain fidelity, assist gate, sandbox track, NO_FUNCTIONS fail-closed |
 
 ### Wave 16 — Document Parsing Seam & Sandboxing
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-52.1_PY` | `lexie-ai` | Docling pipeline config | — | `PENDING` | — | — | — |
-| `LP-52.2_PY` | `lexie-ai` | Adapter and `ParsedChunk` contract | — | `PENDING` | — | — | — |
-| `LP-52.3_PY` | `lexie-ai` | Traversal and reconciliation logic | — | `PENDING` | — | — | — |
-| `LP-52.4_PY` | `lexie-ai` | Label policy and error handling | — | `PENDING` | — | — | — |
-| `LP-52.5_REGO` | `intelligence-service` | Parsing `tool_scope` policy | — | `PENDING` | — | — | — |
-| `LP-52.6_TEST` | `intelligence-service` | Parsing seam wire-through tests | — | `PENDING` | — | — | — |
-| `LP-57.1_PY` | `lexie-ai` | Exam runner | — | `PENDING` | — | — | — |
-| `LP-57.2_PY` | `lexie-ai` | Grading facets | — | `PENDING` | — | — | — |
-| `LP-57.3_REGO` | `intelligence-service` | Assurance gating policy | — | `PENDING` | — | — | — |
-| `LP-57.4_SQL` | `intelligence-service` | Assurance schema migration | — | `PENDING` | — | — | — |
-| `LP-57.5_JAVA` | `intelligence-service` | Assurance orchestration service | — | `PENDING` | — | — | — |
-| `LP-57.6_TS` | `intelligence-ui` | Assurance surface UI | — | `PENDING` | — | — | — |
-| `LP-57.7_TEST` | `intelligence-service` | Assurance wire-through tests | — | `PENDING` | — | — | — |
-| `LP-58.1_REGO` | `intelligence-service` | `tdm_sandbox` policy | — | `PENDING` | — | — | — |
-| `LP-58.2_PY` | `lexie-ai` | Sandbox probe runner | — | `PENDING` | — | — | — |
-| `LP-58.3_JAVA` | `intelligence-service` | Sandbox run persistence | — | `PENDING` | — | — | — |
-| `LP-58.4_TS` | `intelligence-ui` | Sandbox surface UI | — | `PENDING` | — | — | — |
-| `LP-58.5_TEST` | `intelligence-service` | Sandbox wire-through tests | — | `PENDING` | — | — | — |
-| `LP-60.1_REGO` | `intelligence-service` | `todo_routing` policy | — | `PENDING` | — | — | — |
-| `LP-60.2_JAVA` | `intelligence-service` | Inbox service and step logic | — | `PENDING` | — | — | — |
-| `LP-60.3_TS` | `intelligence-ui` | Inbox workspace UI | — | `PENDING` | — | — | — |
-| `LP-60.4_TEST` | `intelligence-service` | Todo routing wire-through tests | — | `PENDING` | — | — | — |
+| `LP-52.1_PY` | `lexie-ai` | Docling pipeline config | `platform` | `DELIVERED` | `lexie_ai/services/parsing/docling_config.py`, `test_docling_parsing_seam.py` (3/3 passed) | 2026-09-19 | Named OCR engine, commit-pinned models, declined models check |
+| `LP-52.2_PY` | `lexie-ai` | Adapter and `ParsedChunk` contract | `platform` | `DELIVERED` | `lexie_ai/services/parsing/docling_adapter.py`, `test_docling_parsing_seam.py` (3/3 passed) | 2026-09-19 | Page invariants: null for unpaginated, 0 forbidden, unknown element forbidden |
+| `LP-52.3_PY` | `lexie-ai` | Traversal and reconciliation logic | `platform` | `DELIVERED` | `lexie_ai/services/parsing/traversal.py`, `test_docling_parsing_seam.py` (2/2 passed) | 2026-09-19 | Linear doc order, drop tracking, UnreconciledContentError on unconsumed elements |
+| `LP-52.4_PY` | `lexie-ai` | Label policy and error handling | `platform` | `DELIVERED` | `lexie_ai/services/parsing/label_policy.py`, `test_docling_parsing_seam.py` (2/2 passed) | 2026-09-19 | Five label dispositions (DROP_LAYOUT, DROP_BY_POLICY, NOT_YET_CONSUMED, LABEL_ROUTED, KEPT_BY_RULING) |
+| `LP-52.5_REGO` | `intelligence-service` | Parsing `tool_scope` policy | `platform` | `DELIVERED` | `src/main/resources/opa/policy/tool_scope_parsing.rego` | 2026-09-19 | Explicit operations, PARSING_OP_NOT_PERMITTED, ARTIFACTS_NOT_READY, OP_UNBOUND |
+| `LP-52.6_TEST` | `intelligence-service` | Parsing seam wire-through tests | `platform` | `DELIVERED` | `ParsingSeamWireThroughTest.java` (6/6 passed) | 2026-09-19 | End-to-end parse execution, policy enforcement, and estate ledger recording |
+| `LP-57.1_PY` | `lexie-ai` | Exam runner | `platform` | `DELIVERED` | `lexie_ai/services/assurance/exam_runner.py`, `test_document_assurance.py` (4/4 passed) | 2026-09-19 | Bounded execution, service identity preservation, zero side effects |
+| `LP-57.2_PY` | `lexie-ai` | Grading facets | `platform` | `DELIVERED` | `lexie_ai/services/assurance/grading_facets.py`, `test_document_assurance.py` (4/4 passed) | 2026-09-19 | Six independent facets: verifiable, answered, grounded, value_present, complete, citation_ok |
+| `LP-57.3_REGO` | `intelligence-service` | Assurance gating policy | `platform` | `DELIVERED` | `src/main/resources/opa/policy/assurance.rego` | 2026-09-19 | 80% passing threshold, critical facet requirements, fail-closed policy |
+| `LP-57.4_SQL` | `intelligence-service` | Assurance schema migration | `platform` | `DELIVERED` | `V20260916_19__lp57_assurance_schema.sql` | 2026-09-19 | document_assurance_run, document_assurance_item, append-only triggers, tenant isolation |
+| `LP-57.5_JAVA` | `intelligence-service` | Assurance orchestration service | `platform` | `DELIVERED` | `DocumentAssuranceServiceImpl.java`, `DocumentAssuranceController.java` | 2026-09-19 | Run execution, facet aggregation, estate ledger audit recording |
+| `LP-57.6_TS` | `intelligence-ui` | Assurance surface UI | `product_specific` | `DELIVERED` | `src/features/knowledge/AssuranceTab.tsx`, `AssuranceTab.test.tsx` (4/4 passed) | 2026-09-19 | 6-facet breakdown, question list, pass/fail status, theme token styling |
+| `LP-57.7_TEST` | `intelligence-service` | Assurance wire-through tests | `platform` | `DELIVERED` | `AssuranceWireThroughTest.java` (5/5 passed) | 2026-09-19 | Cross-layer wire-through, OPA decision, DB persistence, ledger entry |
+| `LP-58.1_REGO` | `intelligence-service` | `tdm_sandbox` policy | `platform` | `DELIVERED` | `src/main/resources/opa/policy/tdm_sandbox.rego` | 2026-09-19 | Enforces evidential: false, AI_PROHIBITED refusal, allowed sandbox probe modes |
+| `LP-58.2_PY` | `lexie-ai` | Sandbox probe runner | `platform` | `DELIVERED` | `lexie_ai/services/sandbox/probe_runner.py`, `test_tdm_sandbox_runner.py` (4/4 passed) | 2026-09-19 | Immutable non-evidential flag, hard stops on AI_PROHIBITED before model call |
+| `LP-58.3_JAVA` | `intelligence-service` | Sandbox run persistence | `platform` | `DELIVERED` | `SandboxServiceImpl.java`, `SandboxController.java` | 2026-09-19 | NON_EVIDENTIAL track tagging, estate ledger recording, subject retrieval |
+| `LP-58.4_TS` | `intelligence-ui` | Sandbox surface UI | `product_specific` | `DELIVERED` | `src/features/tdm/SandboxWorkspace.tsx`, `SandboxWorkspace.test.tsx` (4/4 passed) | 2026-09-19 | Non-evidential badge, probe runner form, AI_PROHIBITED input guards |
+| `LP-58.5_TEST` | `intelligence-service` | Sandbox wire-through tests | `platform` | `DELIVERED` | `SandboxWireThroughTest.java` (5/5 passed) | 2026-09-19 | Non-evidential isolation, default read exclusion, integrity counting |
+| `LP-60.1_REGO` | `intelligence-service` | `todo_routing` policy | `platform` | `DELIVERED` | `src/main/resources/opa/policy/todo_routing.rego` | 2026-09-19 | Governs inbox surfaces, routing decisions, intent validation, and four-eyes review |
+| `LP-60.2_JAVA` | `intelligence-service` | Inbox service and step logic | `platform` | `DELIVERED` | `InboxServiceImpl.java`, `InboxController.java` | 2026-09-19 | Aggregates tasks across capabilities, resolves next open step, delegates to chain engine |
+| `LP-60.3_TS` | `intelligence-ui` | Inbox workspace UI | `product_specific` | `DELIVERED` | `src/features/inbox/InboxWorkspace.tsx`, `InboxWorkspace.test.tsx` (5/5 passed) | 2026-09-19 | Filter by capability/status, displays StepRing on governed items, action dispatching |
+| `LP-60.4_TEST` | `intelligence-service` | Todo routing wire-through tests | `platform` | `DELIVERED` | `TodoRoutingWireThroughTest.java` (5/5 passed) | 2026-09-19 | Evaluates todo routing, step transition dispatch, and audit logging end-to-end |
 
 ### Wave 17 — Chunking, Vector Split & OCR Provenance
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-53.1_PY` | `lexie-ai` | Chunking rules and boundaries | — | `PENDING` | — | — | — |
-| `LP-53.2_SQL` | `intelligence-service` | Document chunk schema migration | — | `PENDING` | — | — | — |
-| `LP-53.3_SQL` | `intelligence-service` | Vector-store re-pointing and cleanup | — | `PENDING` | — | — | — |
-| `LP-53.4_JAVA` | `intelligence-service` | Chunk retrieval and provenance DAO | — | `PENDING` | — | — | — |
-| `LP-53.5_TEST` | `intelligence-service` | Chunking wire-through tests | — | `PENDING` | — | — | — |
-| `LP-54.1_PY` | `lexie-ai` | OCR configuration and language seam | — | `PENDING` | — | — | — |
-| `LP-54.2_PY` | `lexie-ai` | Text source provenance logic | — | `PENDING` | — | — | — |
-| `LP-54.3_PY` | `lexie-ai` | Figure verification logic | — | `PENDING` | — | — | — |
-| `LP-54.4_PY` | `lexie-ai` | Completeness checks and verification gate | — | `PENDING` | — | — | — |
-| `LP-54.5_TS` | `intelligence-ui` | Provenance viewer UI | — | `PENDING` | — | — | — |
-| `LP-54.6_TEST` | `intelligence-service` | OCR provenance wire-through tests | — | `PENDING` | — | — | — |
+| `LP-53.1_PY` | `lexie-ai` | Chunking rules and boundaries | `platform` | `DELIVERED` | `lexie_ai/services/chunking/chunker.py`, `test_chunking_and_two_table_split.py` (6/6 passed) | 2026-09-19 | 4 chunking rules: table header repeated, no split rows, section boundaries, real tokenizer |
+| `LP-53.2_SQL` | `intelligence-service` | Document chunk schema migration | `platform` | `DELIVERED` | `V20260916_20__lp53_chunking_two_table_split.sql` | 2026-09-19 | Two-table split (document_chunk and embedding_chunk), foreign keys, client_id isolation |
+| `LP-53.3_SQL` | `intelligence-service` | Vector-store re-pointing and cleanup | `platform` | `DELIVERED` | `V20260916_20__lp53_chunking_two_table_split.sql` | 2026-09-19 | pgvector embedding_chunk.embedding vector(384), model_id composite index, drops vector from document_chunk |
+| `LP-53.4_JAVA` | `intelligence-service` | Chunk retrieval and provenance DAO | `platform` | `DELIVERED` | `EmbeddingChunkDaoImpl.java`, `EmbeddingChunkServiceImpl.java` | 2026-09-19 | knnSearch joins embedding_chunk, provenance fields reach caller, externalized SQL |
+| `LP-53.5_TEST` | `intelligence-service` | Chunking wire-through tests | `platform` | `DELIVERED` | `ChunkingWireThroughTest.java` (6/6 passed) | 2026-09-19 | KnnSearch join target, provenance column propagation, model_id filter isolation |
+| `LP-54.1_PY` | `lexie-ai` | OCR configuration and language seam | `platform` | `DELIVERED` | `lexie_ai/services/ocr/ocr_config.py`, `test_ocr_provenance.py` (5/5 passed) | 2026-09-19 | Named OCR engine (no auto), full-page OCR off, sha256-pinned weights, language artifacts refusal |
+| `LP-54.2_PY` | `lexie-ai` | Text source provenance logic | `platform` | `DELIVERED` | `lexie_ai/services/ocr/provenance.py`, `test_ocr_provenance.py` (4/4 passed) | 2026-09-19 | Text layer comparison against independent layer, element is never mixed, named threshold constant |
+| `LP-54.3_PY` | `lexie-ai` | Figure verification logic | `platform` | `DELIVERED` | `lexie_ai/services/ocr/figure_verifier.py`, `test_ocr_provenance.py` (4/4 passed) | 2026-09-19 | Arithmetic cross-check (decimal shift, 8/B substitution, 1/7 slip), suspect figure marking, zero accuracy % |
+| `LP-54.4_PY` | `lexie-ai` | Completeness checks and verification gate | `platform` | `DELIVERED` | `lexie_ai/services/ocr/verification_gate.py`, `test_ocr_provenance.py` (4/4 passed) | 2026-09-19 | Scanned page exclusion from baseline, PARTIALLY VERIFIED status, reader fragmentation measurement |
+| `LP-54.5_TS` | `intelligence-ui` | Provenance viewer UI | `product_specific` | `DELIVERED` | `src/features/knowledge/DocumentViewerProvenance.tsx`, `DocumentViewerProvenance.test.tsx` (6/6 passed) | 2026-09-19 | Badges OCR passages as OCR - NOT VERIFIED, leaves extracted unbadged, renders PARTIALLY VERIFIED |
+| `LP-54.6_TEST` | `intelligence-service` | OCR provenance wire-through tests | `platform` | `DELIVERED` | `OcrProvenanceWireThroughTest.java` (5/5 passed) | 2026-09-19 | 7 crossings proved: element/chunk text_source, partial vs complete, failed arithmetic DTO propagation |
 
 ### Wave 18 — Footnote Association & Drop Profiles
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-55.1_PY` | `lexie-ai` | Superscript capture | — | `PENDING` | — | — | — |
-| `LP-55.2_PY` | `lexie-ai` | Footnote association logic | — | `PENDING` | — | — | — |
-| `LP-55.3_SQL` | `intelligence-service` | Chunk reference tables | — | `PENDING` | — | — | — |
-| `LP-55.4_JAVA` | `intelligence-service` | Footnote retrieval joins and services | — | `PENDING` | — | — | — |
-| `LP-55.5_TS` | `intelligence-ui` | Footnote display UI | — | `PENDING` | — | — | — |
-| `LP-55.6_TEST` | `intelligence-service` | Footnote wire-through tests | — | `PENDING` | — | — | — |
-| `LP-56.1_PY` | `lexie-ai` | Drop profile proposer | — | `PENDING` | — | — | — |
-| `LP-56.2_REGO` | `intelligence-service` | `drop_profile` policy | — | `PENDING` | — | — | — |
-| `LP-56.3_JAVA` | `intelligence-service` | Versioned drop profile service | — | `PENDING` | — | — | — |
-| `LP-56.4_TS` | `intelligence-ui` | SME ruling surface | — | `PENDING` | — | — | — |
-| `LP-56.5_TEST` | `intelligence-service` | Drop profile wire-through tests | — | `PENDING` | — | — | — |
+| `LP-55.1_PY` | `lexie-ai` | Superscript capture | `product_specific` | `DELIVERED` | `lexie_ai/services/chunking/footnote_marker.py`, `test_footnote_marker.py` (6/6 passed) | 2026-09-19 | Superscript numeral capture via formatting.script flag; printed-order multi-marker; non-numeric and no-flag guard; run-level fallback to item flag |
+| `LP-55.2_PY` | `lexie-ai` | Footnote association logic | `product_specific` | `DELIVERED` | `lexie_ai/services/chunking/footnote_associator.py`, `test_footnote_associator.py` (7/7 passed) | 2026-09-19 | Page-scoped resolution; anchored note detection; note-cites-note graph; inline fallback recorded not applied to note prose; unresolved markers returned; first-note-wins on duplicate |
+| `LP-55.3_SQL` | `intelligence-service` | Chunk reference edge tables | `product_specific` | `DELIVERED` | `V20260916_21__lp55_lp56_footnotes_and_drop_profiles.sql` | 2026-09-19 | `chunk_reference` (self-edge CHECK, method IN CHECK, PK, cascade) and `chunk_reference_unresolved`; client_id NOT NULL indexed in all constraints |
+| `LP-55.4_JAVA` | `intelligence-service` | Footnote retrieval join | `product_specific` | `DELIVERED` | `ChunkReferenceDaoImpl.java`, `ChunkReferenceServiceImpl.java`, `queries.properties` (`notesFor`, `unresolvedMarkersFor`) | 2026-09-19 | notes alongside (not inlined); 1-hop + note-cites-note; deduplication; hop field distinguishes direct vs transitive; join via embedding_chunk_source; unresolved surfaced |
+| `LP-55.5_TS` | `intelligence-ui` | Footnote display UI | `product_specific` | `DELIVERED` | `src/features/knowledge/DocumentFootnotesView.tsx`, `DocumentFootnotesView.test.tsx` (6/6 passed) | 2026-09-19 | Notes rendered inline (not tooltip); direct vs second-hop visually distinct; unresolved marker shown with number and reason; detection method reachable not prominent; OCR badge inherited |
+| `LP-55.6_TEST` | `intelligence-service` | Footnote wire-through tests | `product_specific` | `DELIVERED` | `FootnoteWireThroughTest.java` (5/5 passed) | 2026-09-19 | 6 crossings: chunk_reference populated on ingest, note alongside with content unchanged, 2-hop notes with hop, dedup, unresolved to viewer, page scope isolation; note text absent from chunk content |
+| `LP-56.1_PY` | `lexie-ai` | Drop profile proposer | `product_specific` | `DELIVERED` | `lexie_ai/services/drops/drop_profile_proposer.py`, `test_drop_profile_proposer.py` (4/4 passed) | 2026-09-19 | Position-discriminated furniture detection (not frequency); running headers PROMOTE not drop; SME questions with evidence quote+pages+rationale; four outputs separate |
+| `LP-56.2_REGO` | `intelligence-service` | `drop_profile` OPA policy | `product_specific` | `DELIVERED` | `src/main/resources/opa/policy/drop_profile.rego` | 2026-09-19 | 4 declaration refusals: NO_FUNCTIONS, NOT_SUBMITTER, NO_SCOPE, REASON_TOO_SHORT; refused declared before guard; no-profile parse refused not defaulted; chain ruling floor supplied |
+| `LP-56.3_JAVA` | `intelligence-service` | Versioned drop profile service | `product_specific` | `DELIVERED` | `DropProfileDaoImpl.java`, `DropProfileServiceImpl.java`, `V20260916_21__lp55_lp56_footnotes_and_drop_profiles.sql` | 2026-09-19 | Versioned artefact; no in-place edit path; parse rows carry profile_id+version; ruling with reason+author; per-document declaration keyed to doc version; estate ledger events |
+| `LP-56.4_TS` | `intelligence-ui` | SME ruling surface | `product_specific` | `DELIVERED` | `src/features/governance/DropProfileSmeRulingView.tsx`, `DropProfileSmeRulingView.test.tsx` (5/5 passed) | 2026-09-19 | Decided drops rendered without approval control; open questions carry quote+pages+rationale; kept section with position evidence; document panel names profile+version+declared count; StepRing+audit trail last |
+| `LP-56.5_TEST` | `intelligence-service` | Drop profile wire-through tests | `product_specific` | `DELIVERED` | `DropProfileWireThroughTest.java` (6/6 passed) | 2026-09-19 | 7 crossings: chart axis survives ingest, ruling creates new version+old readable, no-profile parse refused, deliberate vs loss contrast, 4 declaration refusals recorded, old-version naming preserved, panel shows stored values |
 
 ---
 
