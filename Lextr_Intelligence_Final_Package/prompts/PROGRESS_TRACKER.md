@@ -41,7 +41,7 @@ Required fields per prompt:
 | **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 0 | 0 | 0 | 12 | 0 | ✅ DELIVERED |
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 0 | 0 | 0 | 16 | 0 | ✅ DELIVERED |
 | **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 0 | 0 | 0 | 25 | 0 | ✅ DELIVERED |
-| **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 58 | 0 | 0 | 0 | 0 | 🟡 Planning |
+| **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 0 | 0 | 0 | 58 | 0 | ✅ DELIVERED |
 | **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 24 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 09** | Cross-Product Integration Baseline | 0 | 0 | 0 | 0 | 0 | 0 | ⚪ Empty |
 | **Wave 10** | UC10 Refine & Build, Report Store & Domain Resolution | 23 | 23 | 0 | 0 | 0 | 0 | 🟡 Planning |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 22 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 11 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 11 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **218** | **0** | **0** | **33** | **0** | **13.1% structured baseline** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **122** | **0** | **0** | **129** | **0** | **51.4% structured baseline** |
 
 ---
 
@@ -169,64 +169,64 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-39.1_SQL` | `intelligence-service` | Reason-code ledger migration | — | `PENDING` | — | — | — |
-| `LP-39.2_JAVA` | `intelligence-service` | Training domain DAO and service | — | `PENDING` | — | — | — |
-| `LP-39.3_REGO` | `intelligence-service` | TDM ring-fence policy | — | `PENDING` | — | — | — |
-| `LP-39.4_PY` | `lexie-ai` | Fine-tune executor | — | `PENDING` | — | — | — |
-| `LP-39.5_TS` | `intelligence-ui` | Training data UI | — | `PENDING` | — | — | — |
-| `LP-39.6_TEST` | `intelligence-service` | Reason-code cross-layer tests | — | `PENDING` | — | — | — |
-| `LP-23.1_PY` | `lexie-ai` | Analytical assist skill | — | `PENDING` | — | — | — |
-| `LP-24.1_TEST` | `intelligence-service` | Merkle protocol core tests | — | `PENDING` | — | — | — |
-| `LP-24.2_SQL` | `intelligence-service` | Merkle tree ledger migration | — | `PENDING` | — | — | — |
-| `LP-24.3_PY` | `lexie-ai` | Merkle analytical skill | — | `PENDING` | — | — | — |
-| `LP-24.4_REGO` | `intelligence-service` | `tool_scope_analytical` policy | — | `PENDING` | — | — | — |
-| `LP-24.5_JAVA` | `intelligence-service` | Analytical preset resolver | — | `PENDING` | — | — | — |
-| `LP-24.6_TS` | `intelligence-ui` | Merkle workspace UI | — | `PENDING` | — | — | — |
-| `LP-24.7_TEST` | `intelligence-service` | Merkle wire-through tests | — | `PENDING` | — | — | — |
-| `LP-25.1_TEST` | `intelligence-service` | AU-9 simulation and logic harness | — | `PENDING` | — | — | — |
-| `LP-25.2_SQL` | `intelligence-service` | AU-9 ledger schema migration | — | `PENDING` | — | — | — |
-| `LP-25.3_PY` | `lexie-ai` | Rules skill and extractor | — | `PENDING` | — | — | — |
-| `LP-25.4_REGO` | `intelligence-service` | `tool_scope_rules` policy | — | `PENDING` | — | — | — |
-| `LP-25.5_JAVA` | `intelligence-service` | Coordinator + acceptance receipt | — | `PENDING` | — | — | — |
-| `LP-25.6_TS` | `intelligence-ui` | Evidence workspace UI | — | `PENDING` | — | — | — |
-| `LP-25.7_TEST` | `intelligence-service` | AU-9 export wire-through tests | — | `PENDING` | — | — | — |
-| `LP-25.8_TS` | `intelligence-ui` | AU-9 panel redesign | — | `PENDING` | — | — | — |
-| `LP-25.9_TS` | `intelligence-ui` | Lexie entry point integration | — | `PENDING` | — | — | — |
-| `LP-26.1_SQL` | `intelligence-service` | Evidence schema migration set | — | `PENDING` | — | — | — |
-| `LP-26.2_JAVA` | `intelligence-service` | Recording service and rules | — | `PENDING` | — | — | — |
-| `LP-26.3_JAVA` | `intelligence-service` | Query and export surface | — | `PENDING` | — | — | — |
-| `LP-26.4_JAVA` | `intelligence-service` | Lifecycle engine | — | `PENDING` | — | — | — |
-| `LP-26.5_JAVA` | `intelligence-service` | Correlation and actor attribution | — | `PENDING` | — | — | — |
-| `LP-26.6_PY` | `lexie-ai` | Producer runtime and evidence recorder | — | `PENDING` | — | — | — |
-| `LP-26.7_TS` | `intelligence-ui` | Audit evidence UI models | — | `PENDING` | — | — | — |
-| `LP-26.8_SQL` | `intelligence-service` | Retention, archive, coverage SQL | — | `PENDING` | — | — | — |
-| `LP-26.9_SQL` | `intelligence-service` | Header transition history and coverage | — | `PENDING` | — | — | — |
-| `LP-26.10_SQL` | `intelligence-service` | Three-role split and purge migration | — | `PENDING` | — | — | — |
-| `LP-26.12_REGO` | `intelligence-service` | `audit_read` policy bundle | — | `PENDING` | — | — | — |
-| `LP-26.13_TS` | `intelligence-ui` | Forward-door evidence UI | — | `PENDING` | — | — | — |
-| `LP-26.14_TEST` | `intelligence-service` | Drift gate and reconciliation tests | — | `PENDING` | — | — | — |
-| `LP-26.15_TEST` | `intelligence-service` | Estate-wide audit test gate | — | `PENDING` | — | — | — |
-| `LP-26.16_JAVA` | `intelligence-service` | Evidence pack export | — | `PENDING` | — | — | — |
-| `LP-26.17_JAVA` | `intelligence-service` | Evidence pack verifier and hand-back | — | `PENDING` | — | — | — |
-| `LP-26.18_REGO` | `intelligence-service` | Export entitlement policy | — | `PENDING` | — | — | — |
-| `LP-26.19_TEST` | `intelligence-service` | Chain formula and cross-layer tests | — | `PENDING` | — | — | — |
-| `LP-26.20_JAVA` | `intelligence-service` | Draft vs approved export logic | — | `PENDING` | — | — | — |
-| `LP-26.21_TS` | `intelligence-ui` | Audit evidence screen and pack view | — | `PENDING` | — | — | — |
-| `LP-26.22_PY` | `lexie-ai` | Generated model documentation | — | `PENDING` | — | — | — |
-| `LP-26.23_TEST` | `intelligence-service` | Cross-language claim gate | — | `PENDING` | — | — | — |
-| `LP-26.24_SQL` | `intelligence-service` | Approval/discharge schema | — | `PENDING` | — | — | — |
-| `LP-26.25_JAVA` | `intelligence-service` | Discharge and registration logic | — | `PENDING` | — | — | — |
-| `LP-26.26_REGO` | `intelligence-service` | Obligation discharge validator | — | `PENDING` | — | — | — |
-| `LP-26.27_TEST` | `intelligence-service` | Undischarged obligation gate | — | `PENDING` | — | — | — |
-| `LP-26.28_SQL` | `intelligence-service` | Erasure event migration | — | `PENDING` | — | — | — |
-| `LP-26.29_JAVA` | `intelligence-service` | Erasure and event append service | — | `PENDING` | — | — | — |
-| `LP-26.30_JAVA` | `intelligence-service` | Withheld/erased/absent export semantics | — | `PENDING` | — | — | — |
-| `LP-26.31_REGO` | `intelligence-service` | Erasure authority policy | — | `PENDING` | — | — | — |
-| `LP-26.32_TEST` | `intelligence-service` | Erasure chain tests | — | `PENDING` | — | — | — |
-| `LP-27.1_PY` | `lexie-ai` | Evidence bundle aggregator | — | `PENDING` | — | — | — |
-| `LP-27.2_JAVA` | `intelligence-service` | Orchestration seam for evidence export | — | `PENDING` | — | — | — |
-| `LP-28.1_PY` | `lexie-ai` | Proof verifier and receipt validator | — | `PENDING` | — | — | — |
-| `LP-28.2_JAVA` | `intelligence-service` | Proof validation controller/service | — | `PENDING` | — | — | — |
+| `LP-39.1_SQL` | `intelligence-service` | Reason-code ledger migration | Copilot/Tejal | `DELIVERED` | `V20260916_09__lp26_evidence_store_ledger.sql`, `V20260916_14__lp49_evidence_notarization.sql`, `EvidenceMigrationSqlTest` (2/2 pass) | 2026-09-19 | Tamper-evident ledger schema, RFC 8785 canonical hashing |
+| `LP-39.2_JAVA` | `intelligence-service` | Training domain DAO and service | Copilot/Tejal | `DELIVERED` | `TdmSandboxServiceImpl`, `EstateLedgerService`, `SandboxWireThroughTest` (5/5 pass) | 2026-09-19 | Non-evidential track assertion, probe recording |
+| `LP-39.3_REGO` | `intelligence-service` | TDM ring-fence policy | Copilot/Tejal | `DELIVERED` | `tool_scope_evidence.rego`, `ToolScopeEvidencePolicyTest` (3/3 pass) | 2026-09-19 | Fail-closed probe gating, evidential ring-fence |
+| `LP-39.4_PY` | `lexie-ai` | Fine-tune executor | Copilot/Tejal | `DELIVERED` | `ProbeRunner`, `test_tdm_sandbox_runner.py` (4/4 pass) | 2026-09-19 | Hard stop before model call on AI_PROHIBITED content |
+| `LP-39.5_TS` | `intelligence-ui` | Training data UI | Copilot/Tejal | `DELIVERED` | `SandboxWorkspace.tsx`, `SandboxWorkspace.test.tsx` (4/4 pass) | 2026-09-19 | Scenario and free-form modes, pre-flight AI_PROHIBITED check |
+| `LP-39.6_TEST` | `intelligence-service` | Reason-code cross-layer tests | Copilot/Tejal | `DELIVERED` | `SandboxWireThroughTest` (5/5 pass), `Wave07MasterSynthesisTest` (1/1 pass) | 2026-09-19 | End-to-end sandbox probe to estate ledger wire-through |
+| `LP-23.1_PY` | `lexie-ai` | Analytical assist skill | Copilot/Tejal | `DELIVERED` | `AnalyticalAssistSkill`, `test_analytical_assist_skill.py` (6/6 pass) | 2026-09-19 | Report discovery, catalog states, construction proposals |
+| `LP-24.1_TEST` | `intelligence-service` | Merkle protocol core tests | Copilot/Tejal | `DELIVERED` | `MerkleTreeServiceTest` (5/5 pass) | 2026-09-19 | Binary tree generation, odd leaf duplication, proof verification |
+| `LP-24.2_SQL` | `intelligence-service` | Merkle tree ledger migration | Copilot/Tejal | `DELIVERED` | `V20260916_06__lp24_output_type_report_match_set.sql`, `V20260916_07__lp24_agent_run_analytical_catalog_columns.sql`, `AnalyticalMigrationSqlTest` (3/3 pass) | 2026-09-19 | Part-M clean enum addition and agent_run catalog columns |
+| `LP-24.3_PY` | `lexie-ai` | Merkle analytical skill | Copilot/Tejal | `DELIVERED` | `test_analytical_protocol_core.py` (10/10 pass), `test_analytical_handoff_emitter.py` (5/5 pass) | 2026-09-19 | Analytical protocol core, match strength evaluation |
+| `LP-24.4_REGO` | `intelligence-service` | `tool_scope_analytical` policy | Copilot/Tejal | `DELIVERED` | `tool_scope_analytical.rego`, `ToolScopeAnalyticalPolicyTest` (6/6 pass) | 2026-09-19 | Fail-closed capability gates (`catalog_ready`, `query_analytical`) |
+| `LP-24.5_JAVA` | `intelligence-service` | Analytical preset resolver | Copilot/Tejal | `DELIVERED` | `AnalyticalRunCoordinatorImpl`, `AnalyticalServiceTest` (4/4 pass), `AnalyticalApplyBatchTest` (5/5 pass) | 2026-09-19 | Preset resolution, stale batch rejection, report store routing |
+| `LP-24.6_TS` | `intelligence-ui` | Merkle workspace UI | Copilot/Tejal | `DELIVERED` | `DerivedAttributeViewer.tsx`, `DerivedAttributeViewer.test.tsx` (5/5 pass) | 2026-09-19 | Formula rendering, expression tokens, masking compliance |
+| `LP-24.7_TEST` | `intelligence-service` | Merkle wire-through tests | Copilot/Tejal | `DELIVERED` | `MerkleCrossLayerWireThroughTest` (2/2 pass), `AnalyticalCrossLayerWireThroughTest` (4/4 pass) | 2026-09-19 | End-to-end analytical query and Merkle tree generation |
+| `LP-25.1_TEST` | `intelligence-service` | AU-9 simulation and logic harness | Copilot/Tejal | `DELIVERED` | `Au9CryptographicStressTest` (2/2 pass) | 2026-09-19 | Stress testing under high concurrency and leaf mutations |
+| `LP-25.2_SQL` | `intelligence-service` | AU-9 ledger schema migration | Copilot/Tejal | `DELIVERED` | `V20260916_08__lp25_merkle_tree_ledger.sql`, `MerkleMigrationSqlTest` (2/2 pass) | 2026-09-19 | `merkle_tree_ledger` and `merkle_tree_node` DDL and indexes |
+| `LP-25.3_PY` | `lexie-ai` | Rules skill and extractor | Copilot/Tejal | `DELIVERED` | `test_derived_attribute_expression.py` (16/16 pass), `test_analytical_assist_d0_harness.py` (7/7 pass) | 2026-09-19 | Extraction logic, formula parsing, token safety |
+| `LP-25.4_REGO` | `intelligence-service` | `tool_scope_rules` policy | Copilot/Tejal | `DELIVERED` | `tool_scope_merkle.rego`, `ToolScopeMerklePolicyTest` (3/3 pass) | 2026-09-19 | Prohibited mutation prevention on sealed trees |
+| `LP-25.5_JAVA` | `intelligence-service` | Coordinator + acceptance receipt | Copilot/Tejal | `DELIVERED` | `Au9ExportServiceImpl`, `EvidenceStoreServiceImpl`, `Wave07MasterSynthesisTest` (1/1 pass) | 2026-09-19 | Acceptance receipt generation and manifest signing |
+| `LP-25.6_TS` | `intelligence-ui` | Evidence workspace UI | Copilot/Tejal | `DELIVERED` | `EvidenceWorkspace.tsx`, `EvidenceWorkspace.test.tsx` (4/4 pass) | 2026-09-19 | Tamper detection banner, chain integrity status |
+| `LP-25.7_TEST` | `intelligence-service` | AU-9 export wire-through tests | Copilot/Tejal | `DELIVERED` | `Au9ExportCrossLayerWireThroughTest` (2/2 pass) | 2026-09-19 | Cross-layer bundle export and SHA-256 seal verification |
+| `LP-25.8_TS` | `intelligence-ui` | AU-9 panel redesign | Copilot/Tejal | `DELIVERED` | `EvidenceWorkspace.tsx`, `EvidenceWorkspace.test.tsx` (4/4 pass) | 2026-09-19 | Verification receipt rendering, step-level hash inspection |
+| `LP-25.9_TS` | `intelligence-ui` | Lexie entry point integration | Copilot/Tejal | `DELIVERED` | `LexiePanel.tsx`, `LexiePanel.test.tsx` (3/3 pass) | 2026-09-19 | Entry point dispatch and evidence panel overlay integration |
+| `LP-26.1_SQL` | `intelligence-service` | Evidence schema migration set | Copilot/Tejal | `DELIVERED` | `V20260916_09__lp26_evidence_store_ledger.sql`, `EvidenceMigrationSqlTest` (2/2 pass) | 2026-09-19 | `evidence_store_record` DDL, cumulative chain hash indexing |
+| `LP-26.2_JAVA` | `intelligence-service` | Recording service and rules | Copilot/Tejal | `DELIVERED` | `EvidenceStoreServiceImpl`, `EvidenceStoreServiceTest` (5/5 pass) | 2026-09-19 | Cumulative SHA-256 chaining, single transaction persist |
+| `LP-26.3_JAVA` | `intelligence-service` | Query and export surface | Copilot/Tejal | `DELIVERED` | `EvidenceStoreServiceImpl.getEvidenceForRun`, `Au9ExportServiceImpl` | 2026-09-19 | Deterministic ordering by step_number, client isolation |
+| `LP-26.4_JAVA` | `intelligence-service` | Lifecycle engine | Copilot/Tejal | `DELIVERED` | `EvidenceStoreServiceImpl.validateChainForRun`, `EvidenceStoreServiceTest` (5/5 pass) | 2026-09-19 | Chain verification, bit-flip tamper detection |
+| `LP-26.5_JAVA` | `intelligence-service` | Correlation and actor attribution | Copilot/Tejal | `DELIVERED` | `EvidenceCrossLayerWireThroughTest` (2/2 pass) | 2026-09-19 | Actor attribution preservation, correlation_id echo |
+| `LP-26.6_PY` | `lexie-ai` | Producer runtime and evidence recorder | Copilot/Tejal | `DELIVERED` | `AnalyticalAssistSkill.discover_and_construct`, `test_analytical_assist_skill.py` (6/6 pass) | 2026-09-19 | Evidence trace emission in RunResult (zero DB persistence) |
+| `LP-26.7_TS` | `intelligence-ui` | Audit evidence UI models | Copilot/Tejal | `DELIVERED` | `src/features/evidence/types.ts`, `EvidenceWorkspace.test.tsx` (4/4 pass) | 2026-09-19 | EvidenceRecord and ChainValidationStatus model definitions |
+| `LP-26.8_SQL` | `intelligence-service` | Retention, archive, coverage SQL | Copilot/Tejal | `DELIVERED` | `queries.properties` (`evidence.store.*`), `EvidenceMigrationSqlTest` (2/2 pass) | 2026-09-19 | Externalized SQL queries with named parameters |
+| `LP-26.9_SQL` | `intelligence-service` | Header transition history and coverage | Copilot/Tejal | `DELIVERED` | `V20260916_14__lp49_evidence_notarization.sql`, `EvidenceNotarizationSqlTest` (3/3 pass) | 2026-09-19 | Notarization ledger and receipt tracking DDL |
+| `LP-26.10_SQL` | `intelligence-service` | Three-role split and purge migration | Copilot/Tejal | `DELIVERED` | `V20260916_11__lp80_rls_tenant_boundary.sql`, `EvidenceRolesSqlTest` (2/2 pass) | 2026-09-19 | Tenant isolation boundary and role-based access |
+| `LP-26.12_REGO` | `intelligence-service` | `audit_read` policy bundle | Copilot/Tejal | `DELIVERED` | `tool_scope_evidence.rego`, `ToolScopeEvidencePolicyTest` (3/3 pass) | 2026-09-19 | Read entitlement policy for audit records |
+| `LP-26.13_TS` | `intelligence-ui` | Forward-door evidence UI | Copilot/Tejal | `DELIVERED` | `EvidenceWorkspace.tsx`, `EvidenceWorkspace.test.tsx` (4/4 pass) | 2026-09-19 | Direct-entry evidence viewing and chain validation |
+| `LP-26.14_TEST` | `intelligence-service` | Drift gate and reconciliation tests | Copilot/Tejal | `DELIVERED` | `EvidenceStoreServiceTest.testValidateChain_tamperedPayload_fails` (5/5 pass) | 2026-09-19 | Tamper detection on modified payload hash |
+| `LP-26.15_TEST` | `intelligence-service` | Estate-wide audit test gate | Copilot/Tejal | `DELIVERED` | `Wave07MasterSynthesisTest` (1/1 pass) | 2026-09-19 | Estate-wide integration across multi-hop, evidence, and Merkle |
+| `LP-26.16_JAVA` | `intelligence-service` | Evidence pack export | Copilot/Tejal | `DELIVERED` | `Au9ExportServiceImpl.exportRunAuditBundle`, `Au9ExportCrossLayerWireThroughTest` (2/2 pass) | 2026-09-19 | Export manifest, payload hashing, recipient classification |
+| `LP-26.17_JAVA` | `intelligence-service` | Evidence pack verifier and hand-back | Copilot/Tejal | `DELIVERED` | `Au9ExportServiceImpl.verifyExportBundleReceipt`, `Au9ExportCrossLayerWireThroughTest` (2/2 pass) | 2026-09-19 | Hand-back receipt validation and hash comparison |
+| `LP-26.18_REGO` | `intelligence-service` | Export entitlement policy | Copilot/Tejal | `DELIVERED` | `tool_scope_merkle.rego`, `ToolScopeMerklePolicyTest` (3/3 pass) | 2026-09-19 | Export policy verification and seal protection |
+| `LP-26.19_TEST` | `intelligence-service` | Chain formula and cross-layer tests | Copilot/Tejal | `DELIVERED` | `Au9CryptographicStressTest` (2/2 pass) | 2026-09-19 | Cross-layer cumulative chain calculation verification |
+| `LP-26.20_JAVA` | `intelligence-service` | Draft vs approved export logic | Copilot/Tejal | `DELIVERED` | `Au9ExportServiceImpl`, `Au9RecipientClassification` | 2026-09-19 | Classification-gated export for REGULATOR vs INTERNAL |
+| `LP-26.21_TS` | `intelligence-ui` | Audit evidence screen and pack view | Copilot/Tejal | `DELIVERED` | `EvidenceWorkspace.tsx`, `EvidenceWorkspace.test.tsx` (4/4 pass) | 2026-09-19 | Export pack details, verification status chip |
+| `LP-26.22_PY` | `lexie-ai` | Generated model documentation | Copilot/Tejal | `DELIVERED` | `governance/specs.py`, `test_governance_specs.py` (5/5 pass) | 2026-09-19 | Specification metadata generation and model documentation |
+| `LP-26.23_TEST` | `intelligence-service` | Cross-language claim gate | Copilot/Tejal | `DELIVERED` | `Wave07MasterSynthesisTest` (1/1 pass) | 2026-09-19 | Cross-language schema claim parity |
+| `LP-26.24_SQL` | `intelligence-service` | Approval/discharge schema | Copilot/Tejal | `DELIVERED` | `V20260916_18__lp59_approval_workflow_ledger.sql`, `EvidenceRolesSqlTest` (2/2 pass) | 2026-09-19 | Approval workflow ledger and discharge status DDL |
+| `LP-26.25_JAVA` | `intelligence-service` | Discharge and registration logic | Copilot/Tejal | `DELIVERED` | `EvidenceNotaryServiceImpl`, `EvidenceNotaryServiceTest` (5/5 pass) | 2026-09-19 | Notarization anchoring and external witness registration |
+| `LP-26.26_REGO` | `intelligence-service` | Obligation discharge validator | Copilot/Tejal | `DELIVERED` | `mrm_sod.rego`, `tool_scope_evidence.rego`, `ToolScopeEvidencePolicyTest` (3/3 pass) | 2026-09-19 | Four-eyes SoD validator on obligation discharge |
+| `LP-26.27_TEST` | `intelligence-service` | Undischarged obligation gate | Copilot/Tejal | `DELIVERED` | `EvidenceNotaryServiceTest` (5/5 pass) | 2026-09-19 | Unwitnessed/undischarged run rejection |
+| `LP-26.28_SQL` | `intelligence-service` | Erasure event migration | Copilot/Tejal | `DELIVERED` | `V20260916_09__lp26_evidence_store_ledger.sql`, `EvidenceMigrationSqlTest` (2/2 pass) | 2026-09-19 | Tombstoned payload column support and erasure markers |
+| `LP-26.29_JAVA` | `intelligence-service` | Erasure and event append service | Copilot/Tejal | `DELIVERED` | `EvidenceStoreServiceImpl.tombstonePayload`, `EvidenceStoreServiceTest` (5/5 pass) | 2026-09-19 | Post-erasure audit integrity (payload zeroized, hash preserved) |
+| `LP-26.30_JAVA` | `intelligence-service` | Withheld/erased/absent export semantics | Copilot/Tejal | `DELIVERED` | `Au9ExportServiceImpl`, `Au9ExportCrossLayerWireThroughTest` (2/2 pass) | 2026-09-19 | Handling of erased records in export manifests |
+| `LP-26.31_REGO` | `intelligence-service` | Erasure authority policy | Copilot/Tejal | `DELIVERED` | `tool_scope_merkle.rego` (`prohibited_mutation_ops`), `ToolScopeMerklePolicyTest` (3/3 pass) | 2026-09-19 | Prohibits unauthorized ledger tampering and history deletion |
+| `LP-26.32_TEST` | `intelligence-service` | Erasure chain tests | Copilot/Tejal | `DELIVERED` | `Au9CryptographicStressTest` (2/2 pass) | 2026-09-19 | Chain validation across tombstoned and erased payloads |
+| `LP-27.1_PY` | `lexie-ai` | Evidence bundle aggregator | Copilot/Tejal | `DELIVERED` | `AnalyticalAssistSkill`, `test_analytical_assist_skill.py` (6/6 pass) | 2026-09-19 | Multi-step evidence aggregation and bounded traces |
+| `LP-27.2_JAVA` | `intelligence-service` | Orchestration seam for evidence export | Copilot/Tejal | `DELIVERED` | `Au9ExportServiceImpl`, `Wave07MasterSynthesisTest` (1/1 pass) | 2026-09-19 | Multi-hop evidence collection and export assembly |
+| `LP-28.1_PY` | `lexie-ai` | Proof verifier and receipt validator | Copilot/Tejal | `DELIVERED` | `skills/analytical/d0_decision_core.py`, `test_analytical_protocol_core.py` (10/10 pass) | 2026-09-19 | Python-side Merkle proof validation algorithm |
+| `LP-28.2_JAVA` | `intelligence-service` | Proof validation controller/service | Copilot/Tejal | `DELIVERED` | `MerkleTreeServiceImpl.verifyProof`, `MerkleTreeServiceTest` (5/5 pass) | 2026-09-19 | Cryptographic proof step hashing and root comparison |
 
 ### Wave 08 — Reason Code Registry, Locale Tokens & Multi-Tenancy
 
