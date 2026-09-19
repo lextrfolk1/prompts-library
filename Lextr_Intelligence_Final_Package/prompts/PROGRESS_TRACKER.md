@@ -89,7 +89,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-06.5_SQL` | `intelligence-service` | Archive row + hash persistence | Copilot/Tejal | `DELIVERED` | `V20260914_01__lp06_agent_run_step_payload_archive.sql`, `AgentRunStepArchiveMigrationTest` (4/4 pass) | 2026-09-19 | 7 additive nullable columns, check constraints, baseline data_classification enum reused |
 | `LP-06.6_JAVA` | `intelligence-service` | Archive write and fail-open refused path | Copilot/Tejal | `DELIVERED` | `PayloadArchiver`, `PayloadArchiverTest` (5/5 pass) | 2026-09-19 | Wiring contrast (unbound inline / bound archived), refusal on store failure (no fail-open), 1MB wire cap truncation |
 | `LP-06.7_TEST` | `intelligence-service` | Archive round-trip and AU-9 assertions | Copilot/Tejal | `DELIVERED` | `ArchiveRoundTripCrossLayerTest` (3/3 pass) | 2026-09-19 | AU-9 invariant verified (hashes intact post object deletion), store round-trip, tamper detection |
-| `LP-07.1_SQL` | `intelligence-service` | Review queue schema | — | `PENDING` | — | — | — |
+| `LP-07.1_SQL` | `intelligence-service` | Review queue SQL reads | Copilot/Tejal | `DELIVERED` | Externalized queries in `queries.properties` (`agent_run.find_by_client_and_status`, `select_review_outcome`, `find_stranded_completed`), `ReviewQueueSqlReadTest` (5/5 pass) | 2026-09-19 | No separate queue table (runs on agent_run), confidence is signal not gate, deterministic ordering verified |
 | `LP-07.2_JAVA` | `intelligence-service` | Review queue service and state machine | — | `PENDING` | — | — | — |
 | `LP-07.4_JAVA` | `intelligence-service` | Review authorization decisions | — | `PENDING` | — | — | — |
 | `LP-08.1_SQL` | `intelligence-service` | Knowledge hub schema | — | `PENDING` | — | — | — |
