@@ -40,7 +40,7 @@ Required fields per prompt:
 | **Wave 03** | Persistence, Human Review & Knowledge Hub | 13 | 0 | 0 | 0 | 13 | 0 | ✅ DELIVERED |
 | **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 0 | 0 | 0 | 12 | 0 | ✅ DELIVERED |
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 0 | 0 | 0 | 16 | 0 | ✅ DELIVERED |
-| **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 25 | 0 | 0 | 0 | 0 | 🟡 Planning |
+| **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 0 | 0 | 0 | 25 | 0 | ✅ DELIVERED |
 | **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 58 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 24 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 09** | Cross-Product Integration Baseline | 0 | 0 | 0 | 0 | 0 | 0 | ⚪ Empty |
@@ -139,31 +139,31 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-20.1_PY` | `lexie-ai` | Operational query skill | — | `PENDING` | — | — | — |
-| `LP-20.2_JAVA` | `intelligence-service` | Operational run coordinator | — | `PENDING` | — | — | — |
-| `LP-20.3_REGO` | `intelligence-service` | `tool_scope_operational` policy | — | `PENDING` | — | — | — |
-| `LP-20.5_TEST` | `intelligence-service` | Operational wire-through tests | — | `PENDING` | — | — | — |
-| `LP-21.1_PY` | `lexie-ai` | Semantic & reference skill | — | `PENDING` | — | — | — |
-| `LP-21.2_JAVA` | `intelligence-service` | Semantic coordinator and preset resolver | — | `PENDING` | — | — | — |
-| `LP-21.3_REGO` | `intelligence-service` | `tool_scope_semantic` policy | — | `PENDING` | — | — | — |
-| `LP-21.4_TS` | `intelligence-ui` | Semantic workspace UI | — | `PENDING` | — | — | — |
-| `LP-21.5_TEST` | `intelligence-service` | Semantic wire-through tests | — | `PENDING` | — | — | — |
-| `LP-22.1_SQL` | `intelligence-service` | Registered definition schema | — | `PENDING` | — | — | — |
-| `LP-22.2_JAVA` | `intelligence-service` | Registered definition controller | — | `PENDING` | — | — | — |
-| `LP-22.3_JAVA` | `intelligence-service` | Writer logical reconciliation | — | `PENDING` | — | — | — |
-| `LP-22.4_TS` | `intelligence-ui` | Skill registry UI | — | `PENDING` | — | — | — |
-| `LP-22.5_REGO` | `intelligence-service` | `mrm_sod` policy bundle | — | `PENDING` | — | — | — |
-| `LP-22.6_TEST` | `intelligence-service` | Skill registry wire-through tests | — | `PENDING` | — | — | — |
-| `LP-37.1_PY` | `lexie-ai` | Impact analysis skill | — | `PENDING` | — | — | — |
-| `LP-37.2_JAVA` | `intelligence-service` | Impact preset resolver | — | `PENDING` | — | — | — |
-| `LP-37.3_REGO` | `intelligence-service` | `tool_scope_impact` policy | — | `PENDING` | — | — | — |
-| `LP-37.4_TS` | `intelligence-ui` | Impact answer UI | — | `PENDING` | — | — | — |
-| `LP-37.5_TEST` | `intelligence-service` | Impact wire-through tests | — | `PENDING` | — | — | — |
-| `LP-38.1_PY` | `lexie-ai` | Trend analysis skill | — | `PENDING` | — | — | — |
-| `LP-38.2_JAVA` | `intelligence-service` | Trend preset resolver | — | `PENDING` | — | — | — |
-| `LP-38.3_REGO` | `intelligence-service` | `tool_scope_trend` policy | — | `PENDING` | — | — | — |
-| `LP-38.4_TS` | `intelligence-ui` | Trend answer UI | — | `PENDING` | — | — | — |
-| `LP-38.5_TEST` | `intelligence-service` | Trend wire-through tests | — | `PENDING` | — | — | — |
+| `LP-20.1_PY` | `lexie-ai` | Operational query skill | Copilot/Tejal | `DELIVERED` | `OperationalQuerySkill`, `test_operational_query_skill.py` (7/7 pass) | 2026-09-19 | Bounded execution (declared ops, step ceiling <= 8), no DB grant, tool_scope evaluated, MaskingBoundary pre-SLM |
+| `LP-20.2_JAVA` | `intelligence-service` | Operational run coordinator | Copilot/Tejal | `DELIVERED` | `OperationalRunCoordinatorImpl`, `OperationalRunCoordinatorTest` (5/5 pass), `OperationalRunControllerTest` (1/1 pass) | 2026-09-19 | Orchestrates resolve -> policy -> /run -> persistRunWithTrace -> enqueue, single txn persist, OPA fail closed |
+| `LP-20.3_REGO` | `intelligence-service` | `tool_scope_operational` policy | Copilot/Tejal | `DELIVERED` | `tool_scope_operational.rego`, `ToolScopeOperationalPolicyTest` (6/6 pass) | 2026-09-19 | Fail-closed default, 6 declared UC12 ops + run, OP_NOT_PERMITTED / OP_UNBOUND distinct codes, structured deny_reason |
+| `LP-20.5_TEST` | `intelligence-service` / `lexie-ai` | Operational wire-through tests | Copilot/Tejal | `DELIVERED` | `OperationalCrossLayerWireThroughTest` (2/2 pass), `test_operational_cross_layer_wire_through.py` (2/2 pass) | 2026-09-19 | End-to-end 4-layer wire-through, OPA denial fails closed with PolicyDeniedException, single-txn trace integrity |
+| `LP-21.1_PY` | `lexie-ai` | Semantic & reference skill | Copilot/Tejal | `DELIVERED` | `SemanticQuerySkill`, `test_semantic_query_skill.py` (7/7 pass) | 2026-09-19 | IntentRouter over closed intent set (R1-R5, B2/B5/B6, B3/B4/B8, B1/B7), route_out never calls neighbor, C1/C9 exposure reads |
+| `LP-21.2_JAVA` | `intelligence-service` | Semantic coordinator and preset resolver | Copilot/Tejal | `DELIVERED` | `SemanticPresetResolverTest` (5/5 pass), `SemanticRunCoordinatorTest` (5/5 pass), `SemanticRunControllerTest` (1/1 pass) | 2026-09-19 | UC8 preset resolution, atomic persist with trace, separate enqueue txn, OPA fail closed |
+| `LP-21.3_REGO` | `intelligence-service` | `tool_scope_semantic` policy | Copilot/Tejal | `DELIVERED` | `tool_scope_semantic.rego`, `ToolScopeSemanticPolicyTest` (9/9 pass) | 2026-09-19 | Capability gating (exposure_ready, graph_ready, business_ready), declared ops set, distinct denial reasons |
+| `LP-21.4_TS` | `intelligence-ui` | Semantic workspace UI | Copilot/Tejal | `DELIVERED` | `SemanticWorkspace.tsx`, `SemanticWorkspace.test.tsx` (4/4 pass) | 2026-09-19 | Renders R1 composed definition, R4 cross-ref dependencies table, B1/B7 route-out deferral banner, token-only |
+| `LP-21.5_TEST` | `intelligence-service` / `lexie-ai` | Semantic wire-through tests | Copilot/Tejal | `DELIVERED` | `SemanticCrossLayerWireThroughTest` (2/2 pass), `test_semantic_cross_layer_wire_through.py` (3/3 pass) | 2026-09-19 | Multi-layer seam test: skill -> policy -> coordinator -> DAO -> UI, route-out preservation, exposure gating |
+| `LP-22.1_SQL` | `intelligence-service` | Registered definition schema | Copilot/Tejal | `DELIVERED` | `V20260916_05__lp22_registered_definition.sql`, `RegisteredDefinitionMigrationSqlTest` (5/5 pass) | 2026-09-19 | Additive schema, registered_definition (32 cols, 4 constraints, 7 indexes, 3 enums), Part-M compliant, queries.properties |
+| `LP-22.2_JAVA` | `intelligence-service` | Registered definition controller | Copilot/Tejal | `DELIVERED` | `RegisteredDefinitionController`, `RegisteredDefinitionControllerTest` (6/6 pass) | 2026-09-19 | List/detail endpoints, tags update, MRM review decision, status transitions (DRAFT->OBSERVED->OPERATIONAL) |
+| `LP-22.3_JAVA` | `intelligence-service` | Writer logical reconciliation | Copilot/Tejal | `DELIVERED` | `RegisteredDefinitionServiceImpl`, `RegisteredDefinitionServiceTest` (5/5 pass) | 2026-09-19 | Writer-A manifest sync (no status/MRM mutation), Writer-B governance transitions with SoD check |
+| `LP-22.4_TS` | `intelligence-ui` | Skill registry UI | Copilot/Tejal | `DELIVERED` | `SkillRegistry.tsx`, `SkillRegistry.test.tsx` (1/1 pass) | 2026-09-19 | Tabular inventory, drawer selection, tag management, MRM approval actions, status badge rendering |
+| `LP-22.5_REGO` | `intelligence-service` | `mrm_sod` policy bundle | Copilot/Tejal | `DELIVERED` | `mrm_sod.rego`, `MrmSodPolicyTest` (3/3 pass) | 2026-09-19 | Four-eyes SoD gate (approver != author), requires governance role, self-approval denial code |
+| `LP-22.6_TEST` | `intelligence-service` | Skill registry wire-through tests | Copilot/Tejal | `DELIVERED` | `SkillRegistryCrossLayerWireThroughTest` (2/2 pass) | 2026-09-19 | End-to-end registry lifecycle: Writer-A sync -> Writer-B transition -> SoD gate -> query verification |
+| `LP-37.1_PY` | `lexie-ai` | Impact analysis skill | Copilot/Tejal | `DELIVERED` | `ImpactAnalysisSkill`, `ImpactPropagator`, `test_impact_analysis_skill.py` (6/6 pass) | 2026-09-19 | Deterministic two-pass (structural + material), NO SLM by construction, diamond convergence once-per-edge |
+| `LP-37.2_JAVA` | `intelligence-service` | Impact preset resolver | Copilot/Tejal | `DELIVERED` | `ImpactPresetResolverImpl`, `ImpactRunCoordinatorImpl`, `ImpactServiceTest` (3/3 pass) | 2026-09-19 | Model prohibited validation (fails closed if model specified), single-txn persistence, review queue enqueue |
+| `LP-37.3_REGO` | `intelligence-service` | `tool_scope_impact` policy | Copilot/Tejal | `DELIVERED` | `tool_scope_impact.rego`, `ToolScopeImpactPolicyTest` (3/3 pass) | 2026-09-19 | Capability gating (graph_ready, cross_report_ready, evaluate_ready), declared ops allow-list |
+| `LP-37.4_TS` | `intelligence-ui` | Impact answer UI | Copilot/Tejal | `DELIVERED` | `ImpactAnswer.tsx`, `ImpactTable.tsx`, `ImpactWorkspace.test.tsx` (3/3 pass) | 2026-09-19 | Dual-surface inline/drawer, honesty ladder display (material, structural_only, undetermined), token-only |
+| `LP-37.5_TEST` | `intelligence-service` | Impact wire-through tests | Copilot/Tejal | `DELIVERED` | `ImpactCrossLayerWireThroughTest` (2/2 pass) | 2026-09-19 | Wire-through test: Python skill -> OPA policy -> coordinator -> single txn persist |
+| `LP-38.1_PY` | `lexie-ai` | Trend analysis skill | Copilot/Tejal | `DELIVERED` | `TrendAnalysisSkill`, `test_trend_analysis_skill.py` (5/5 pass) | 2026-09-19 | Standalone trend read (<=5 steps), shared deterministic trend_classifier, contiguous suffix masking, token narration |
+| `LP-38.2_JAVA` | `intelligence-service` | Trend preset resolver | Copilot/Tejal | `DELIVERED` | `TrendPresetResolverImpl`, `TrendRunCoordinatorImpl`, `TrendServiceTest` (4/4 pass) | 2026-09-19 | Model REQUIRED and pinned LOCAL, ModelBindingRequiredException on missing model, NonLocalModelException on external |
+| `LP-38.3_REGO` | `intelligence-service` | `tool_scope_trend` policy | Copilot/Tejal | `DELIVERED` | `tool_scope_trend.rego`, `ToolScopeTrendPolicyTest` (3/3 pass) | 2026-09-19 | series_ready datum gating, declared trend tool ops, fail-closed empty dataset with verbatim deny reason |
+| `LP-38.4_TS` | `intelligence-ui` | Trend answer UI | Copilot/Tejal | `DELIVERED` | `TrendAnswer.tsx`, `TrendChip.tsx`, `TrendWorkspace.test.tsx` (3/3 pass) | 2026-09-19 | Standalone trend display, honesty ladder (chart vs dataset), verdict chip, token-only |
+| `LP-38.5_TEST` | `intelligence-service` | Trend wire-through tests | Copilot/Tejal | `DELIVERED` | `TrendCrossLayerWireThroughTest` (1/1 pass) | 2026-09-19 | Full wire-through across layers: Trend skill -> OPA policy -> coordinator -> single-txn persist |
 
 ### Wave 07 — Evidence Ledger, Merkle Chaining & AU-9 Integrity
 
