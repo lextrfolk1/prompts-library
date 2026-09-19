@@ -92,10 +92,10 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-07.1_SQL` | `intelligence-service` | Review queue SQL reads | Copilot/Tejal | `DELIVERED` | Externalized queries in `queries.properties` (`agent_run.find_by_client_and_status`, `select_review_outcome`, `find_stranded_completed`), `ReviewQueueSqlReadTest` (5/5 pass) | 2026-09-19 | No separate queue table (runs on agent_run), confidence is signal not gate, deterministic ordering verified |
 | `LP-07.2_JAVA` | `intelligence-service` | Review queue service and state machine | Copilot/Tejal | `DELIVERED` | `ReviewQueueServiceImpl`, `ReviewQueueServiceTest` (6/6 pass) | 2026-09-19 | Always-on review, preset review_level resolution, OPA SoD enforcement (422), fail-closed unreachable OPA |
 | `LP-07.4_JAVA` | `intelligence-service` | Review authorization transitions and actions | Copilot/Tejal | `DELIVERED` | `ReviewTransitionTable`, `ReviewActionResolverImpl`, `ReviewActionResolverTest` (6/6 pass) | 2026-09-19 | Pure action tokens with no enabled flags, exclusive claim, settled runs offer no actions, diff/edit scale for correct |
-| `LP-08.1_SQL` | `intelligence-service` | Knowledge hub schema | — | `PENDING` | — | — | — |
-| `LP-08.2_JAVA` | `intelligence-service` | Knowledge hub boundary and endpoint seam | — | `PENDING` | — | — | — |
-| `LP-08.3_JAVA` | `intelligence-service` | Knowledge hub orchestration service | — | `PENDING` | — | — | — |
-| `LP-08.6_TEST` | `intelligence-service` | Knowledge hub wire-through tests | — | `PENDING` | — | — | — |
+| `LP-08.1_SQL` | `intelligence-service` | Knowledge hub statements and single retrieval query | Copilot/Tejal | `DELIVERED` | `knowledge_hub.retrieve_hybrid_small_to_big`, `KnowledgeHubSqlConformanceTest` (6/6 pass) | 2026-09-19 | Single-statement small-to-big retrieval, vector space pin (model_id), temporal validity (:as_of) |
+| `LP-08.2_JAVA` | `intelligence-service` | Knowledge hub boundary and endpoint seam | Copilot/Tejal | `DELIVERED` | `KnowledgeHubController`, `KnowledgeHubService`, `KnowledgeHubServiceTest` (9/9 pass) | 2026-09-19 | Non-authoritative structure on wire, classification required, AI_PROHIBITED hard stop, 384-dim check |
+| `LP-08.3_JAVA` | `intelligence-service` | Knowledge hub orchestration service | Copilot/Tejal | `DELIVERED` | `KnowledgeHubServiceImpl`, `KnowledgeHubServiceTest` (9/9 pass) | 2026-09-19 | Parent-before-child chunk ingest order, vector validation, pass-through to single SQL retrieval |
+| `LP-08.6_TEST` | `intelligence-service` | Knowledge hub wire-through tests | Copilot/Tejal | `DELIVERED` | `KnowledgeHubWireThroughTest` (3/3 pass) | 2026-09-19 | Cross-layer vector space isolation, zero AI_PROHIBITED artifacts, 384-dim enforcement |
 
 ### Wave 04 — Skills 1/2/3, Masking Boundary & Assembly
 
