@@ -35,7 +35,7 @@ Required fields per prompt:
 
 | Wave | Feature Domain | Total Prompts | PENDING | IN_PROGRESS | BLOCKED | DELIVERED | DEFERRED | Status |
 |:---:|---|:---:|:---:|:---:|:---:|:---:|:---:|---|
-| **Wave 01** | Baseline Schema & UI Core Foundations | 3 | 3 | 0 | 0 | 0 | 0 | 🟡 Planning |
+| **Wave 01** | Baseline Schema & UI Core Foundations | 3 | 0 | 0 | 0 | 3 | 0 | ✅ DELIVERED |
 | **Wave 02** | Run Protocol, Policy & SLM Baseline | 5 | 5 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 03** | Persistence, Human Review & Knowledge Hub | 13 | 13 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 12 | 0 | 0 | 0 | 0 | 🟡 Planning |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 22 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 11 | 0 | 0 | 0 | 0 | 🟡 Planning |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 11 | 0 | 0 | 0 | 0 | 🟡 Planning |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **251** | **0** | **0** | **0** | **0** | **0% structured baseline** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **248** | **0** | **0** | **3** | **0** | **1.2% structured baseline** |
 
 ---
 
@@ -65,9 +65,9 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-01.1_SQL` | `intelligence-service` | Baseline schema DDL and migration setup | — | `PENDING` | — | — | — |
-| `LP-02.1_TS` | `intelligence-ui` | Tenant + host shell foundation | — | `PENDING` | — | — | — |
-| `LP-02.2_TS` | `intelligence-ui` | Masking-safe UI atoms and shared rendering | — | `PENDING` | — | — | — |
+| `LP-01.1_SQL` | `intelligence-service` | Baseline schema DDL and migration setup | Copilot/Tejal | `DELIVERED` | `V1__intelligence_schema_init.sql` (12 tables, pgvector(384) check, client_id indexes), `IntelligenceBaselineSchemaMigrationTest` 6/6 pass | 2026-09-19 | Conformance verified on PG16 baseline contract |
+| `LP-02.1_TS` | `intelligence-ui` | Tenant + host shell foundation | Copilot/Tejal | `DELIVERED` | `TenantThemeProvider.tsx`, `TenantThemeProvider.test.tsx` 4/4 pass (logo override, CSS link injection, isolation) | 2026-09-19 | Multi-tenant variable injection verified |
+| `LP-02.2_TS` | `intelligence-ui` | Masking-safe UI atoms and shared rendering | Copilot/Tejal | `DELIVERED` | 5 atoms verified: `MaskedValue` (3/3), `OutputRenderer` (3/3), `EvidenceLedgerViewer` (3/3), `RunProgress` (4/4), `LextrChart` (2/2); 55/55 test files (228/228 pass) | 2026-09-19 | Masking safety and non-terminal states enforced |
 
 ### Wave 02 — Run Protocol, Policy & SLM Baseline
 
