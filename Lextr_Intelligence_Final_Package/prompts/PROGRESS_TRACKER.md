@@ -3,7 +3,7 @@
 **Repository Branches:** `feature/lextr-intelligence-reimplementation`  
 **Platform Version:** `v1.38.0`  
 **Tracker Mode:** Evidence-based, prompt-by-prompt tracking  
-**Current State:** Reimplementation in progress on `feature/lextr-intelligence-reimplementation`. 3/251 prompts DELIVERED (code written; tests are run in a final pass, so evidence is an artifact reference with gates marked NOT RUN). Last updated 2026-09-24.  
+**Current State:** Reimplementation in progress on `feature/lextr-intelligence-reimplementation`. 8/251 prompts DELIVERED (code written; tests are run in a final pass, so evidence is an artifact reference with gates marked NOT RUN). Last updated 2026-09-24.  
 
 ---
 
@@ -36,7 +36,7 @@ Required fields per prompt:
 | Wave | Feature Domain | Total Prompts | PENDING | IN_PROGRESS | BLOCKED | DELIVERED | DEFERRED | Status |
 |:---:|---|:---:|:---:|:---:|:---:|:---:|:---:|---|
 | **Wave 01** | Baseline Schema & UI Core Foundations | 3 | 0 | 0 | 0 | 3 | 0 | ✅ DELIVERED |
-| **Wave 02** | Run Protocol, Policy & SLM Baseline | 5 | 5 | 0 | 0 | 0 | 0 | ⏳ PENDING |
+| **Wave 02** | Run Protocol, Policy & SLM Baseline | 5 | 0 | 0 | 0 | 5 | 0 | ✅ DELIVERED |
 | **Wave 03** | Persistence, Human Review & Knowledge Hub | 13 | 13 | 0 | 0 | 0 | 0 | ⏳ PENDING |
 | **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 12 | 0 | 0 | 0 | 0 | ⏳ PENDING |
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 16 | 0 | 0 | 0 | 0 | ⏳ PENDING |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 22 | 0 | 0 | 0 | 0 | ⏳ PENDING |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 11 | 0 | 0 | 0 | 0 | ⏳ PENDING |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 11 | 0 | 0 | 0 | 0 | ⏳ PENDING |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **248** | **0** | **0** | **3** | **0** | **1.2% delivered** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **243** | **0** | **0** | **8** | **0** | **3.2% delivered** |
 
 ---
 
@@ -73,11 +73,11 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-03.2_JAVA` | `intelligence-service` | `/run` DTO contract and SemVer package | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-03.3_JAVA` | `intelligence-service` | Synchronous `/run` service and cache semantics | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-03.5_TEST` | `intelligence-service` | Wire-through serialization test | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-04.1_REGO` | `intelligence-service` | OPA root + shared policy bundles | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-05.1_JAVA` | `intelligence-service` | Model resolution and routing | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-03.2_JAVA` | `intelligence-service` | `/run` DTO contract and SemVer package | - | `DELIVERED` | `intelligence-service`: `pom.xml` (single project; `run-contract` classifier jar), `contract/run/v1/*` (RunRequest, RunResult, RunOutput, VarianceExplanation, ContractVersion), `run/RunController`, `common/*`, `exception/*`, `config/*`; tests `contract/run/v1/*Test` + `test/resources/{contract,fixtures,producer}`; README `docs/deliverables/LP-03.2_README.md`; not compiled, tests NOT RUN | 2026-09-24 | ApiResponse/ErrorDetail/mapping authored early for LP-33 (confirm correlation_id {state,value}); no auth/tenant resolution yet |
+| `LP-03.3_JAVA` | `intelligence-service` | Synchronous `/run` service and cache semantics | - | `DELIVERED` | `intelligence-service`: `run/{RunService,RunServiceImpl,LexieRuntimeClient,WebClientLexieRuntimeClient,RunResultStore,InMemoryRunResultStore}`, `config/WebSocketConfig`; tests `run/RunServiceImplTest`, `run/RunLaneWritesNothingTest`; README `docs/deliverables/LP-03.3_README.md`; tests NOT RUN | 2026-09-24 | lexie-ai `/api/v1/intelligence/run` not yet published (skill lanes) → /run 502 until then; in-memory result store is single-instance; contract release process unowned |
+| `LP-03.5_TEST` | `intelligence-service` | Wire-through serialization test | - | `DELIVERED` | `intelligence-service`: `src/test/java/.../run/RunWireThroughTest.java` (plain-mapper host side, STOMP converter path, camelCase mutant); README `docs/deliverables/LP-03.5_README.md`; tests NOT RUN | 2026-09-24 | N-1 additive case lives in contract `AdditiveVocabularyTest` |
+| `LP-04.1_REGO` | `intelligence-service` | OPA root + shared policy bundles | - | `DELIVERED` | `intelligence-service`: `src/main/resources/opa/` (.manifest, lextr.ai.{evaluate,common,tool_scope,capability,cost_guardrails,model_routing,embedding_call,masking,mrm_sod}, detector + registry data); tests `src/test/resources/opa/lextr/ai/bundle_test.rego`; README `docs/deliverables/LP-04.1_README.md`; `opa test` NOT RUN (no opa binary installed) | 2026-09-24 | Use-case packages namespaced `lextr.ai.tool_scope_uc.<uc>` (manifest says tool_scope_<uc>) — LP-24.4/25.4/37.3/38.3 must follow; owner to confirm local-only set {RESTRICTED, MNPI}; bundle deploy to policy-service pending |
+| `LP-05.1_JAVA` | `intelligence-service` | Model resolution and routing | - | `DELIVERED` | `intelligence-service`: `model/*` (ModelResolutionServiceImpl, ModelRegistryDao/Impl), `policy/*` (OpaPolicyClient fail-closed), `util/SQLQueryLoaderUtil`, `queries.properties`; tests `model/ModelResolutionServiceImplTest`, `exception/ErrorMappingConformanceTest`, `JavaLaneGateTest`; README `docs/deliverables/LP-05.1_README.md`; tests NOT RUN | 2026-09-24 | RoutingViolation has no mapping row — gate asserts it (declared gap) for LP-33; egress not assertable here (LP-10) |
 
 ### Wave 03 — Persistence, Human Review & Knowledge Hub
 
