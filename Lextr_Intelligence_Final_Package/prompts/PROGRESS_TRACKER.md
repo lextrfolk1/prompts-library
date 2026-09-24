@@ -3,7 +3,7 @@
 **Repository Branches:** `feature/lextr-intelligence-reimplementation`  
 **Platform Version:** `v1.38.0`  
 **Tracker Mode:** Evidence-based, prompt-by-prompt tracking  
-**Current State:** Reimplementation in progress on `feature/lextr-intelligence-reimplementation`. 8/251 prompts DELIVERED (code written; tests are run in a final pass, so evidence is an artifact reference with gates marked NOT RUN). Last updated 2026-09-24.  
+**Current State:** Reimplementation in progress on `feature/lextr-intelligence-reimplementation`. 21/251 prompts DELIVERED (code written; tests are run in a final pass, so evidence is an artifact reference with gates marked NOT RUN). Last updated 2026-09-24.  
 
 ---
 
@@ -37,7 +37,7 @@ Required fields per prompt:
 |:---:|---|:---:|:---:|:---:|:---:|:---:|:---:|---|
 | **Wave 01** | Baseline Schema & UI Core Foundations | 3 | 0 | 0 | 0 | 3 | 0 | ✅ DELIVERED |
 | **Wave 02** | Run Protocol, Policy & SLM Baseline | 5 | 0 | 0 | 0 | 5 | 0 | ✅ DELIVERED |
-| **Wave 03** | Persistence, Human Review & Knowledge Hub | 13 | 13 | 0 | 0 | 0 | 0 | ⏳ PENDING |
+| **Wave 03** | Persistence, Human Review & Knowledge Hub | 13 | 0 | 0 | 0 | 13 | 0 | ✅ DELIVERED |
 | **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 12 | 0 | 0 | 0 | 0 | ⏳ PENDING |
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 16 | 0 | 0 | 0 | 0 | ⏳ PENDING |
 | **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 25 | 0 | 0 | 0 | 0 | ⏳ PENDING |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 22 | 0 | 0 | 0 | 0 | ⏳ PENDING |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 11 | 0 | 0 | 0 | 0 | ⏳ PENDING |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 11 | 0 | 0 | 0 | 0 | ⏳ PENDING |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **243** | **0** | **0** | **8** | **0** | **3.2% delivered** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **230** | **0** | **0** | **21** | **0** | **8.4% delivered** |
 
 ---
 
@@ -83,19 +83,19 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-06.1_SQL` | `intelligence-service` | Control-plane persistence SQL | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-06.2_JAVA` | `intelligence-service` | Persist run writer consumer path | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-06.4_TEST` | `intelligence-service` (+ `lexie-ai`) | Producer-to-consumer buffer test | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-06.5_SQL` | `intelligence-service` | Archive row + hash persistence | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-06.6_JAVA` | `intelligence-service` | Archive write and fail-open refused path | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-06.7_TEST` | `intelligence-service` (+ `lexie-ai`) | Archive round-trip and AU-9 assertions | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-07.1_SQL` | `intelligence-service` | Review queue SQL reads | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-07.2_JAVA` | `intelligence-service` | Review queue service and state machine | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-07.4_JAVA` | `intelligence-service` | Review authorization transitions and actions | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-08.1_SQL` | `intelligence-service` | Knowledge hub statements and single retrieval query | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-08.2_JAVA` | `intelligence-service` | Knowledge hub boundary and endpoint seam | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-08.3_JAVA` | `intelligence-service` | Knowledge hub orchestration service | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-08.6_TEST` | `intelligence-service` | Knowledge hub wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-06.1_SQL` | `intelligence-service` | Control-plane persistence SQL | - | `DELIVERED` | `intelligence-service`: `queries.properties` `run_ledger.*` (sole writer of agent_run/agent_run_step/review events), executed by `evidence/RunLedgerDaoImpl`; test `QueryOwnershipTest`; README `docs/deliverables/LP-06.1_README.md`; `mvn test-compile` clean; tests NOT RUN | 2026-09-24 | Writes the V6 columns (owner-approved Part-M proposal) |
+| `LP-06.2_JAVA` | `intelligence-service` | Persist run writer consumer path | - | `DELIVERED` | `intelligence-service`: `evidence/*` (JsonCanonicalizer RFC 8785, TraceVerifier, RunPersistenceServiceImpl, RunEnqueueServiceImpl, StrandedRunSweep), `tenant/*`, `V6__lp06_lp07_agent_run_flush_and_review.sql`, /run wiring; tests `evidence/*Test`, `it/EvidenceLedgerIT`; README `docs/deliverables/LP-06.2_README.md`; `mvn test-compile` clean; tests NOT RUN | 2026-09-24 | Tenant from gateway headers until Keycloak; review_due_at NULL (no preset SLA, LP-12); chain asserts disabled pending LP-26 |
+| `LP-06.4_TEST` | `intelligence-service` (+ `lexie-ai`) | Producer-to-consumer buffer test | - | `DELIVERED` | `intelligence-service` + `lexie-ai`: shared RFC 8785 corpus `test/resources/evidence/jcs_corpus.v1.json` (+ lexie-ai copy), `JsonCanonicalizerCorpusTest`, lexie-ai `tests/evidence/test_jcs_shared_corpus.py`, `it/EvidenceLedgerIT`; README `docs/deliverables/LP-06.4_README.md`; tests NOT RUN | 2026-09-24 | FINDING: lexie-ai canonical_json is NOT RFC 8785 (7/12 cases, strict xfail) — producer fix owed; chain crossing [2] disabled pending LP-26 |
+| `LP-06.5_SQL` | `intelligence-service` | Archive row + hash persistence | - | `DELIVERED` | `intelligence-service`: `V5__lp06_agent_run_step_payload_archive.sql` (7 nullable cols + named CHECKs); tests `MigrationShapeTest`, `it/EvidenceLedgerIT`; README `docs/deliverables/LP-06.5_README.md`; `mvn test-compile` clean; tests NOT RUN | 2026-09-24 | Append-only refs [3] need LP-26.1 trigger (disabled); foldable into LP-26.24 |
+| `LP-06.6_JAVA` | `intelligence-service` | Archive write and fail-open refused path | - | `DELIVERED` | `intelligence-service`: `evidence/archive/*` (PayloadStore port, FileSystemPayloadStore, PayloadStoreBinding key `intelligence.evidence.payload-store.binding`, PayloadArchiver); fail-open refused (503 refusal); tests `RunPersistenceServiceImplTest`, `EvidenceSourceGateTest`, `CompositionRootTest`, `it/PayloadArchiveIT`; README `docs/deliverables/LP-06.6_README.md`; `mvn test-compile` clean; tests NOT RUN | 2026-09-24 | Filesystem binding first (owner decision); S3 later behind same port; object store is a new external dependency |
+| `LP-06.7_TEST` | `intelligence-service` (+ `lexie-ai`) | Archive round-trip and AU-9 assertions | - | `DELIVERED` | `intelligence-service`: `it/PayloadArchiveIT` (real PG + real filesystem store; round trip, tamper, truncation, refusal, mutants); README `docs/deliverables/LP-06.7_README.md`; tests NOT RUN | 2026-09-24 | AU-9 chain-with-objects-deleted [0][1] disabled pending LP-26 chain + verifier |
+| `LP-07.1_SQL` | `intelligence-service` | Review queue SQL reads | - | `DELIVERED` | `intelligence-service`: `queries.properties` `review.*` reads, `review/ReviewReadDao(Impl)`; tests `QueryOwnershipTest`, `it/EvidenceLedgerIT`; README `docs/deliverables/LP-07.1_README.md`; `mvn test-compile` clean; tests NOT RUN | 2026-09-24 | — |
+| `LP-07.2_JAVA` | `intelligence-service` | Review queue service and state machine | - | `DELIVERED` | `intelligence-service`: `review/ReviewService(Impl)`, `ReviewController`, `RunReviewView`, `HorizontalStructure`; tests `review/ReviewServiceImplTest`, `StructureAndDiffTest`, `EnqueueAndSweepTest`; README `docs/deliverables/LP-07.2_README.md`; `mvn test-compile` clean; tests NOT RUN | 2026-09-24 | pending_review vs in_review spelling recorded as named gap; OPA unreachable fails closed |
+| `LP-07.4_JAVA` | `intelligence-service` | Review authorization transitions and actions | - | `DELIVERED` | `intelligence-service`: `review/ReviewTransitionTable`, `ReviewActionResolver`, `RunStatus`, `ReviewAction`, `ClaimState`, `CorrectionDiff`; tests `ReviewTransitionTableTest`, `RunReviewViewShapeTest`, `ReviewServiceImplTest`, `CompositionRootTest`; README `docs/deliverables/LP-07.4_README.md`; `mvn test-compile` clean; tests NOT RUN | 2026-09-24 | SECOND_APPROVE named gap (owner LP-59); show-and-enable vs render-only reconciliation is manifest owner's |
+| `LP-08.1_SQL` | `intelligence-service` | Knowledge hub statements and single retrieval query | - | `DELIVERED` | `intelligence-service`: `queries.properties` `kh.*` incl. single hybrid retrieval statement (tenant+model inside candidate set, as_of window once, undated rule, 0.6/0.4 fusion, small-to-big, deterministic ties); tests `QueryOwnershipTest`, `it/KnowledgeRetrievalIT`; README `docs/deliverables/LP-08.1_README.md`; `mvn test-compile` clean; tests NOT RUN | 2026-09-24 | effective_to (closing half of window) pending Part-M; corpus lifecycle (LEX-40) not authored |
+| `LP-08.2_JAVA` | `intelligence-service` | Knowledge hub boundary and endpoint seam | - | `DELIVERED` | `intelligence-service`: `knowledge/KnowledgeHubController` (one ingestion endpoint + complementary-context), `ComplementaryContext` (structural NON_AUTHORITATIVE mark), `IngestRequest`, `ComplementaryContextRequest`; tests `KnowledgeHubServiceImplTest`; README `docs/deliverables/LP-08.2_README.md`; `mvn test-compile` clean; tests NOT RUN | 2026-09-24 | — |
+| `LP-08.3_JAVA` | `intelligence-service` | Knowledge hub orchestration service | - | `DELIVERED` | `intelligence-service`: `knowledge/KnowledgeHubServiceImpl`, `KnowledgeDao(Impl)`, `EmbeddingClient`/`LexieEmbeddingClient`, `Chunker`; LP-05.1 AI_PROHIBITED→422; tests `KnowledgeHubServiceImplTest`, `it/KnowledgePipelineIT`; README `docs/deliverables/LP-08.3_README.md`; `mvn test-compile` clean; tests NOT RUN | 2026-09-24 | lexie-ai `/api/v1/intelligence/embed` not yet published → 502 until then; egress-elsewhere is LP-10 |
+| `LP-08.6_TEST` | `intelligence-service` | Knowledge hub wire-through tests | - | `DELIVERED` | `intelligence-service`: `it/KnowledgePipelineIT` (real OPA + real PG + counting embedder at the seam); README `docs/deliverables/LP-08.6_README.md`; tests NOT RUN | 2026-09-24 | Needs INTELLIGENCE_IT_OPA_URL serving the bundle |
 
 ### Wave 04 — Skills 1/2/3, Masking Boundary & Assembly
 
