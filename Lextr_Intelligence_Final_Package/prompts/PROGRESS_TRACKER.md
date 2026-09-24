@@ -85,10 +85,10 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 |:---:|---|---|---|---|---|---|---|
 | `LP-06.1_SQL` | `intelligence-service` | Control-plane persistence SQL | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-06.2_JAVA` | `intelligence-service` | Persist run writer consumer path | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-06.4_TEST` | `intelligence-service` / `lexie-ai` | Producer-to-consumer buffer test | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-06.4_TEST` | `intelligence-service` (+ `lexie-ai`) | Producer-to-consumer buffer test | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-06.5_SQL` | `intelligence-service` | Archive row + hash persistence | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-06.6_JAVA` | `intelligence-service` | Archive write and fail-open refused path | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-06.7_TEST` | `intelligence-service` | Archive round-trip and AU-9 assertions | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-06.7_TEST` | `intelligence-service` (+ `lexie-ai`) | Archive round-trip and AU-9 assertions | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-07.1_SQL` | `intelligence-service` | Review queue SQL reads | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-07.2_JAVA` | `intelligence-service` | Review queue service and state machine | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-07.4_JAVA` | `intelligence-service` | Review authorization transitions and actions | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
@@ -110,9 +110,9 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-12.3_JAVA` | `intelligence-service` | Governed preset service lifecycle | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-12.4_JAVA` | `intelligence-service` | Preset DAO layer | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-12.5_TS` | `intelligence-ui` | Preset authoring UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-12.7_TEST` | `intelligence-service` / `lexie-ai` | Four-eyes preset wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-12.7_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Four-eyes preset wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-12.8_PY` | `lexie-ai` | Instruction resolution and slot validation | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-13.3_TEST` | `intelligence-service` / `lexie-ai` | Host adapter seam tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-13.3_TEST` | `intelligence-service` | Host adapter seam tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 
 ### Wave 05 — Graph Walk, Lineage & Cytoscape DAG
 
@@ -122,10 +122,10 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-14.1_PY` | `lexie-ai` | Horizontal variance skill | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-14.2_JAVA` | `intelligence-service` | Variance run coordinator | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-14.3_REGO` | `intelligence-service` | `tool_scope_variance` policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-14.4_TEST` | `intelligence-service` / `lexie-ai` | Variance wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-14.4_TEST` | `intelligence-service` (+ `lexie-ai`) | Variance wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-15.1_TS` | `intelligence-ui` | Variance workspace UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-16.1_PY` | `lexie-ai` | SkillTwo vertical DAG walk | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-16.3_TEST` | `intelligence-service` / `lexie-ai` | Vertical cross-layer tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-16.3_TEST` | `lexie-ai` | Vertical cross-layer tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-17.1_TS` | `intelligence-ui` | Drill workspace shell | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-17.2_CYTO` | `intelligence-ui` | Cytoscape/ELK DAG renderer | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-18.1_PY` | `lexie-ai` | Evidence substeps | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
@@ -133,7 +133,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-19.2_SQL` | `intelligence-service` | Rerun audit schema | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-19.3_JAVA` | `intelligence-service` | Re-run service and lineage preservation | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-19.4_TS` | `intelligence-ui` | Re-run overlay UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-19.5_TEST` | `intelligence-service` / `lexie-ai` | Rerun wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-19.5_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Rerun wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 
 ### Wave 06 — Assembly, Preset Management & Semantic Queries
 
@@ -142,28 +142,28 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-20.1_PY` | `lexie-ai` | Operational query skill | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-20.2_JAVA` | `intelligence-service` | Operational run coordinator | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-20.3_REGO` | `intelligence-service` | `tool_scope_operational` policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-20.5_TEST` | `intelligence-service` / `lexie-ai` | Operational wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-20.5_TEST` | `intelligence-service` (+ `lexie-ai`) | Operational wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-21.1_PY` | `lexie-ai` | Semantic & reference skill | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-21.2_JAVA` | `intelligence-service` | Semantic coordinator and preset resolver | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-21.3_REGO` | `intelligence-service` | `tool_scope_semantic` policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-21.4_TS` | `intelligence-ui` | Semantic workspace UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-21.5_TEST` | `intelligence-service` / `lexie-ai` | Semantic wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-21.5_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Semantic wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-22.1_SQL` | `intelligence-service` | Registered definition schema | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-22.2_JAVA` | `intelligence-service` | Registered definition controller | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-22.3_JAVA` | `intelligence-service` | Writer logical reconciliation | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-22.4_TS` | `intelligence-ui` | Skill registry UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-22.5_REGO` | `intelligence-service` | `mrm_sod` policy bundle | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-22.6_TEST` | `intelligence-service` | Skill registry wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-22.6_TEST` | `intelligence-service` (+ `intelligence-ui`) | Skill registry wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-37.1_PY` | `lexie-ai` | Impact analysis skill | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-37.2_JAVA` | `intelligence-service` | Impact preset resolver | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-37.3_REGO` | `intelligence-service` | `tool_scope_impact` policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-37.4_TS` | `intelligence-ui` | Impact answer UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-37.5_TEST` | `intelligence-service` | Impact wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-37.5_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Impact wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-38.1_PY` | `lexie-ai` | Trend analysis skill | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-38.2_JAVA` | `intelligence-service` | Trend preset resolver | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-38.3_REGO` | `intelligence-service` | `tool_scope_trend` policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-38.4_TS` | `intelligence-ui` | Trend answer UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-38.5_TEST` | `intelligence-service` | Trend wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-38.5_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Trend wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 
 ### Wave 07 — Evidence Ledger, Merkle Chaining & AU-9 Integrity
 
@@ -174,22 +174,22 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-39.3_REGO` | `intelligence-service` | TDM ring-fence policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-39.4_PY` | `lexie-ai` | Fine-tune executor | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-39.5_TS` | `intelligence-ui` | Training data UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-39.6_TEST` | `intelligence-service` | Reason-code cross-layer tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-39.6_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Reason-code cross-layer tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-23.1_PY` | `lexie-ai` | Analytical assist skill | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-24.1_TEST` | `intelligence-service` | Merkle protocol core tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-24.1_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Merkle protocol core tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-24.2_SQL` | `intelligence-service` | Merkle tree ledger migration | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-24.3_PY` | `lexie-ai` | Merkle analytical skill | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-24.4_REGO` | `intelligence-service` | `tool_scope_analytical` policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-24.5_JAVA` | `intelligence-service` | Analytical preset resolver | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-24.6_TS` | `intelligence-ui` | Merkle workspace UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-24.7_TEST` | `intelligence-service` | Merkle wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-25.1_TEST` | `intelligence-service` | AU-9 simulation and logic harness | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-24.7_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Merkle wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-25.1_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | AU-9 simulation and logic harness | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-25.2_SQL` | `intelligence-service` | AU-9 ledger schema migration | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-25.3_PY` | `lexie-ai` | Rules skill and extractor | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-25.4_REGO` | `intelligence-service` | `tool_scope_rules` policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-25.5_JAVA` | `intelligence-service` | Coordinator + acceptance receipt | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-25.6_TS` | `intelligence-ui` | Evidence workspace UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-25.7_TEST` | `intelligence-service` | AU-9 export wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-25.7_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | AU-9 export wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-25.8_TS` | `intelligence-ui` | AU-9 panel redesign | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-25.9_TS` | `intelligence-ui` | Lexie entry point integration | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.1_SQL` | `intelligence-service` | Evidence schema migration set | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
@@ -204,25 +204,25 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-26.10_SQL` | `intelligence-service` | Three-role split and purge migration | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.12_REGO` | `intelligence-service` | `audit_read` policy bundle | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.13_TS` | `intelligence-ui` | Forward-door evidence UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-26.14_TEST` | `intelligence-service` | Drift gate and reconciliation tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-26.15_TEST` | `intelligence-service` | Estate-wide audit test gate | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-26.14_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Drift gate and reconciliation tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-26.15_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Estate-wide audit test gate | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.16_JAVA` | `intelligence-service` | Evidence pack export | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.17_JAVA` | `intelligence-service` | Evidence pack verifier and hand-back | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.18_REGO` | `intelligence-service` | Export entitlement policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-26.19_TEST` | `intelligence-service` | Chain formula and cross-layer tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-26.19_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Chain formula and cross-layer tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.20_JAVA` | `intelligence-service` | Draft vs approved export logic | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.21_TS` | `intelligence-ui` | Audit evidence screen and pack view | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.22_PY` | `lexie-ai` | Generated model documentation | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-26.23_TEST` | `intelligence-service` | Cross-language claim gate | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-26.23_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Cross-language claim gate | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.24_SQL` | `intelligence-service` | Approval/discharge schema | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.25_JAVA` | `intelligence-service` | Discharge and registration logic | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.26_REGO` | `intelligence-service` | Obligation discharge validator | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-26.27_TEST` | `intelligence-service` | Undischarged obligation gate | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-26.27_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Undischarged obligation gate | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.28_SQL` | `intelligence-service` | Erasure event migration | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.29_JAVA` | `intelligence-service` | Erasure and event append service | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.30_JAVA` | `intelligence-service` | Withheld/erased/absent export semantics | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-26.31_REGO` | `intelligence-service` | Erasure authority policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-26.32_TEST` | `intelligence-service` | Erasure chain tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-26.32_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Erasure chain tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-27.1_PY` | `lexie-ai` | Evidence bundle aggregator | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-27.2_JAVA` | `intelligence-service` | Orchestration seam for evidence export | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-28.1_PY` | `lexie-ai` | Proof verifier and receipt validator | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
@@ -244,8 +244,8 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-40.2_PY` | `lexie-ai` | Reason-code replacement for prose fields | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-40.3_REGO` | `intelligence-service` | Policy-based reason-code decisions | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-40.4_TS` | `intelligence-ui` | i18n runtime and string extraction | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-40.5_TEST` | `intelligence-service` | Locale no-translate tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-47.1_TEST` | `intelligence-service` | Supervisory reachability and gate tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-40.5_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Locale no-translate tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-47.1_TEST` | `intelligence-ui` | Supervisory reachability and gate tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-47.2_TS` | `intelligence-ui` | Structural radar workspace UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-47.3_TS` | `intelligence-ui` | Mount contracts and registry wiring | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-47.4_TS` | `intelligence-ui` | Lexie dispatcher and handoff | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
@@ -255,7 +255,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-48.2_JAVA` | `intelligence-service` | Ingestion API and disposition handling | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-48.3_JAVA` | `intelligence-service` | Rule set server-side semantics | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-48.5_TS` | `intelligence-ui` | Governing ingest UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-48.6_TEST` | `intelligence-service` | Negative suite and mutation test port | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-48.6_TEST` | `intelligence-service` (+ `intelligence-ui`) | Negative suite and mutation test port | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 
 ### Wave 09 — Cross-Product Integration Baseline
 
@@ -267,26 +267,26 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-41.1_TEST` | `intelligence-service` | DOM-free protocol core tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-41.1_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | DOM-free protocol core tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-41.2_REGO` | `intelligence-service` | UC10 analytical policy gates | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-41.3_PY` | `lexie-ai` | Protocol core evaluator and mutation gate | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-41.4_JAVA` | `intelligence-service` | Semantic resolution seam service | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-41.5_TS` | `intelligence-ui` | Analytical refine slice UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-41.6_TEST` | `intelligence-service` | Analytical seam wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-41.6_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Analytical seam wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-41.7_JAVA` | `intelligence-service` | Logical/physical resolution seam service | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-41.8_TEST` | `intelligence-service` | Fail-closed wire-through for resolution seam | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-42.1_TEST` | `intelligence-service` | Report-local scope & grounding core tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-41.8_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Fail-closed wire-through for resolution seam | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-42.1_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Report-local scope & grounding core tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-42.2_REGO` | `intelligence-service` | High risk tier policy gates | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-42.3_PY` | `lexie-ai` | Derived attribute expression evaluator | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-42.4_JAVA` | `intelligence-service` | Derived attribute evidence & expression service | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-42.5_TS` | `intelligence-ui` | Inline placement & expression UI display | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-45.1_TEST` | `intelligence-service` | Decision core for instance outcome tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-45.1_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Decision core for instance outcome tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-45.2_REGO` | `intelligence-service` | Report store search policy gating | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-45.3_PY` | `lexie-ai` | Metadata-only report store adapter | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-45.4_JAVA` | `intelligence-service` | Report store instance evidence service | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-45.5_TS` | `intelligence-ui` | Report store instance outcome UI display | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-46.0_SQL` | `intelligence-service` | Domain resolution persistence schema migration | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-46.1_TEST` | `intelligence-service` | Exact/ambiguous/unresolved decision core tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-46.1_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Exact/ambiguous/unresolved decision core tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-46.2_JAVA` | `intelligence-service` | Domain resolution evidence service | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-46.3_PY` | `lexie-ai` | Domain resolution adapter client | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-46.4_TS` | `intelligence-ui` | Domain resolution review UI display | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
@@ -295,7 +295,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-44.1_TEST` | `lexie-ai` | Op catalogue & graph traversal bounds tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-44.1_TEST` | `intelligence-service` (+ `lexie-ai`) | Op catalogue & graph traversal bounds tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-44.2_REGO` | `intelligence-service` | Graph traversal & named op policy gating | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-44.3_PY` | `lexie-ai` | Knowledge graph client with named ops | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-44.4_JAVA` | `intelligence-service` | Knowledge graph traversal & evidence service | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
@@ -308,7 +308,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-49.2_JAVA` | `intelligence-service` | External notary service & receipt ledger | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-49.3_SQL` | `intelligence-service` | WORM retention boundary schema | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-49.4_TS` | `intelligence-ui` | Witness status & notary badge UI display | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-49.5_TEST` | `intelligence-service` | External witness & WORM anchor wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-49.5_TEST` | `intelligence-service` (+ `intelligence-ui`) | External witness & WORM anchor wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 
 ### Wave 13 — Population Reconciliation
 
@@ -328,7 +328,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-51.3_JAVA` | `intelligence-service` | Calibration service and promotion records | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-51.4_SQL` | `intelligence-service` | Calibration threshold schema | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-51.5_TS` | `intelligence-ui` | Confidence visual grammar | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-51.6_TEST` | `intelligence-service` | Confidence calibration wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-51.6_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Confidence calibration wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 
 ### Wave 15 — Approval Workflow Substrate
 
@@ -342,7 +342,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-59.6_JAVA` | `intelligence-service` | Estate ledger service | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-59.7_JAVA` | `intelligence-service` | Actor directory and guardrails | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-59.8_SQL` | `intelligence-service` | Approval ledger schema extension | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-59.9_TEST` | `intelligence-service` | Approval workflow wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-59.9_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Approval workflow wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 
 ### Wave 16 — Document Parsing Seam & Sandboxing
 
@@ -353,23 +353,23 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-52.3_PY` | `lexie-ai` | Traversal and reconciliation logic | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-52.4_PY` | `lexie-ai` | Label policy and error handling | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-52.5_REGO` | `intelligence-service` | Parsing `tool_scope` policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-52.6_TEST` | `intelligence-service` | Parsing seam wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-52.6_TEST` | `lexie-ai` (+ `intelligence-service`) | Parsing seam wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-57.1_PY` | `lexie-ai` | Exam runner | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-57.2_PY` | `lexie-ai` | Grading facets | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-57.3_REGO` | `intelligence-service` | Assurance gating policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-57.4_SQL` | `intelligence-service` | Assurance schema migration | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-57.5_JAVA` | `intelligence-service` | Assurance orchestration service | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-57.6_TS` | `intelligence-ui` | Assurance surface UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-57.7_TEST` | `intelligence-service` | Assurance wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-57.7_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Assurance wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-58.1_REGO` | `intelligence-service` | `tdm_sandbox` policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-58.2_PY` | `lexie-ai` | Sandbox probe runner | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-58.3_JAVA` | `intelligence-service` | Sandbox run persistence | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-58.4_TS` | `intelligence-ui` | Sandbox surface UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-58.5_TEST` | `intelligence-service` | Sandbox wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-58.5_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Sandbox wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-60.1_REGO` | `intelligence-service` | `todo_routing` policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-60.2_JAVA` | `intelligence-service` | Inbox service and step logic | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-60.3_TS` | `intelligence-ui` | Inbox workspace UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-60.4_TEST` | `intelligence-service` | Todo routing wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-60.4_TEST` | `intelligence-service` (+ `intelligence-ui`) | Todo routing wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 
 ### Wave 17 — Chunking, Vector Split & OCR Provenance
 
@@ -379,13 +379,13 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-53.2_SQL` | `intelligence-service` | Document chunk schema migration | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-53.3_SQL` | `intelligence-service` | Vector-store re-pointing and cleanup | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-53.4_JAVA` | `intelligence-service` | Chunk retrieval and provenance DAO | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-53.5_TEST` | `intelligence-service` | Chunking wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-53.5_TEST` | `intelligence-service` (+ `lexie-ai`) | Chunking wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-54.1_PY` | `lexie-ai` | OCR configuration and language seam | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-54.2_PY` | `lexie-ai` | Text source provenance logic | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-54.3_PY` | `lexie-ai` | Figure verification logic | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-54.4_PY` | `lexie-ai` | Completeness checks and verification gate | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-54.5_TS` | `intelligence-ui` | Provenance viewer UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-54.6_TEST` | `intelligence-service` | OCR provenance wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-54.6_TEST` | `lexie-ai` (+ `intelligence-service`, `intelligence-ui`) | OCR provenance wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 
 ### Wave 18 — Footnote Association & Drop Profiles
 
@@ -396,12 +396,12 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-55.3_SQL` | `intelligence-service` | Chunk reference edge tables | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-55.4_JAVA` | `intelligence-service` | Footnote retrieval join | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-55.5_TS` | `intelligence-ui` | Footnote display UI | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-55.6_TEST` | `intelligence-service` | Footnote wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-55.6_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Footnote wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-56.1_PY` | `lexie-ai` | Drop profile proposer | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-56.2_REGO` | `intelligence-service` | `drop_profile` OPA policy | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-56.3_JAVA` | `intelligence-service` | Versioned drop profile service | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 | `LP-56.4_TS` | `intelligence-ui` | SME ruling surface | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-56.5_TEST` | `intelligence-service` | Drop profile wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-56.5_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Drop profile wire-through tests | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
 
 ---
 
