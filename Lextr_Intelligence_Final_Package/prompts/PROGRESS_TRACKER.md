@@ -3,7 +3,7 @@
 **Repository Branches:** `feature/lextr-intelligence-reimplementation`  
 **Platform Version:** `v1.38.0`  
 **Tracker Mode:** Evidence-based, prompt-by-prompt tracking  
-**Current State:** Reset baseline for clean reimplementation on branch `feature/lextr-intelligence-reimplementation`. All 251 prompts initialized to `PENDING`. No prompt is marked as delivered without fresh objective verification.
+**Current State:** Reimplementation in progress on `feature/lextr-intelligence-reimplementation`. 3/251 prompts DELIVERED (code written; tests are run in a final pass, so evidence is an artifact reference with gates marked NOT RUN). Last updated 2026-09-24.  
 
 ---
 
@@ -35,7 +35,7 @@ Required fields per prompt:
 
 | Wave | Feature Domain | Total Prompts | PENDING | IN_PROGRESS | BLOCKED | DELIVERED | DEFERRED | Status |
 |:---:|---|:---:|:---:|:---:|:---:|:---:|:---:|---|
-| **Wave 01** | Baseline Schema & UI Core Foundations | 3 | 3 | 0 | 0 | 0 | 0 | ⏳ PENDING |
+| **Wave 01** | Baseline Schema & UI Core Foundations | 3 | 0 | 0 | 0 | 3 | 0 | ✅ DELIVERED |
 | **Wave 02** | Run Protocol, Policy & SLM Baseline | 5 | 5 | 0 | 0 | 0 | 0 | ⏳ PENDING |
 | **Wave 03** | Persistence, Human Review & Knowledge Hub | 13 | 13 | 0 | 0 | 0 | 0 | ⏳ PENDING |
 | **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 12 | 0 | 0 | 0 | 0 | ⏳ PENDING |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 22 | 0 | 0 | 0 | 0 | ⏳ PENDING |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 11 | 0 | 0 | 0 | 0 | ⏳ PENDING |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 11 | 0 | 0 | 0 | 0 | ⏳ PENDING |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **251** | **0** | **0** | **0** | **0** | **0% (Fresh Reimplementation Baseline)** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **248** | **0** | **0** | **3** | **0** | **1.2% delivered** |
 
 ---
 
@@ -65,9 +65,9 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-01.1_SQL` | `intelligence-service` | Baseline schema DDL and migration setup | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-02.1_TS` | `intelligence-ui` | Tenant + host shell foundation | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
-| `LP-02.2_TS` | `intelligence-ui` | Masking-safe UI atoms and shared rendering | - | `PENDING` | - | 2026-09-24 | Ready for reimplementation |
+| `LP-01.1_SQL` | `intelligence-service` | Baseline schema DDL and migration setup | - | `DELIVERED` | `intelligence-service`: `src/main/resources/db/migration/V1__intelligence_schema_init.sql`, `V2__uc1a_seed.sql` (byte-exact `ddl_body`), `V3__knowledge_hub_ingestion.sql`, `V4__register_variance_slm.sql` (fixed 2026-09-24); test `src/test/resources/db/LP-01.1_schema_verify.sql`; README `docs/deliverables/LP-01.1_README.md`; gates NOT RUN | 2026-09-24 | V1 provisional until Part-M (Option A). V3 fixed (own `kh_ingestion_status` type, B1); V4 fixed (mapped to V1 `model_registry`). SME must set Flyway placeholders `variance_slm_model_id`, `variance_fine_tune_version`, `variance_slm_artifact_uri` before migrate |
+| `LP-02.1_TS` | `intelligence-ui` | Tenant + host shell foundation | - | `DELIVERED` | `intelligence-ui`: `src/components/themes/{TenantThemeProvider,ExternalStylesheet,Logo,SurfaceContainer,fallbackTheme,tenantTypes}`, `src/embed/{index,mountIntelligence,IntelligenceElement}`; tests `themes/__tests__/*`, `embed/__tests__/*`; README `LP-02.1-README.md`; tests NOT RUN | 2026-09-24 | Module Federation plugin + Vite lib build not wired; OPA stylesheet-decision route open; React 19 vs pinned 18; run `npm install` for @emotion/cache lock entry |
+| `LP-02.2_TS` | `intelligence-ui` | Masking-safe UI atoms and shared rendering | - | `DELIVERED` | `intelligence-ui`: adapted `atoms/{MaskedValue,RunProgress,LextrChart}`, `organisms/{EvidenceLedgerViewer,OutputRenderer}`, `store/useIntelligenceStore`; overlay contract `atoms/overlayContract.ts`; `src/embed/atoms.ts`; tests `__tests__/atomsContract.test.tsx` (all 15 tests_must_cover mapped), `MaskedValue.test.tsx`; README `LP-02.2-README.md`; tests NOT RUN | 2026-09-24 | OI-10 settled = run-shaped. ledgerState/display strings from service open; real-browser run + focus trap not asserted; React 19 vs pinned 18 |
 
 ### Wave 02 — Run Protocol, Policy & SLM Baseline
 
