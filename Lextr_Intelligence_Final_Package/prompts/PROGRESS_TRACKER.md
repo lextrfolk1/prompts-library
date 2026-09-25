@@ -444,3 +444,7 @@ Base implementation by another model on `feature/lextr-intelligence-v1.38.0`; en
 | 03 | LP-07.4 | covered (transition table + resolver present) | — | — |
 | 03 | LP-08.1 / LP-08.2 | KH header fields never written | mark_ingested (hash, tier, lifecycle) | svc c8329da |
 | 03 | LP-08.3 / LP-08.6 | covered (single-statement retrieval, NON_AUTHORITATIVE mark present) | — | — |
+| 04 | LP-09.1 / LP-10.1 / LP-10.4 / LP-11.1 / LP-12.8 | covered (skill_one, masking/boundary, masking/grounding_payload, skill_three + driver_category, instruction/instruction_resolver) | — | — |
+| 04 | LP-12.1 / LP-12.2 / LP-12.3 / LP-12.4 | covered (V4 partial unique index; lifecycle legality added in pre-row) | — | svc 6b4a3a7 |
+| 04 | LP-12.5 | wizard called non-existent routes; denial never shown; status set client-side; no activate control; observed not shown | presetApi + wired hook/wizard + PresetLifecycleStage; tests updated | ui 45c583d |
+| 04 | LP-12.7 / LP-13.3 | covered (preset tests; test_host_adapter_wire_through.py) | — | — |
