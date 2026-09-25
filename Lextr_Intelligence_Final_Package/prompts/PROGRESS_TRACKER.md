@@ -436,3 +436,11 @@ Base implementation by another model on `feature/lextr-intelligence-v1.38.0`; en
 | 02 | LP-03.5 | no producer-field / three-state test | RunContractProducerFieldsTest | svc c079e09 |
 | 02 | LP-04.1 | no evaluate entry, capability, embedding_call, masking, model_routing; mrm_approval called but absent; mrm_sod input keys mismatched; data docs never loaded | ported packages + mrm_approval + evaluate adapter; loader uploads opa/data | svc c079e09 |
 | 02 | LP-05.1 | OPA routing never consulted | resolveModelForClassification via lextr.ai.model_routing | svc c079e09 |
+| 03 | LP-06.1 / LP-07.1 | output_hash, correlation, determinism, claim columns and review event table absent (record fields silently dropped) | V28 + insert persists them | svc c8329da |
+| 03 | LP-06.2 | confidence fabricated as 0.95; "sweep later enqueues" but no sweep | producer confidence; scheduled StrandedRunSweep | svc c8329da |
+| 03 | LP-06.4 / LP-06.7 | no sweep test | StrandedRunSweepTest | svc c8329da |
+| 03 | LP-06.5 / LP-06.6 | binding ignored (always inline); no real store | FileSystemPayloadStore + PayloadStoreBindingGuard | svc c8329da |
+| 03 | LP-07.2 | repeated enqueue reset status and cleared reviewer/decision | idempotent guard + review events | svc c8329da |
+| 03 | LP-07.4 | covered (transition table + resolver present) | — | — |
+| 03 | LP-08.1 / LP-08.2 | KH header fields never written | mark_ingested (hash, tier, lifecycle) | svc c8329da |
+| 03 | LP-08.3 / LP-08.6 | covered (single-statement retrieval, NON_AUTHORITATIVE mark present) | — | — |
