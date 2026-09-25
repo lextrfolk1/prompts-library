@@ -3,7 +3,7 @@
 **Repository Branches:** `feature/lextr-intelligence-v1.38.0` (active; base implementation by another model, gap-filled here) · `feature/lextr-intelligence-reimplementation` (earlier, Waves 1–4)  
 **Platform Version:** `v1.38.0`  
 **Tracker Mode:** Evidence-based, prompt-by-prompt tracking  
-**Current State:** Working on `feature/lextr-intelligence-v1.38.0`, LP by LP: each prompt verified against the base implementation, gaps filled additively (nothing removed). 187/251 DELIVERED, 3 IN_PROGRESS, 61 PENDING. Gates/tests NOT RUN (final pass). Per-change log in section 6. Last updated 2026-09-25.  
+**Current State:** Working on `feature/lextr-intelligence-v1.38.0`, LP by LP: each prompt verified against the base implementation, gaps filled additively (nothing removed). 188/251 DELIVERED, 2 IN_PROGRESS, 61 PENDING. Gates/tests NOT RUN (final pass). Per-change log in section 6. Last updated 2026-09-25.  
 
 ---
 
@@ -42,7 +42,7 @@ Required fields per prompt:
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 0 | 0 | 0 | 16 | 0 | ✅ DELIVERED |
 | **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 0 | 0 | 0 | 25 | 0 | ✅ DELIVERED |
 | **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 50 | 0 | 0 | 8 | 0 | 🟡 PARTIAL |
-| **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 11 | 3 | 0 | 10 | 0 | 🟡 PARTIAL |
+| **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 11 | 2 | 0 | 11 | 0 | 🟡 PARTIAL |
 | **Wave 09** | Cross-Product Integration Baseline | 0 | 0 | 0 | 0 | 0 | 0 | ⚪ Empty |
 | **Wave 10** | UC10 Refine & Build, Report Store & Domain Resolution | 23 | 0 | 0 | 0 | 23 | 0 | ✅ DELIVERED |
 | **Wave 11** | Knowledge Graph Access Layer | 4 | 0 | 0 | 0 | 4 | 0 | ✅ DELIVERED |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 0 | 0 | 0 | 22 | 0 | ✅ DELIVERED |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **61** | **3** | **0** | **187** | **0** | **74.5% delivered** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **61** | **2** | **0** | **188** | **0** | **74.9% delivered** |
 
 ---
 
@@ -241,7 +241,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-34.1_JAVA` | `intelligence-service` | Completeness gate and capability checker | - | `DELIVERED` | svc 5ed04e5 (completeness gate, -Pcoverage-gate) | 2026-09-25 | gates NOT RUN |
 | `LP-35.1_JAVA` | `intelligence-service` | Health, readiness, liveness and metrics | - | `DELIVERED` | svc 5ed04e5 (probes, readiness, required OTLP, fail-closed retry) | 2026-09-25 | gates NOT RUN |
 | `LP-40.1_SQL` | `intelligence-service` | Locale and run contract schema | - | `DELIVERED` | svc 2a32f6f (RunLocale, V31, RunLocaleTest) | 2026-09-25 | gates NOT RUN |
-| `LP-40.2_PY` | `lexie-ai` | Reason-code replacement for prose fields | - | `IN_PROGRESS` | - | 2026-09-25 | next: 40.2 PY codes, 40.4 TS i18n, 40.5 no-translate gate |
+| `LP-40.2_PY` | `lexie-ai` | Reason-code replacement for prose fields | - | `DELIVERED` | lexie 44369ec (reason_codes.py + reason_codes.en.json, 43 codes; 46 sites / 15 modules; tests/test_no_composed_prose.py AST gate) | 2026-09-25 | renderings byte-identical; DTO fields still typed str (code on ReasonText) — exposing reason_code on wire DTOs is a follow-up |
 | `LP-40.3_REGO` | `intelligence-service` | Policy-based reason-code decisions | - | `DELIVERED` | svc 2a32f6f (reason_code+params, policy_reasons.en.json, byte-verified) | 2026-09-25 | gates NOT RUN |
 | `LP-40.4_TS` | `intelligence-ui` | i18n runtime and string extraction | - | `IN_PROGRESS` | - | 2026-09-25 | next: 40.2 PY codes, 40.4 TS i18n, 40.5 no-translate gate |
 | `LP-40.5_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Locale no-translate tests | - | `IN_PROGRESS` | - | 2026-09-25 | next: 40.2 PY codes, 40.4 TS i18n, 40.5 no-translate gate |
@@ -494,5 +494,6 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | 08 | LP-35.1 | no probes/readiness, OTLP optional, no retry policy | probes + OPA/lexie readiness indicators; required OTLP (dev default); bounded fail-closed OPA retry | svc 5ed04e5 |
 | 08 | LP-40.1 | no locale on any contract | RunLocale (explicit default, REQUEST/DEFAULT), locale on RunRequest/RunResult, V31 agent_run.locale + locale_source; RunLocaleTest | svc 2a32f6f |
 | 08 | LP-40.3 | 31 prose deny reasons, no codes | reason_code + typed params in 30 packages; i18n/policy_reasons.en.json (17 codes) byte-verified against opa; PolicyReasonCodeCatalogueTest | svc 2a32f6f |
-| 08 | LP-40.2 / LP-40.4 / LP-40.5 | not started | IN_PROGRESS | — |
+| 08 | LP-40.2 | ~50 composed prose fields in lexie-ai skills | reason(CODE, **params) + catalogue; 46 sites converted; AST gate w/ positive controls | lexie 44369ec |
+| 08 | LP-40.4 / LP-40.5 | not started | IN_PROGRESS | — |
 | 08 | LP-47 / LP-48 | not started | pending (step 6) | — |
