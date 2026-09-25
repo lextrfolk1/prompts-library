@@ -431,3 +431,8 @@ Base implementation by another model on `feature/lextr-intelligence-v1.38.0`; en
 | 01 | LP-01.1 | regulatory_document reused form_version enum (B1) | V26 kh_ingestion_status | svc 84c244c |
 | 01 | LP-02.1 | covered by pre-row port | — | ui dcd4850 |
 | 01 | LP-02.2 | empty unmasked display blank; RunProgress crash on unknown status; no ledger state; no output_type dispatch; chart formats figures | atom patches + embed/atoms.ts | ui 2260772 |
+| 02 | LP-03.2 | VarianceExplanation dropped producer fields; OutputType failed on unseen value and diverged from DB enum (insert cast failure); tenant trusted from body | producer-exact records, tolerant OutputType + V27, X-Client-Id match on /run | svc c079e09 |
+| 02 | LP-03.3 | lexie WebClient camelCase (OI-9); error table off-manifest; correlation not three-state | snake_case codecs, status rows, ErrorDetail.correlationState | svc c079e09 |
+| 02 | LP-03.5 | no producer-field / three-state test | RunContractProducerFieldsTest | svc c079e09 |
+| 02 | LP-04.1 | no evaluate entry, capability, embedding_call, masking, model_routing; mrm_approval called but absent; mrm_sod input keys mismatched; data docs never loaded | ported packages + mrm_approval + evaluate adapter; loader uploads opa/data | svc c079e09 |
+| 02 | LP-05.1 | OPA routing never consulted | resolveModelForClassification via lextr.ai.model_routing | svc c079e09 |
