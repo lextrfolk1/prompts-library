@@ -448,3 +448,8 @@ Base implementation by another model on `feature/lextr-intelligence-v1.38.0`; en
 | 04 | LP-12.1 / LP-12.2 / LP-12.3 / LP-12.4 | covered (V4 partial unique index; lifecycle legality added in pre-row) | — | svc 6b4a3a7 |
 | 04 | LP-12.5 | wizard called non-existent routes; denial never shown; status set client-side; no activate control; observed not shown | presetApi + wired hook/wizard + PresetLifecycleStage; tests updated | ui 45c583d |
 | 04 | LP-12.7 / LP-13.3 | covered (preset tests; test_host_adapter_wire_through.py) | — | — |
+| 05 | LP-14.0 | close/reopen rules unenforced; agent_run.cycle_id never written | V29 close guard trigger; bind_cycle (caller-named only) | svc 9faef0b |
+| 05 | LP-14.1 / LP-14.3 / LP-16.1 / LP-16.3 / LP-17.2 / LP-18.1 / LP-19.1 / LP-19.2 / LP-19.3 / LP-19.5 | covered (all ops registered in tool_scope_variance; rerun re-resolves latest preset; analyst provenance) | — | — |
+| 05 | LP-14.2 / LP-14.4 | payload could overwrite trusted OPA input keys and assert *_ready; lexie-echoed tenant persisted | trusted keys applied last, *_ready stripped (3 coordinators); caller tenant enforced | svc 9faef0b |
+| 05 | LP-15.1 / LP-17.1 | fabricated 0.95 confidence and narrative fallback | absent renders as absent | ui c1c161d |
+| 05 | LP-19.4 | OPEN: client-side system-driver tally used when server count absent (their conformance test depends on it; server wire field unconfirmed) | not changed | — |
