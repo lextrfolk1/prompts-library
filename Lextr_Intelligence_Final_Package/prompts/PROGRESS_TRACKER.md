@@ -425,6 +425,19 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 Base implementation by another model on `feature/lextr-intelligence-v1.38.0`; entries below record what was missing and added (additive only, nothing removed). Gates NOT RUN.
 
+### 6.0 Status summary (as of 2026-09-25)
+
+Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + LP-40 → (3) LP-39 → (4) LP-25 → (5) LP-26 → (6) LP-47/48 → (7) LP-27/28 as design docs.
+
+| Scope | Status | Notes |
+|---|---|---|
+| Waves 01–06 | VERIFIED + GAP-FILLED | per-prompt rows below; open: LP-19.4 client tally, LP-38.1 two classifiers |
+| Wave 07 | VERIFIED — REBUILD PENDING | LP-23/24 covered; LP-25, LP-39, LP-40 built under wrong numbers (their Merkle ledger / master synthesis / ratio kept); LP-26 partial (2/9 tables); LP-27/28 proposed |
+| Wave 08 | LP-29..35 DELIVERED (gates NOT RUN); LP-47/48 PENDING | step 2 in progress; LP-40 next |
+| Wave 09 | n/a | folder empty |
+| Waves 10–18 | VERIFIED + GAP-FILLED | step 1 complete; LP-49.2 waits on LP-26.9 |
+| Owner decisions open | — | secret-scan enforcement date (red on arrival); coverage-gate enforcement date; trend/analytical/impact/operational/digital-twin readiness data docs shipped `true`; prod now requires OTLP endpoint; dev-yaml password kept by instruction |
+
 | Wave | Prompt | Gap found | Added | Commit |
 |---|---|---|---|---|
 | pre | cross-cutting | non-RFC 8785 canonicaliser; exception text in responses; fail-open /run fallback; unbounded cache; no STOMP; no preset transition legality; tenant CSS injected without OPA | JsonCanonicalizer + shared corpus (Java+Python), hardened GlobalExceptionHandler + 502, RunServiceImpl refusal/STOMP/LRU, PresetServiceImpl legality, OPA-gated TenantThemeProvider + embed | svc 6b4a3a7, lexie 74c0037, ui dcd4850 |
@@ -471,3 +484,12 @@ Base implementation by another model on `feature/lextr-intelligence-v1.38.0`; en
 | 17 | LP-53.3 / LP-53.4 x LP-08 | split migrated but LP-08 ingest/retrieval not re-pointed (FK violation / wrong passages) | ingest via embedding_chunk(+source); retrieval joins through embedding_chunk_source | svc 25e02e3 |
 | 17 | LP-54 | covered | — | — |
 | 18 | LP-55 / LP-56 | covered (chunk_reference edges, notes_for queries, drop_profile) | — | — |
+| 08 | LP-29.1 | no OpenAPI config/annotations; no route-coverage check | OpenApiConfig (error envelope described) + @Tag on 28 controllers; OpenApiRouteCoverageTest w/ positive control | svc 5ed04e5 |
+| 08 | LP-30.1 | no logging config, no redaction, correlation not on records | logback-spring.xml (key=value), LogRedactor + converter, CorrelationMdcFilter (three-state); LogRedactorTest | svc 5ed04e5 |
+| 08 | LP-31.1 | missing SQL key failed only at first call; no width-agreement gate | Hikari externalized; QueryCatalogStartupCheck; QueryKeyCoverageTest (+ 384 agreement, HNSW ≤2000) | svc 5ed04e5 |
+| 08 | LP-32.1 | no service-JWT; no lextr.ai.runtime_config; no secret scan | ServiceJwtSigner + WebClient filter; runtime_config.rego + data; SecretScanTest (@Tag secret-scan, opt-in) | svc 5ed04e5 |
+| 08 | LP-33.1 | 409 conflicts carried no (status, action) | TransitionConflictException → 409 ILLEGAL_TRANSITION | svc 5ed04e5 |
+| 08 | LP-33.3 | lexie-ai had zero exception handlers; str(e) leaks; lock refusal 409 prose | lexie_ai/errors.py at composition root; lock → 422 RUNTIME_CONFIG_KEY_NOT_EDITABLE; test updated | lexie 32e073d |
+| 08 | LP-34.1 | no coverage enforcement, no completeness gate | CompletenessGateTest (ops vs allow-list, write-without-read) w/ positive controls; -Pcoverage-gate JaCoCo 90%; review-event read added (gate finding) | svc 5ed04e5 |
+| 08 | LP-35.1 | no probes/readiness, OTLP optional, no retry policy | probes + OPA/lexie readiness indicators; required OTLP (dev default); bounded fail-closed OPA retry | svc 5ed04e5 |
+| 08 | LP-40 / LP-47 / LP-48 | not started | pending (step 2 / step 6) | — |
