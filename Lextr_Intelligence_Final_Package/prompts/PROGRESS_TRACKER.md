@@ -458,3 +458,11 @@ Base implementation by another model on `feature/lextr-intelligence-v1.38.0`; en
 | 06 | LP-21.2 | RunResult lacked intent / route_out | additive components | svc 31d1ea8 |
 | 06 | LP-22.3 | only draft->operational was refused; retired->operational etc. allowed | LEGAL_NEXT table | svc 31d1ea8 |
 | 06 | LP-38.1 | OPEN: two trend classifiers (variance evidence_substeps vs skills/shared) with different vocabularies; spec's own LP-18 vs LP-38 verdict sets differ — owner decision needed | not changed | — |
+| 07 | LP-25 / LP-26 / LP-27 / LP-28 / LP-39 / LP-40 | BUILT UNDER WRONG NUMBERS (Merkle ledger, regulatory export, multi-hop, master synthesis, ratio) or partial (LP-26: 2 of 9 tables) — scheduled as from-scratch builds (steps 2-7 of the agreed order) | pending | — |
+| 08 | LP-29..35 / LP-47 / LP-48 | never started — scheduled (step 2 / step 6) | pending | — |
+| 10 | LP-41 / LP-42 / LP-45 / LP-46 | covered (handoff/expression/report_store/domain adapter; category errors; value_desc honesty) | — | — |
+| 11 | LP-44 | covered (per-op readiness, cross-tenant raises, named-op client) | — | — |
+| 12 | LP-49 | covered except LP-49.2's dependency on LP-26.9 verify_chain_coverage() (Java substitute) — resolves with LP-26 build | pending LP-26 | — |
+| 13 | LP-50.1 / LP-50.3 / LP-50.4 | covered (generated gate columns, fail-closed inventory fetch) | — | — |
+| 13 | LP-50.2 | populations caller-supplied; variance explanation never persisted | V30 agent_run.variance_explanation + reconcilePopulationFromCycle | svc 5cfac1d |
+| 14 | LP-51 | covered (versioned formula, population calibrator, NOT-CALIBRATED state) | — | — |
