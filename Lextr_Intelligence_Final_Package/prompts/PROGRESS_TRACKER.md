@@ -3,7 +3,7 @@
 **Repository Branches:** `feature/lextr-intelligence-v1.38.0` (active; base implementation by another model, gap-filled here) · `feature/lextr-intelligence-reimplementation` (earlier, Waves 1–4)  
 **Platform Version:** `v1.38.0`  
 **Tracker Mode:** Evidence-based, prompt-by-prompt tracking  
-**Current State:** Working on `feature/lextr-intelligence-v1.38.0`, LP by LP: each prompt verified against the base implementation, gaps filled additively (nothing removed). 205/251 DELIVERED, 0 IN_PROGRESS, 46 PENDING. Gates/tests NOT RUN (final pass). Per-change log in section 6. Last updated 2026-09-25.  
+**Current State:** Working on `feature/lextr-intelligence-v1.38.0`, LP by LP: each prompt verified against the base implementation, gaps filled additively (nothing removed). 236/251 DELIVERED, 0 IN_PROGRESS, 15 PENDING. Gates/tests NOT RUN (final pass). Per-change log in section 6. Last updated 2026-09-25.  
 
 ---
 
@@ -41,7 +41,7 @@ Required fields per prompt:
 | **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 0 | 0 | 0 | 12 | 0 | ✅ DELIVERED |
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 0 | 0 | 0 | 16 | 0 | ✅ DELIVERED |
 | **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 0 | 0 | 0 | 25 | 0 | ✅ DELIVERED |
-| **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 35 | 0 | 0 | 23 | 0 | 🟡 PARTIAL |
+| **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 4 | 0 | 0 | 54 | 0 | 🟡 PARTIAL |
 | **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 11 | 0 | 0 | 13 | 0 | 🟡 PARTIAL |
 | **Wave 09** | Cross-Product Integration Baseline | 0 | 0 | 0 | 0 | 0 | 0 | ⚪ Empty |
 | **Wave 10** | UC10 Refine & Build, Report Store & Domain Resolution | 23 | 0 | 0 | 0 | 23 | 0 | ✅ DELIVERED |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 0 | 0 | 0 | 22 | 0 | ✅ DELIVERED |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **46** | **0** | **0** | **205** | **0** | **81.7% delivered** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **15** | **0** | **0** | **236** | **0** | **94.0% delivered** |
 
 ---
 
@@ -192,37 +192,37 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-25.7_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | UC11 cross-language reconciliation | - | `DELIVERED` | lexie 1d70226 (tests/rules/test_rules_cross_language.py reading all three repos) | 2026-09-25 | skips when sibling repos absent |
 | `LP-25.8_TS` | `intelligence-ui` | Four-tab panel redesign + GovernedValuesTable | - | `DELIVERED` | ui 953078f (Understand/Build/Check/Compare, include/exclude IN/NOT IN, retired blocked, registration request) | 2026-09-25 | click-tested controls |
 | `LP-25.9_TS` | `intelligence-ui` | LexiAI entry point (one render model, two projections) | - | `DELIVERED` | ui 953078f (ASK_WIRING UC11, shell rulesArrived/openRulesFromLexie, LexiePanel handoff, harness-only inline renderer) | 2026-09-25 | only en-US shipped; es asserted via test catalogue |
-| `LP-26.1_SQL` | `intelligence-service` | Evidence schema migration set | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.2_JAVA` | `intelligence-service` | Recording service and rules | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.3_JAVA` | `intelligence-service` | Query and export surface | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.4_JAVA` | `intelligence-service` | Lifecycle engine | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.5_JAVA` | `intelligence-service` | Correlation and actor attribution | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.6_PY` | `lexie-ai` | Producer runtime and evidence recorder | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.7_TS` | `intelligence-ui` | Audit evidence UI models | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.8_SQL` | `intelligence-service` | Retention, archive, coverage SQL | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.9_SQL` | `intelligence-service` | Header transition history and coverage | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.10_SQL` | `intelligence-service` | Three-role split and purge migration | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.12_REGO` | `intelligence-service` | `audit_read` policy bundle | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.13_TS` | `intelligence-ui` | Forward-door evidence UI | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.14_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Drift gate and reconciliation tests | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.15_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Estate-wide audit test gate | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.16_JAVA` | `intelligence-service` | Evidence pack export | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.17_JAVA` | `intelligence-service` | Evidence pack verifier and hand-back | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.18_REGO` | `intelligence-service` | Export entitlement policy | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.19_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Chain formula and cross-layer tests | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.20_JAVA` | `intelligence-service` | Draft vs approved export logic | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.21_TS` | `intelligence-ui` | Audit evidence screen and pack view | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.22_PY` | `lexie-ai` | Generated model documentation | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.23_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Cross-language claim gate | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.24_SQL` | `intelligence-service` | Approval/discharge schema | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.25_JAVA` | `intelligence-service` | Discharge and registration logic | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.26_REGO` | `intelligence-service` | Obligation discharge validator | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.27_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Undischarged obligation gate | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.28_SQL` | `intelligence-service` | Erasure event migration | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.29_JAVA` | `intelligence-service` | Erasure and event append service | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.30_JAVA` | `intelligence-service` | Withheld/erased/absent export semantics | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.31_REGO` | `intelligence-service` | Erasure authority policy | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
-| `LP-26.32_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Erasure chain tests | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
+| `LP-26.1_SQL` | `intelligence-service` | Evidence schema migration set | - | `DELIVERED` | svc 55c96e7 (V36: generic GUC fence, tenant-day chain trigger, monotonic head, run/step provenance + refusal/traversal CHECKs, one PLAN per run, agent_run_anchor 4 roles, evidence_ledger_day) | 2026-09-25 | agent_run_step fence admits one additive `input` merge (LP-42.4/45.4) - recorded deviation |
+| `LP-26.2_JAVA` | `intelligence-service` | Recording service and rules | - | `DELIVERED` | svc fd13fc2 (evidence/recording/RecordingRules; EvidenceLedgerCoreTest) | 2026-09-25 | gates NOT RUN |
+| `LP-26.3_JAVA` | `intelligence-service` | Query and export surface | - | `DELIVERED` | svc fd13fc2 (query/EvidenceQueryCore, EvidenceLedgerDao, EvidenceReadService, EvidenceLedgerController /api/intelligence/evidence) | 2026-09-25 | gates NOT RUN |
+| `LP-26.4_JAVA` | `intelligence-service` | Lifecycle engine | - | `DELIVERED` | svc fd13fc2 (lifecycle/EvidenceLifecycleEngine + PortsImpl + Wiring; no scheduler) | 2026-09-25 | lifecycle runs on request; ops/lp26_evidence_purge.sh for operators |
+| `LP-26.5_JAVA` | `intelligence-service` | Correlation and actor attribution | - | `DELIVERED` | svc fd13fc2, 89d9639 (correlation/CorrelationContext; actor/ActorContext + ActorWiring; EvidenceSpringWiringTest) | 2026-09-25 | actor attribution ships OFF (lextr.evidence.actor.enabled) |
+| `LP-26.6_PY` | `lexie-ai` | Producer runtime and evidence recorder | - | `DELIVERED` | lexie fea13ae (runtime/correlation, skill_identity, plan, evidence_lp26; adapter/denial_recording, correlated_gateway) | 2026-09-25 | gates NOT RUN |
+| `LP-26.7_TS` | `intelligence-ui` | Audit evidence UI models | - | `DELIVERED` | ui 1750499 (features/audit-evidence/model decision-core port); svc c6beb03 (shared corpora) | 2026-09-25 | gates NOT RUN |
+| `LP-26.8_SQL` | `intelligence-service` | Retention, archive, coverage SQL | - | `DELIVERED` | svc 55c96e7 (V37: evidence_retention extend-only + prospective lowering, 180-day floor, evidence_archive receipts, ledger marker, evidence_day_coverage ranking) | 2026-09-25 | gates NOT RUN |
+| `LP-26.9_SQL` | `intelligence-service` | Header transition history and coverage | - | `DELIVERED` | svc 55c96e7 (V38: agent_run_event chained; header-history trigger; evidence_coverage + verify_chain_coverage() from the catalogue) | 2026-09-25 | satisfies LP-49.2's dependency |
+| `LP-26.10_SQL` | `intelligence-service` | Three-role split and purge migration | - | `DELIVERED` | svc 55c96e7 (V38 evidence_purge_day whole-day only, tombstone + receipt; ops/lp26_evidence_roles.sql, ops/lp26_evidence_purge.sh) | 2026-09-25 | role grants are an ops script, not a migration (roles are cluster objects) |
+| `LP-26.12_REGO` | `intelligence-service` | `audit_read` policy bundle | - | `DELIVERED` | svc fd13fc2, fc7cabb (lextr.ai.audit_read AUDIT-001..007 + obligations; audit_read_data; src/test/opa/evidence_test.rego) | 2026-09-25 | gates NOT RUN |
+| `LP-26.13_TS` | `intelligence-ui` | Forward-door evidence UI | - | `DELIVERED` | ui 1750499 (components/InvolvementPanel forward door; auditEvidence.test.tsx) | 2026-09-25 | gates NOT RUN |
+| `LP-26.14_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Drift gate and reconciliation tests | - | `DELIVERED` | lexie 33627fa (tests/evidence_lp26/test_lp26_gates.py drift gate, both directions) | 2026-09-25 | skips when sibling repos absent |
+| `LP-26.15_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Estate-wide audit test gate | - | `DELIVERED` | lexie 33627fa (estate audit: every LP-26 source named by a gate); svc 89d9639 (closes the 7 unnamed Spring classes) | 2026-09-25 | static pre-check green at authoring |
+| `LP-26.16_JAVA` | `intelligence-service` | Evidence pack export | - | `DELIVERED` | svc fd13fc2 (export/EvidencePackWriter, PackFormat) | 2026-09-25 | gates NOT RUN |
+| `LP-26.17_JAVA` | `intelligence-service` | Evidence pack verifier and hand-back | - | `DELIVERED` | svc fd13fc2 (export/verify/PackVerifier, verdict incl. manifestHash; hand-back reports issued-by-us separately) | 2026-09-25 | gates NOT RUN |
+| `LP-26.18_REGO` | `intelligence-service` | Export entitlement policy | - | `DELIVERED` | svc fd13fc2 (export entitlement in lextr.ai.audit_read) | 2026-09-25 | gates NOT RUN |
+| `LP-26.19_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Chain formula and cross-layer tests | - | `DELIVERED` | svc c6beb03 (corpora chain_formula/tamper_evidence + SharedCorpusTest); lexie 33627fa (Python chain mirror) | 2026-09-25 | one formula, two implementations, one corpus |
+| `LP-26.20_JAVA` | `intelligence-service` | Draft vs approved export logic | - | `DELIVERED` | svc fd13fc2 (export/ExportDisposition draft vs approved) | 2026-09-25 | gates NOT RUN |
+| `LP-26.21_TS` | `intelligence-ui` | Audit evidence screen and pack view | - | `DELIVERED` | ui 1750499 (DispositionBadge + pack view over shared disposition corpus) | 2026-09-25 | gates NOT RUN |
+| `LP-26.22_PY` | `lexie-ai` | Generated model documentation | - | `DELIVERED` | lexie fea13ae (runtime/model_documentation generator, claims.json, LIMITATIONS.md) | 2026-09-25 | gates NOT RUN |
+| `LP-26.23_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Cross-language claim gate | - | `DELIVERED` | lexie 33627fa (every documented control implemented and tested) | 2026-09-25 | gates NOT RUN |
+| `LP-26.24_SQL` | `intelligence-service` | Approval/discharge schema | - | `DELIVERED` | svc 55c96e7 (V39 evidence_read_event, evidence_export_pack) | 2026-09-25 | gates NOT RUN |
+| `LP-26.25_JAVA` | `intelligence-service` | Discharge and registration logic | - | `DELIVERED` | svc fd13fc2, 89d9639 (EvidenceReadService: no answer without its record; undischargeable allow refused) | 2026-09-25 | gates NOT RUN |
+| `LP-26.26_REGO` | `intelligence-service` | Obligation discharge validator | - | `DELIVERED` | svc fd13fc2 (obligation_defects in lextr.ai.audit_read) | 2026-09-25 | gates NOT RUN |
+| `LP-26.27_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Undischarged obligation gate | - | `DELIVERED` | lexie 33627fa (every obligation destination has a writer) | 2026-09-25 | gates NOT RUN |
+| `LP-26.28_SQL` | `intelligence-service` | Erasure event migration | - | `DELIVERED` | svc 55c96e7 (V40 evidence_payload_erasure, chained, no body) | 2026-09-25 | gates NOT RUN |
+| `LP-26.29_JAVA` | `intelligence-service` | Erasure and event append service | - | `DELIVERED` | svc fd13fc2, 89d9639 (lifecycle erasure path + PayloadStore.delete) | 2026-09-25 | gates NOT RUN |
+| `LP-26.30_JAVA` | `intelligence-service` | Withheld/erased/absent export semantics | - | `DELIVERED` | svc fd13fc2 (EvidenceQueryCore.PayloadState WITHHELD / ERASED / ABSENT) | 2026-09-25 | gates NOT RUN |
+| `LP-26.31_REGO` | `intelligence-service` | Erasure authority policy | - | `DELIVERED` | svc fd13fc2 (lextr.ai.evidence_lifecycle: purge four-eyes by principal, retention lowering, erasure separate) | 2026-09-25 | DEC-LP-26-1: erasure authorities shipped EMPTY (deny) - owner to name |
+| `LP-26.32_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Erasure chain tests | - | `DELIVERED` | lexie 33627fa (erasure row chained, carries no body); svc fc7cabb (evidence_test.rego) | 2026-09-25 | gates NOT RUN |
 | `LP-27.1_PY` | `lexie-ai` | Evidence bundle aggregator | - | `PENDING` | - | 2026-09-25 | PROPOSED/unbuilt in spec; v1.38.0 used the number for other features — design doc, step 7 |
 | `LP-27.2_JAVA` | `intelligence-service` | Orchestration seam for evidence export | - | `PENDING` | - | 2026-09-25 | PROPOSED/unbuilt in spec; v1.38.0 used the number for other features — design doc, step 7 |
 | `LP-28.1_PY` | `lexie-ai` | Proof verifier and receipt validator | - | `PENDING` | - | 2026-09-25 | PROPOSED/unbuilt in spec; v1.38.0 used the number for other features — design doc, step 7 |
@@ -305,7 +305,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
 | `LP-49.1_SQL` | `intelligence-service` | Notarization receipt schema migration | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
-| `LP-49.2_JAVA` | `intelligence-service` | External notary service & receipt ledger | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | Depends on LP-26.9 verify_chain_coverage() (Java substitute until LP-26 build) |
+| `LP-49.2_JAVA` | `intelligence-service` | External notary service & receipt ledger | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | LP-26.9 verify_chain_coverage() now exists (V38); Java substitute kept |
 | `LP-49.3_SQL` | `intelligence-service` | WORM retention boundary schema | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
 | `LP-49.4_TS` | `intelligence-ui` | Witness status & notary badge UI display | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
 | `LP-49.5_TEST` | `intelligence-service` (+ `intelligence-ui`) | External witness & WORM anchor wire-through tests | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
@@ -432,12 +432,12 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | Scope | Status | Notes |
 |---|---|---|
 | Waves 01–06 | VERIFIED + GAP-FILLED | per-prompt rows below; open: LP-19.4 client tally, LP-38.1 two classifiers |
-| Wave 07 | LP-39 and LP-25 DELIVERED (steps 3-4 complete); LP-26 rebuild pending; LP-27/28 design pending | LP-23/24 covered; LP-25, LP-39, LP-40 built under wrong numbers (their Merkle ledger / master synthesis / ratio kept); LP-26 partial (2/9 tables); LP-27/28 proposed |
+| Wave 07 | LP-39, LP-25, LP-26 (31 lanes) DELIVERED (steps 3-5 complete); LP-27/28 design pending | LP-23/24 covered; their Merkle ledger / master synthesis / ratio kept; LP-26 rebuilt on V36-V40 alongside their evidence_chain/agent_run_event (extended, not duplicated) |
 | Wave 08 | LP-29..35 and LP-40 (all 5 lanes) DELIVERED (gates NOT RUN); LP-47/48 PENDING | step 2 complete |
 | Wave 09 | n/a | folder empty |
-| Waves 10–18 | VERIFIED + GAP-FILLED | step 1 complete; LP-49.2 waits on LP-26.9 |
-| Owner decisions open | — | secret-scan enforcement date (red on arrival); coverage-gate enforcement date; trend/analytical/impact/operational/digital-twin readiness data docs shipped `true`; prod now requires OTLP endpoint; dev-yaml password kept by instruction; OPA-TDM-006/007 sign-off; training_env_ready shipped false; Training Data surface exported (host must mount); en-US only shipped, extracted UI fragments to merge before translation |
-| Next | step 5 — LP-26 evidence ledger (~30 lanes) | then LP-47/48 (step 6), LP-27/28 design docs (step 7) |
+| Waves 10–18 | VERIFIED + GAP-FILLED | step 1 complete; LP-49.2 dependency now met by V38 verify_chain_coverage() |
+| Owner decisions open | — | secret-scan enforcement date (red on arrival); coverage-gate enforcement date; trend/analytical/impact/operational/digital-twin readiness data docs shipped `true`; prod now requires OTLP endpoint; dev-yaml password kept by instruction; OPA-TDM-006/007 sign-off; DEC-LP-26-1 erasure authorities (shipped empty = deny); agent_run_step additive-input fence deviation; training_env_ready shipped false; Training Data surface exported (host must mount); en-US only shipped, extracted UI fragments to merge before translation |
+| Next | step 6 — LP-47/48 UI integration | then LP-27/28 design docs (step 7) |
 
 | Wave | Prompt | Gap found | Added | Commit |
 |---|---|---|---|---|
@@ -476,7 +476,7 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | 08 | LP-29..35 / LP-47 / LP-48 | never started — scheduled (step 2 / step 6) | pending | — |
 | 10 | LP-41 / LP-42 / LP-45 / LP-46 | covered (handoff/expression/report_store/domain adapter; category errors; value_desc honesty) | — | — |
 | 11 | LP-44 | covered (per-op readiness, cross-tenant raises, named-op client) | — | — |
-| 12 | LP-49 | covered except LP-49.2's dependency on LP-26.9 verify_chain_coverage() (Java substitute) — resolves with LP-26 build | pending LP-26 | — |
+| 12 | LP-49 | covered; LP-49.2's dependency on LP-26.9 verify_chain_coverage() resolved by the LP-26 build | V38 | svc 55c96e7 |
 | 13 | LP-50.1 / LP-50.3 / LP-50.4 | covered (generated gate columns, fail-closed inventory fetch) | — | — |
 | 13 | LP-50.2 | populations caller-supplied; variance explanation never persisted | V30 agent_run.variance_explanation + reconcilePopulationFromCycle | svc 5cfac1d |
 | 14 | LP-51 | covered (versioned formula, population calibrator, NOT-CALIBRATED state) | — | — |
@@ -511,3 +511,8 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | 07 | LP-39.4 | no executor | lexie_ai/training (measures, never judges; no DB/HTTP client) | lexie 23dd185 |
 | 07 | LP-39.5 | no UI | features/training-data (5 tabs) | ui 64854f2 |
 | 07 | LP-39.6 | no wire-through | Java end-to-end + 216-case OPA differential (fixed OVERLAP_UNMEASURED) | svc ec828c5, lexie 0db1dbe |
+| 07 | LP-26.1 / 26.8 / 26.9 / 26.10 / 26.24 / 26.28 | only evidence_chain + agent_run_event (2 of 9 tables); no fence on steps, no chain formula, no retention/purge/erasure | V36-V40: generic fence, tenant-day chain, anchors, retention extend-only, archive receipts, header history, catalogue-driven coverage, whole-day purge, read/export/erasure tables; ops role + purge scripts | svc 55c96e7 |
+| 07 | LP-26.2-26.5 / 26.16-26.18 / 26.20 / 26.25 / 26.26 / 26.29-26.31 | no recording rules, query core, pack export/verify, lifecycle, discharge, erasure; no audit_read / evidence_lifecycle policies | evidence/ recording, query, export(+verify), policy, lifecycle, correlation, actor (OFF), dao, service, controller; audit_read + evidence_lifecycle Rego + tests | svc fd13fc2, fc7cabb, 612ece0, c0d853b, 89d9639 |
+| 07 | LP-26.6 / 26.22 | no producer correlation/plan/denial recording; no generated model documentation | runtime correlation, skill identity, plan, denial recording, correlated gateway; model_documentation generator + claims | lexie fea13ae |
+| 07 | LP-26.7 / 26.13 / 26.21 | their timeline UI only | audit-evidence decision core, InvolvementPanel, DispositionBadge over shared corpora | ui 1750499, svc c6beb03 |
+| 07 | LP-26.14 / 26.15 / 26.19 / 26.23 / 26.27 / 26.32 | no gates | drift, estate audit (found 7 unnamed classes -> fixed), Python chain mirror, claims, obligation writers, erasure | lexie 33627fa, svc 89d9639 |
