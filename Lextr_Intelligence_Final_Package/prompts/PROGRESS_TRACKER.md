@@ -3,7 +3,7 @@
 **Repository Branches:** `feature/lextr-intelligence-v1.38.0` (active; base implementation by another model, gap-filled here) · `feature/lextr-intelligence-reimplementation` (earlier, Waves 1–4)  
 **Platform Version:** `v1.38.0`  
 **Tracker Mode:** Evidence-based, prompt-by-prompt tracking  
-**Current State:** Working on `feature/lextr-intelligence-v1.38.0`, LP by LP: each prompt verified against the base implementation, gaps filled additively (nothing removed). 190/251 DELIVERED, 0 IN_PROGRESS, 61 PENDING. Gates/tests NOT RUN (final pass). Per-change log in section 6. Last updated 2026-09-25.  
+**Current State:** Working on `feature/lextr-intelligence-v1.38.0`, LP by LP: each prompt verified against the base implementation, gaps filled additively (nothing removed). 196/251 DELIVERED, 0 IN_PROGRESS, 55 PENDING. Gates/tests NOT RUN (final pass). Per-change log in section 6. Last updated 2026-09-25.  
 
 ---
 
@@ -41,7 +41,7 @@ Required fields per prompt:
 | **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 0 | 0 | 0 | 12 | 0 | ✅ DELIVERED |
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 0 | 0 | 0 | 16 | 0 | ✅ DELIVERED |
 | **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 0 | 0 | 0 | 25 | 0 | ✅ DELIVERED |
-| **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 50 | 0 | 0 | 8 | 0 | 🟡 PARTIAL |
+| **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 44 | 0 | 0 | 14 | 0 | 🟡 PARTIAL |
 | **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 11 | 0 | 0 | 13 | 0 | 🟡 PARTIAL |
 | **Wave 09** | Cross-Product Integration Baseline | 0 | 0 | 0 | 0 | 0 | 0 | ⚪ Empty |
 | **Wave 10** | UC10 Refine & Build, Report Store & Domain Resolution | 23 | 0 | 0 | 0 | 23 | 0 | ✅ DELIVERED |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 0 | 0 | 0 | 22 | 0 | ✅ DELIVERED |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **61** | **0** | **0** | **190** | **0** | **75.7% delivered** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **55** | **0** | **0** | **196** | **0** | **78.1% delivered** |
 
 ---
 
@@ -169,12 +169,12 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-39.1_SQL` | `intelligence-service` | Reason-code ledger migration | - | `PENDING` | - | 2026-09-25 | v1.38.0 built "master synthesis" under this number (kept); training data to build — step 3 |
-| `LP-39.2_JAVA` | `intelligence-service` | Training domain DAO and service | - | `PENDING` | - | 2026-09-25 | v1.38.0 built "master synthesis" under this number (kept); training data to build — step 3 |
-| `LP-39.3_REGO` | `intelligence-service` | TDM ring-fence policy | - | `PENDING` | - | 2026-09-25 | v1.38.0 built "master synthesis" under this number (kept); training data to build — step 3 |
-| `LP-39.4_PY` | `lexie-ai` | Fine-tune executor | - | `PENDING` | - | 2026-09-25 | v1.38.0 built "master synthesis" under this number (kept); training data to build — step 3 |
-| `LP-39.5_TS` | `intelligence-ui` | Training data UI | - | `PENDING` | - | 2026-09-25 | v1.38.0 built "master synthesis" under this number (kept); training data to build — step 3 |
-| `LP-39.6_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Reason-code cross-layer tests | - | `PENDING` | - | 2026-09-25 | v1.38.0 built "master synthesis" under this number (kept); training data to build — step 3 |
+| `LP-39.1_SQL` | `intelligence-service` | Reason-code ledger migration | - | `DELIVERED` | svc 2f0c6b6 (V32 objects: 4 tables, 5 enums; V33 model_registry trained_on_* nullable, no FK; 31 training.* keys; TrainingSchemaTest) | 2026-09-25 | spec counts 47 keys over a larger surface; 31 cover this service. FKs to registered_definition ride the pending LP-22 contract |
+| `LP-39.2_JAVA` | `intelligence-service` | Training domain DAO and service | - | `DELIVERED` | svc 2f0c6b6, ec828c5 (training/: records, 5 DAOs, services, 4 OPA gates, TrainingController, ContentSchemaSource; TrainingServicesTest) | 2026-09-25 | gates NOT RUN |
+| `LP-39.3_REGO` | `intelligence-service` | TDM ring-fence policy | - | `DELIVERED` | svc 2f0c6b6, ec828c5 (tdm_ring_fence 001-004, tdm_contamination 006, tdm_training_env 007, mrm_sod reused; training_data.json; src/test/opa/tdm_test.rego) | 2026-09-25 | OPA-TDM-006/007 need owner sign-off (extend the original five packages); training_env_ready shipped false |
+| `LP-39.4_PY` | `lexie-ai` | Fine-tune executor | - | `DELIVERED` | lexie 23dd185 (lexie_ai/training executor, NullTrainer, Evaluator, POST /api/v1/training/jobs; tests/training) | 2026-09-25 | Trainer port unfilled and evaluator model call unwired (deployment seams, per spec) |
+| `LP-39.5_TS` | `intelligence-ui` | Training data UI | - | `DELIVERED` | ui 64854f2 (features/training-data: 5 tabs, store, wire types, exported registration; trainingData.test.tsx) | 2026-09-25 | registration exported; shell nav not edited (host must mount it) |
+| `LP-39.6_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Reason-code cross-layer tests | - | `DELIVERED` | svc ec828c5 (TrainingWireThroughTest); lexie 0db1dbe (216-case Python-vs-OPA differential, 216/216 at authoring) | 2026-09-25 | differential found and fixed an unmeasured-overlap reason bug |
 | `LP-23.1_PY` | `lexie-ai` | Analytical assist skill | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
 | `LP-24.1_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Merkle protocol core tests | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
 | `LP-24.2_SQL` | `intelligence-service` | Merkle tree ledger migration | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
@@ -432,7 +432,7 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | Scope | Status | Notes |
 |---|---|---|
 | Waves 01–06 | VERIFIED + GAP-FILLED | per-prompt rows below; open: LP-19.4 client tally, LP-38.1 two classifiers |
-| Wave 07 | VERIFIED — REBUILD PENDING | LP-23/24 covered; LP-25, LP-39, LP-40 built under wrong numbers (their Merkle ledger / master synthesis / ratio kept); LP-26 partial (2/9 tables); LP-27/28 proposed |
+| Wave 07 | LP-39 DELIVERED (step 3 complete); LP-25, LP-26 rebuild pending; LP-27/28 design pending | LP-23/24 covered; LP-25, LP-39, LP-40 built under wrong numbers (their Merkle ledger / master synthesis / ratio kept); LP-26 partial (2/9 tables); LP-27/28 proposed |
 | Wave 08 | LP-29..35 and LP-40 (all 5 lanes) DELIVERED (gates NOT RUN); LP-47/48 PENDING | step 2 complete |
 | Wave 09 | n/a | folder empty |
 | Waves 10–18 | VERIFIED + GAP-FILLED | step 1 complete; LP-49.2 waits on LP-26.9 |
@@ -498,3 +498,9 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | 08 | LP-40.4 | no i18n runtime; ~900 hardcoded strings | src/i18n (typed t, Intl, fallback); codemod 912 strings -> 891 codes; harness + catalogue tests | ui c3f3ecc |
 | 08 | LP-40.5 | no no-translate / fallback enforcement | params byte-identical across locales; explicit visible fallback (LocaleFallbackNotice) | ui c3f3ecc |
 | 08 | LP-47 / LP-48 | not started | pending (step 6) | — |
+| 07 | LP-39.1 | no TDM schema (number used for "master synthesis") | V32/V33 split migrations, DB-level guarantees, writer-pure queries | svc 2f0c6b6 |
+| 07 | LP-39.2 | no TDM services | training/ package: DAOs, services with gate ordering, controller, ContentSchemaSource | svc 2f0c6b6 |
+| 07 | LP-39.3 | no TDM policies | tdm_ring_fence / tdm_contamination / tdm_training_env + data + Rego tests | svc 2f0c6b6, ec828c5 |
+| 07 | LP-39.4 | no executor | lexie_ai/training (measures, never judges; no DB/HTTP client) | lexie 23dd185 |
+| 07 | LP-39.5 | no UI | features/training-data (5 tabs) | ui 64854f2 |
+| 07 | LP-39.6 | no wire-through | Java end-to-end + 216-case OPA differential (fixed OVERLAP_UNMEASURED) | svc ec828c5, lexie 0db1dbe |
