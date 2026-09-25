@@ -3,7 +3,7 @@
 **Repository Branches:** `feature/lextr-intelligence-v1.38.0` (active; base implementation by another model, gap-filled here) · `feature/lextr-intelligence-reimplementation` (earlier, Waves 1–4)  
 **Platform Version:** `v1.38.0`  
 **Tracker Mode:** Evidence-based, prompt-by-prompt tracking  
-**Current State:** Working on `feature/lextr-intelligence-v1.38.0`, LP by LP: each prompt verified against the base implementation, gaps filled additively (nothing removed). 247/251 DELIVERED, 0 IN_PROGRESS, 4 PENDING. Gates/tests NOT RUN (final pass). Per-change log in section 6. Last updated 2026-09-25.  
+**Current State:** Working on `feature/lextr-intelligence-v1.38.0`, LP by LP: each prompt verified against the base implementation, gaps filled additively (nothing removed). 251/251 DELIVERED (LP-27.1/27.2/28.1/28.2 as design docs, no code), 0 IN_PROGRESS, 0 PENDING. Gates/tests NOT RUN (final pass). Per-change log in section 6. Last updated 2026-09-25.  
 
 ---
 
@@ -41,7 +41,7 @@ Required fields per prompt:
 | **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 0 | 0 | 0 | 12 | 0 | ✅ DELIVERED |
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 0 | 0 | 0 | 16 | 0 | ✅ DELIVERED |
 | **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 0 | 0 | 0 | 25 | 0 | ✅ DELIVERED |
-| **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 4 | 0 | 0 | 54 | 0 | 🟡 PARTIAL |
+| **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 0 | 0 | 0 | 58 | 0 | ✅ DELIVERED (LP-27/28 as design docs) |
 | **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 0 | 0 | 0 | 24 | 0 | ✅ DELIVERED |
 | **Wave 09** | Cross-Product Integration Baseline | 0 | 0 | 0 | 0 | 0 | 0 | ⚪ Empty |
 | **Wave 10** | UC10 Refine & Build, Report Store & Domain Resolution | 23 | 0 | 0 | 0 | 23 | 0 | ✅ DELIVERED |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 0 | 0 | 0 | 22 | 0 | ✅ DELIVERED |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **4** | **0** | **0** | **247** | **0** | **98.4% delivered** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **0** | **0** | **0** | **251** | **0** | **100% delivered (4 as design docs)** |
 
 ---
 
@@ -223,10 +223,10 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-26.30_JAVA` | `intelligence-service` | Withheld/erased/absent export semantics | - | `DELIVERED` | svc fd13fc2 (EvidenceQueryCore.PayloadState WITHHELD / ERASED / ABSENT) | 2026-09-25 | gates NOT RUN |
 | `LP-26.31_REGO` | `intelligence-service` | Erasure authority policy | - | `DELIVERED` | svc fd13fc2 (lextr.ai.evidence_lifecycle: purge four-eyes by principal, retention lowering, erasure separate) | 2026-09-25 | DEC-LP-26-1: erasure authorities shipped EMPTY (deny) - owner to name |
 | `LP-26.32_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Erasure chain tests | - | `DELIVERED` | lexie 33627fa (erasure row chained, carries no body); svc fc7cabb (evidence_test.rego) | 2026-09-25 | gates NOT RUN |
-| `LP-27.1_PY` | `lexie-ai` | Evidence bundle aggregator | - | `PENDING` | - | 2026-09-25 | PROPOSED/unbuilt in spec; v1.38.0 used the number for other features — design doc, step 7 |
-| `LP-27.2_JAVA` | `intelligence-service` | Orchestration seam for evidence export | - | `PENDING` | - | 2026-09-25 | PROPOSED/unbuilt in spec; v1.38.0 used the number for other features — design doc, step 7 |
-| `LP-28.1_PY` | `lexie-ai` | Proof verifier and receipt validator | - | `PENDING` | - | 2026-09-25 | PROPOSED/unbuilt in spec; v1.38.0 used the number for other features — design doc, step 7 |
-| `LP-28.2_JAVA` | `intelligence-service` | Proof validation controller/service | - | `PENDING` | - | 2026-09-25 | PROPOSED/unbuilt in spec; v1.38.0 used the number for other features — design doc, step 7 |
+| `LP-27.1_PY` | `lexie-ai` | Orchestration intelligence — bounded prioritisation/routing (design) | - | `DELIVERED` | lexie 34539c2 (doc/lp-27.1-orchestration-intelligence-design.md) | 2026-09-25 | DESIGN DOC, no code: bound undefined in spec (OI-27-1); UC9 orchestrator unmounted (OI-27-7); swarm skill request-defaulted bounds named as divergence (OI-27-4). Tracker scope title corrected (was 'Evidence bundle aggregator') |
+| `LP-27.2_JAVA` | `intelligence-service` | Orchestration seam — closed action set, evidence per action, no second writer (design) | - | `DELIVERED` | svc 0452c01 (doc/lp-27.2-orchestration-seam-design.md) | 2026-09-25 | DESIGN DOC, no code: reuse LP-06.2/LP-07. Found: UC9 coordinator keyword-routes with canned answers, never calls lexie (OI-27.2-2); 10004L fabricated run id (OI-27.2-1). Scope title corrected |
+| `LP-28.1_PY` | `lexie-ai` | Data & control intelligence — signal-only lineage-anomaly signals (design) | - | `DELIVERED` | lexie efea7f1 (doc/lp-28.1-data-control-intelligence-design.md) | 2026-09-25 | DESIGN DOC, no code: anomaly class/threshold/window undefined (OI-28-1); outlier skill defaults z=3.0 (OI-28-3); multi-modal named roadmap gap. Scope title corrected |
+| `LP-28.2_JAVA` | `intelligence-service` | Control-signal seam — ingest/surface, no /run, no second writer (design) | - | `DELIVERED` | svc e2463a9 (doc/lp-28.2-signal-seam-design.md) | 2026-09-25 | DESIGN DOC, no code: schema is a Part-M proposal (OI-28.2-1). Found: anomaly/lineage/swarm enqueue review for never-persisted runs (OI-28.2-2); evidence store skips JDBC failures (OI-28.2-3). Scope title corrected |
 
 ### Wave 08 — Reason Code Registry, Locale Tokens & Multi-Tenancy
 
@@ -432,12 +432,12 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | Scope | Status | Notes |
 |---|---|---|
 | Waves 01–06 | VERIFIED + GAP-FILLED | per-prompt rows below; open: LP-19.4 client tally, LP-38.1 two classifiers |
-| Wave 07 | LP-39, LP-25, LP-26 (31 lanes) DELIVERED (steps 3-5 complete); LP-27/28 design pending | LP-23/24 covered; their Merkle ledger / master synthesis / ratio kept; LP-26 rebuilt on V36-V40 alongside their evidence_chain/agent_run_event (extended, not duplicated) |
+| Wave 07 | ALL DELIVERED: LP-39, LP-25, LP-26 (31 lanes) (steps 3-5); LP-27/28 (4 lanes) as design docs (step 7) | LP-23/24 covered; their Merkle ledger / master synthesis / ratio kept; LP-26 rebuilt on V36-V40 alongside their evidence_chain/agent_run_event (extended, not duplicated) |
 | Wave 08 | ALL DELIVERED: LP-29..35, LP-40, LP-47 (6), LP-48 (5) (gates NOT RUN except LP-47 static gates GREEN and LP-48 tool_scope_parsing Rego tests 6/6) | steps 2 and 6 complete |
 | Wave 09 | n/a | folder empty |
 | Waves 10–18 | VERIFIED + GAP-FILLED | step 1 complete; LP-49.2 dependency now met by V38 verify_chain_coverage() |
-| Owner decisions open | — | secret-scan enforcement date (red on arrival); coverage-gate enforcement date; trend/analytical/impact/operational/digital-twin readiness data docs shipped `true`; prod now requires OTLP endpoint; dev-yaml password kept by instruction; OPA-TDM-006/007 sign-off; DEC-LP-26-1 erasure authorities (shipped empty = deny); LP-47 UC11 use-case collision (rules vs supervisory_radar) and demo UC6/UC7 labels; resilience console ownership; LP-48 ingestion op registered in tool_scope_parsing (LP-48 said no Rego of its own); prototype HistoryDrawer kinds fabricate actors/dates; agent_run_step additive-input fence deviation; training_env_ready shipped false; Training Data surface exported (host must mount); en-US only shipped, extracted UI fragments to merge before translation |
-| Next | step 7 — LP-27/28 as design docs (4 lanes) | last pending |
+| Owner decisions open | — | secret-scan enforcement date (red on arrival); coverage-gate enforcement date; trend/analytical/impact/operational/digital-twin readiness data docs shipped `true`; prod now requires OTLP endpoint; dev-yaml password kept by instruction; OPA-TDM-006/007 sign-off; DEC-LP-26-1 erasure authorities (shipped empty = deny); LP-47 UC11 use-case collision (rules vs supervisory_radar) and demo UC6/UC7 labels; resilience console ownership; LP-48 ingestion op registered in tool_scope_parsing (LP-48 said no Rego of its own); prototype HistoryDrawer kinds fabricate actors/dates; agent_run_step additive-input fence deviation; training_env_ready shipped false; Training Data surface exported (host must mount); en-US only shipped, extracted UI fragments to merge before translation; LP-27 bound undefined (OI-27-1) and swarm skill fate (OI-27-4); LP-28 anomaly definition (OI-28-1) and control_signal schema Part-M proposal (OI-28.2-1); defects found in LP-27/28 discovery, NOT fixed (design-only step): UC9 keyword routing + canned answers + 10004L run id (OI-27.2-1/2), anomaly/lineage/swarm review enqueue on never-persisted runs (OI-28.2-2), EvidenceStoreServiceImpl skips JDBC failures (OI-28.2-3) |
+| Next | all 7 steps complete | final pass: run gates/tests (none run yet); owner decisions below; LP-27/28 builds wait on OI-27-1 (bound) and OI-28-1 (anomaly definition) |
 
 | Wave | Prompt | Gap found | Added | Commit |
 |---|---|---|---|---|
@@ -523,3 +523,5 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | 07 | LP-26.6 / 26.22 | no producer correlation/plan/denial recording; no generated model documentation | runtime correlation, skill identity, plan, denial recording, correlated gateway; model_documentation generator + claims | lexie fea13ae |
 | 07 | LP-26.7 / 26.13 / 26.21 | their timeline UI only | audit-evidence decision core, InvolvementPanel, DispositionBadge over shared corpora | ui 1750499, svc c6beb03 |
 | 07 | LP-26.14 / 26.15 / 26.19 / 26.23 / 26.27 / 26.32 | no gates | drift, estate audit (found 7 unnamed classes -> fixed), Python chain mirror, claims, obligation writers, erasure | lexie 33627fa, svc 89d9639 |
+| 07 | LP-27.1 / LP-27.2 | PROPOSED point with no bound, op, datum, package or RunOutput variant; number used for Merkle ledger in base | design docs (discovery, decisions, divergences, proposed wire contract, test plan, open items); no code | lexie 34539c2, svc 0452c01 |
+| 07 | LP-28.1 / LP-28.2 | PROPOSED point with no anomaly class, threshold, window, op or table; number used for regulatory export in base | design docs; control_signal schema raised as Part-M proposal, no migration (V42 still next) | lexie efea7f1, svc e2463a9 |
