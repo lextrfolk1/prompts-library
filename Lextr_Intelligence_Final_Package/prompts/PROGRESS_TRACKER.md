@@ -466,3 +466,8 @@ Base implementation by another model on `feature/lextr-intelligence-v1.38.0`; en
 | 13 | LP-50.1 / LP-50.3 / LP-50.4 | covered (generated gate columns, fail-closed inventory fetch) | — | — |
 | 13 | LP-50.2 | populations caller-supplied; variance explanation never persisted | V30 agent_run.variance_explanation + reconcilePopulationFromCycle | svc 5cfac1d |
 | 14 | LP-51 | covered (versioned formula, population calibrator, NOT-CALIBRATED state) | — | — |
+| 15 | LP-59 | covered (chain.py engine, specs, chain_entitlement, StepRing/TrackStrip, inheritedAuthority, agent_run_event ledger) | — | — |
+| 16 | LP-52 / LP-57 / LP-58 / LP-60 | covered (parsing seam, assurance keyed on document version, tdm_sandbox, todo_routing) | — | — |
+| 17 | LP-53.3 / LP-53.4 x LP-08 | split migrated but LP-08 ingest/retrieval not re-pointed (FK violation / wrong passages) | ingest via embedding_chunk(+source); retrieval joins through embedding_chunk_source | svc 25e02e3 |
+| 17 | LP-54 | covered | — | — |
+| 18 | LP-55 / LP-56 | covered (chunk_reference edges, notes_for queries, drop_profile) | — | — |
