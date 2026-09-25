@@ -65,7 +65,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-01.1_SQL` | `intelligence-service` | Baseline schema DDL and migration setup | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl); gap-fill svc 84c244c (V26 kh_ingestion_status) | 2026-09-25 | gates NOT RUN |
+| `LP-01.1_SQL` | `intelligence-service` | Baseline schema DDL and migration setup | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl); gap-fill svc 84c244c (V26 kh_ingestion_status), svc 3054c8a (BaselineSchemaMigrationTest; spring.flyway.placeholders.schema) | 2026-09-25 | gates NOT RUN. Review found V1's comment `${schema}` aborts a clean Flyway migrate (verified vs flyway-core 10.10.0) - fixed by config, V1 untouched. 'migrate on clean PG16' itself needs a live DB - NOT covered |
 | `LP-02.1_TS` | `intelligence-ui` | Tenant + host shell foundation | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl); gap-fill ui dcd4850 (OPA-gated TenantThemeProvider, embed) | 2026-09-25 | gates NOT RUN |
 | `LP-02.2_TS` | `intelligence-ui` | Masking-safe UI atoms and shared rendering | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl); gap-fill ui 2260772 (atom contracts) | 2026-09-25 | gates NOT RUN |
 
@@ -239,7 +239,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-33.1_JAVA` | `intelligence-service` | Tenant configuration manager | - | `DELIVERED` | svc 5ed04e5 (TransitionConflict 409 with (status, action)) | 2026-09-25 | gates NOT RUN |
 | `LP-33.3_PY` | `lexie-ai` | Tenant runtime config subscriber | - | `DELIVERED` | lexie 32e073d (errors.py at composition root; lock 422) | 2026-09-25 | gates NOT RUN |
 | `LP-34.1_JAVA` | `intelligence-service` | Completeness gate and capability checker | - | `DELIVERED` | svc 5ed04e5 (completeness gate, -Pcoverage-gate) | 2026-09-25 | gates NOT RUN |
-| `LP-35.1_JAVA` | `intelligence-service` | Health, readiness, liveness and metrics | - | `DELIVERED` | svc 5ed04e5 (probes, readiness, required OTLP, fail-closed retry) | 2026-09-25 | gates NOT RUN |
+| `LP-35.1_JAVA` | `intelligence-service` | Health, readiness, liveness and metrics | - | `DELIVERED` | svc 5ed04e5 (probes, readiness, required OTLP, fail-closed retry), svc cee270f (TelemetryAttributeRedactionFilter; ObservabilityResilienceTest) | 2026-09-25 | gates NOT RUN. Review found no LP-35 tests and no span/metric attribute redaction - both added |
 | `LP-40.1_SQL` | `intelligence-service` | Locale on /run contract, RunResult and agent_run | - | `DELIVERED` | svc 2a32f6f (RunLocale, V31, RunLocaleTest) | 2026-09-25 | gates NOT RUN |
 | `LP-40.2_PY` | `lexie-ai` | Reason codes replace composed prose in lexie-ai | - | `DELIVERED` | lexie 44369ec (reason_codes.py + reason_codes.en.json, 43 codes; 46 sites / 15 modules; tests/test_no_composed_prose.py AST gate) | 2026-09-25 | renderings byte-identical; DTO fields still typed str (code on ReasonText) — exposing reason_code on wire DTOs is a follow-up |
 | `LP-40.3_REGO` | `intelligence-service` | Reason codes + params on every deny reason (verbatim rendering) | - | `DELIVERED` | svc 2a32f6f (reason_code+params, policy_reasons.en.json, byte-verified) | 2026-09-25 | gates NOT RUN |
@@ -431,9 +431,9 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 
 | Scope | Status | Notes |
 |---|---|---|
-| Waves 01–06 | VERIFIED + GAP-FILLED | per-prompt rows below; open: LP-19.4 client tally, LP-38.1 two classifiers |
+| Waves 01–06 | VERIFIED + GAP-FILLED | per-prompt rows below; open: LP-19.4 client tally, LP-38.1 two classifiers; wave-by-wave review 2026-09-25 added LP-01.1 tests + Flyway placeholder fix |
 | Wave 07 | ALL DELIVERED: LP-39, LP-25, LP-26 (31 lanes) (steps 3-5); LP-27/28 (4 lanes) as design docs (step 7) | LP-23/24 covered; their Merkle ledger / master synthesis / ratio kept; LP-26 rebuilt on V36-V40 alongside their evidence_chain/agent_run_event (extended, not duplicated) |
-| Wave 08 | ALL DELIVERED: LP-29..35, LP-40, LP-47 (6), LP-48 (5) (gates NOT RUN except LP-47 static gates GREEN and LP-48 tool_scope_parsing Rego tests 6/6) | steps 2 and 6 complete |
+| Wave 08 | ALL DELIVERED: LP-29..35, LP-40, LP-47 (6), LP-48 (5); review 2026-09-25 added the missing LP-35.1 suite + telemetry redaction (gates NOT RUN except LP-47 static gates GREEN and LP-48 tool_scope_parsing Rego tests 6/6) | steps 2 and 6 complete |
 | Wave 09 | n/a | folder empty |
 | Waves 10–18 | VERIFIED + GAP-FILLED | step 1 complete; LP-49.2 dependency now met by V38 verify_chain_coverage() |
 | Owner decisions open | — | secret-scan enforcement date (red on arrival); coverage-gate enforcement date; trend/analytical/impact/operational/digital-twin readiness data docs shipped `true`; prod now requires OTLP endpoint; dev-yaml password kept by instruction; OPA-TDM-006/007 sign-off; DEC-LP-26-1 erasure authorities (shipped empty = deny); LP-47 UC11 use-case collision (rules vs supervisory_radar) and demo UC6/UC7 labels; resilience console ownership; LP-48 ingestion op registered in tool_scope_parsing (LP-48 said no Rego of its own); prototype HistoryDrawer kinds fabricate actors/dates; agent_run_step additive-input fence deviation; training_env_ready shipped false; Training Data surface exported (host must mount); en-US only shipped, extracted UI fragments to merge before translation; LP-27 bound undefined (OI-27-1) and swarm skill fate (OI-27-4); LP-28 anomaly definition (OI-28-1) and control_signal schema Part-M proposal (OI-28.2-1); defects found in LP-27/28 discovery, NOT fixed (design-only step): UC9 keyword routing + canned answers + 10004L run id (OI-27.2-1/2), anomaly/lineage/swarm review enqueue on never-persisted runs (OI-28.2-2), EvidenceStoreServiceImpl skips JDBC failures (OI-28.2-3) |
@@ -472,8 +472,8 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | 06 | LP-21.2 | RunResult lacked intent / route_out | additive components | svc 31d1ea8 |
 | 06 | LP-22.3 | only draft->operational was refused; retired->operational etc. allowed | LEGAL_NEXT table | svc 31d1ea8 |
 | 06 | LP-38.1 | OPEN: two trend classifiers (variance evidence_substeps vs skills/shared) with different vocabularies; spec's own LP-18 vs LP-38 verdict sets differ — owner decision needed | not changed | — |
-| 07 | LP-25 / LP-26 / LP-27 / LP-28 / LP-39 / LP-40 | BUILT UNDER WRONG NUMBERS (Merkle ledger, regulatory export, multi-hop, master synthesis, ratio) or partial (LP-26: 2 of 9 tables) — scheduled as from-scratch builds (steps 2-7 of the agreed order) | pending | — |
-| 08 | LP-29..35 / LP-47 / LP-48 | never started — scheduled (step 2 / step 6) | pending | — |
+| 07 | LP-25 / LP-26 / LP-27 / LP-28 / LP-39 / LP-40 | BUILT UNDER WRONG NUMBERS (Merkle ledger, regulatory export, multi-hop, master synthesis, ratio) or partial (LP-26: 2 of 9 tables) — scheduled as from-scratch builds (steps 2-7 of the agreed order) | SUPERSEDED (planning row) — delivered, see per-LP rows below | — |
+| 08 | LP-29..35 / LP-47 / LP-48 | never started — scheduled (step 2 / step 6) | SUPERSEDED (planning row) — delivered, see per-LP rows below | — |
 | 10 | LP-41 / LP-42 / LP-45 / LP-46 | covered (handoff/expression/report_store/domain adapter; category errors; value_desc honesty) | — | — |
 | 11 | LP-44 | covered (per-op readiness, cross-tenant raises, named-op client) | — | — |
 | 12 | LP-49 | covered; LP-49.2's dependency on LP-26.9 verify_chain_coverage() resolved by the LP-26 build | V38 | svc 55c96e7 |
@@ -505,7 +505,7 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | 08 | LP-48.1 | no description on a document | V41 nullable column, no backfill, header read model | svc ac003d4 |
 | 08 | LP-48.2 / 48.3 | KH ingest: one document, no duplicate check, no per-file outcome, prose errors, no tool_scope | batch API with per-file dispositions + closed codes, enumerable rule table with witnesses, derived verdict, 422 envelope, tool_scope_parsing op, fallback declared; lexie upload route emits the same codes | svc ac003d4, f798adf; lexie 46b03f0 |
 | 08 | LP-48.5 / 48.6 | no description, no reasons per file, no walkthroughs, no audit on four screens | disposition list + courtesy rules, 8 walkthrough flows, per-row history on 4 screens, mutation-tested suites | ui a7f66fb |
-| 08 | LP-47 / LP-48 | not started | pending (step 6) | — |
+| 08 | LP-47 / LP-48 | not started | SUPERSEDED (planning row) — delivered, see per-LP rows below | — |
 | 07 | LP-25.2 | no UC11 schema (number used for Merkle ledger) | V34/V35 split, closed origin vocabulary, acceptance pair, partial indexes, 7 keys | svc 1008804 |
 | 07 | LP-25.3 | no rules skill | skills/rules deterministic layer + orchestrator | lexie fee7f05 |
 | 07 | LP-25.4 | no tool_scope_rules | policy + Rego tests | svc 1008804 |
@@ -525,3 +525,6 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | 07 | LP-26.14 / 26.15 / 26.19 / 26.23 / 26.27 / 26.32 | no gates | drift, estate audit (found 7 unnamed classes -> fixed), Python chain mirror, claims, obligation writers, erasure | lexie 33627fa, svc 89d9639 |
 | 07 | LP-27.1 / LP-27.2 | PROPOSED point with no bound, op, datum, package or RunOutput variant; number used for Merkle ledger in base | design docs (discovery, decisions, divergences, proposed wire contract, test plan, open items); no code | lexie 34539c2, svc 0452c01 |
 | 07 | LP-28.1 / LP-28.2 | PROPOSED point with no anomaly class, threshold, window, op or table; number used for regulatory export in base | design docs; control_signal schema raised as Part-M proposal, no migration (V42 still next) | lexie efea7f1, svc e2463a9 |
+| review | wave-by-wave audit (all 251) | tracker vs repos: 251 rows, all cited commits on branch, all named assets exist; static checks green (mvn test-compile, tsc 32, py_compile 381, opa check); LP-01 and LP-35 had no tests | — | — |
+| 01 | LP-01.1 | no baseline-schema test; V1 comment `${schema}` makes clean Flyway migrate abort (no placeholder configured) | BaselineSchemaMigrationTest (12 tables+indexes, vector(384), seeds, enum typing, placeholder gate w/ control); spring.flyway.placeholders.schema | svc 3054c8a |
+| 08 | LP-35.1 | no tests; nothing kept values out of span attributes / metric tags | TelemetryAttributeRedactionFilter; ObservabilityResilienceTest (probes distinct, named DOWN, OPA outage = deny, OTLP required, redaction, STOMP == poll) | svc cee270f |
