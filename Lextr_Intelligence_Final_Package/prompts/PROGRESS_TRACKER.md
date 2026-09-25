@@ -3,7 +3,7 @@
 **Repository Branches:** `feature/lextr-intelligence-v1.38.0` (active; base implementation by another model, gap-filled here) · `feature/lextr-intelligence-reimplementation` (earlier, Waves 1–4)  
 **Platform Version:** `v1.38.0`  
 **Tracker Mode:** Evidence-based, prompt-by-prompt tracking  
-**Current State:** Working on `feature/lextr-intelligence-v1.38.0`, LP by LP: each prompt verified against the base implementation, gaps filled additively (nothing removed). 196/251 DELIVERED, 0 IN_PROGRESS, 55 PENDING. Gates/tests NOT RUN (final pass). Per-change log in section 6. Last updated 2026-09-25.  
+**Current State:** Working on `feature/lextr-intelligence-v1.38.0`, LP by LP: each prompt verified against the base implementation, gaps filled additively (nothing removed). 205/251 DELIVERED, 0 IN_PROGRESS, 46 PENDING. Gates/tests NOT RUN (final pass). Per-change log in section 6. Last updated 2026-09-25.  
 
 ---
 
@@ -41,7 +41,7 @@ Required fields per prompt:
 | **Wave 04** | Skills 1/2/3, Masking Boundary & Assembly | 12 | 0 | 0 | 0 | 12 | 0 | ✅ DELIVERED |
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 0 | 0 | 0 | 16 | 0 | ✅ DELIVERED |
 | **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 0 | 0 | 0 | 25 | 0 | ✅ DELIVERED |
-| **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 44 | 0 | 0 | 14 | 0 | 🟡 PARTIAL |
+| **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 35 | 0 | 0 | 23 | 0 | 🟡 PARTIAL |
 | **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 11 | 0 | 0 | 13 | 0 | 🟡 PARTIAL |
 | **Wave 09** | Cross-Product Integration Baseline | 0 | 0 | 0 | 0 | 0 | 0 | ⚪ Empty |
 | **Wave 10** | UC10 Refine & Build, Report Store & Domain Resolution | 23 | 0 | 0 | 0 | 23 | 0 | ✅ DELIVERED |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 0 | 0 | 0 | 22 | 0 | ✅ DELIVERED |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **55** | **0** | **0** | **196** | **0** | **78.1% delivered** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **46** | **0** | **0** | **205** | **0** | **81.7% delivered** |
 
 ---
 
@@ -183,15 +183,15 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-24.5_JAVA` | `intelligence-service` | Analytical preset resolver | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
 | `LP-24.6_TS` | `intelligence-ui` | Merkle workspace UI | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
 | `LP-24.7_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | Merkle wire-through tests | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
-| `LP-25.1_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | AU-9 simulation and logic harness | - | `PENDING` | - | 2026-09-25 | v1.38.0 built a Merkle ledger under this number (kept); rules copilot to build — step 4 |
-| `LP-25.2_SQL` | `intelligence-service` | AU-9 ledger schema migration | - | `PENDING` | - | 2026-09-25 | v1.38.0 built a Merkle ledger under this number (kept); rules copilot to build — step 4 |
-| `LP-25.3_PY` | `lexie-ai` | Rules skill and extractor | - | `PENDING` | - | 2026-09-25 | v1.38.0 built a Merkle ledger under this number (kept); rules copilot to build — step 4 |
-| `LP-25.4_REGO` | `intelligence-service` | `tool_scope_rules` policy | - | `PENDING` | - | 2026-09-25 | v1.38.0 built a Merkle ledger under this number (kept); rules copilot to build — step 4 |
-| `LP-25.5_JAVA` | `intelligence-service` | Coordinator + acceptance receipt | - | `PENDING` | - | 2026-09-25 | v1.38.0 built a Merkle ledger under this number (kept); rules copilot to build — step 4 |
-| `LP-25.6_TS` | `intelligence-ui` | Evidence workspace UI | - | `PENDING` | - | 2026-09-25 | v1.38.0 built a Merkle ledger under this number (kept); rules copilot to build — step 4 |
-| `LP-25.7_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | AU-9 export wire-through tests | - | `PENDING` | - | 2026-09-25 | v1.38.0 built a Merkle ledger under this number (kept); rules copilot to build — step 4 |
-| `LP-25.8_TS` | `intelligence-ui` | AU-9 panel redesign | - | `PENDING` | - | 2026-09-25 | v1.38.0 built a Merkle ledger under this number (kept); rules copilot to build — step 4 |
-| `LP-25.9_TS` | `intelligence-ui` | Lexie entry point integration | - | `PENDING` | - | 2026-09-25 | v1.38.0 built a Merkle ledger under this number (kept); rules copilot to build — step 4 |
+| `LP-25.1_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | UC11 logic harness (entry state x rule kind) | - | `DELIVERED` | lexie 1d70226 (tests/rules/test_rules_harness.py over shared fixtures.json) | 2026-09-25 | D0 simulation core not in the package; harness states expected outcomes as data instead |
+| `LP-25.2_SQL` | `intelligence-service` | UC11 schema: enum values (_01) + agent_run columns (_02) | - | `DELIVERED` | svc 1008804 (V34 rule_draft + doc_type values; V35 invocation_origin, authoring_session_ref, accepted_rule_ref/_version/_at, uc11 origin CHECK, acceptance pair CHECK, 2 partial indexes; 7 rules.run.* keys) | 2026-09-25 | origin + session written IN the insert (svc ee6d961) because the CHECK fires on INSERT |
+| `LP-25.3_PY` | `lexie-ai` | Bounded rules skill (deterministic layer leads) | - | `DELIVERED` | lexie fee7f05 (skills/rules: contract, adapter_ops, checks, skill, manifest; fixtures + tests) | 2026-09-25 | rule_kind required from Core (DEC-LP-25-3 recommended option) |
+| `LP-25.4_REGO` | `intelligence-service` | lextr.ai.tool_scope_rules | - | `DELIVERED` | svc 1008804 (ops, 3 readiness gates via data, fan-out cap datum, polarity eligibility, review denies model op, ledger ungated; src/test/opa/tool_scope_rules_test.rego) | 2026-09-25 | readiness data shipped true (current behaviour) |
+| `LP-25.5_JAVA` | `intelligence-service` | UC11 coordinator, acceptance receipt, session-bounded persistence | - | `DELIVERED` | svc ee6d961 (rules/: RulesDecisions, RulesAssistDao, RulesAssistCoordinator, RulesAssistController /api/intelligence/rules/*; RulesAssistTest) | 2026-09-25 | gates NOT RUN |
+| `LP-25.6_TS` | `intelligence-ui` | Embedded RulesAssistPanel slice (DD-36) | - | `DELIVERED` | ui 953078f (features/rules: mount contract as data, patch acceptance, no storage/anchors) | 2026-09-25 | Core mounts the panel; the Intelligence demo shell keeps its roadmap screen |
+| `LP-25.7_TEST` | `intelligence-service` (+ `lexie-ai`, `intelligence-ui`) | UC11 cross-language reconciliation | - | `DELIVERED` | lexie 1d70226 (tests/rules/test_rules_cross_language.py reading all three repos) | 2026-09-25 | skips when sibling repos absent |
+| `LP-25.8_TS` | `intelligence-ui` | Four-tab panel redesign + GovernedValuesTable | - | `DELIVERED` | ui 953078f (Understand/Build/Check/Compare, include/exclude IN/NOT IN, retired blocked, registration request) | 2026-09-25 | click-tested controls |
+| `LP-25.9_TS` | `intelligence-ui` | LexiAI entry point (one render model, two projections) | - | `DELIVERED` | ui 953078f (ASK_WIRING UC11, shell rulesArrived/openRulesFromLexie, LexiePanel handoff, harness-only inline renderer) | 2026-09-25 | only en-US shipped; es asserted via test catalogue |
 | `LP-26.1_SQL` | `intelligence-service` | Evidence schema migration set | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
 | `LP-26.2_JAVA` | `intelligence-service` | Recording service and rules | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
 | `LP-26.3_JAVA` | `intelligence-service` | Query and export surface | - | `PENDING` | - | 2026-09-25 | partial on v1.38.0 (evidence_chain, agent_run_event only) — step 5 |
@@ -432,12 +432,12 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | Scope | Status | Notes |
 |---|---|---|
 | Waves 01–06 | VERIFIED + GAP-FILLED | per-prompt rows below; open: LP-19.4 client tally, LP-38.1 two classifiers |
-| Wave 07 | LP-39 DELIVERED (step 3 complete); LP-25, LP-26 rebuild pending; LP-27/28 design pending | LP-23/24 covered; LP-25, LP-39, LP-40 built under wrong numbers (their Merkle ledger / master synthesis / ratio kept); LP-26 partial (2/9 tables); LP-27/28 proposed |
+| Wave 07 | LP-39 and LP-25 DELIVERED (steps 3-4 complete); LP-26 rebuild pending; LP-27/28 design pending | LP-23/24 covered; LP-25, LP-39, LP-40 built under wrong numbers (their Merkle ledger / master synthesis / ratio kept); LP-26 partial (2/9 tables); LP-27/28 proposed |
 | Wave 08 | LP-29..35 and LP-40 (all 5 lanes) DELIVERED (gates NOT RUN); LP-47/48 PENDING | step 2 complete |
 | Wave 09 | n/a | folder empty |
 | Waves 10–18 | VERIFIED + GAP-FILLED | step 1 complete; LP-49.2 waits on LP-26.9 |
 | Owner decisions open | — | secret-scan enforcement date (red on arrival); coverage-gate enforcement date; trend/analytical/impact/operational/digital-twin readiness data docs shipped `true`; prod now requires OTLP endpoint; dev-yaml password kept by instruction; OPA-TDM-006/007 sign-off; training_env_ready shipped false; Training Data surface exported (host must mount); en-US only shipped, extracted UI fragments to merge before translation |
-| Next | step 4 — LP-25 rules copilot (9 lanes) | then LP-26 (step 5), LP-47/48 (step 6), LP-27/28 design docs (step 7) |
+| Next | step 5 — LP-26 evidence ledger (~30 lanes) | then LP-47/48 (step 6), LP-27/28 design docs (step 7) |
 
 | Wave | Prompt | Gap found | Added | Commit |
 |---|---|---|---|---|
@@ -499,6 +499,12 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | 08 | LP-40.4 | no i18n runtime; ~900 hardcoded strings | src/i18n (typed t, Intl, fallback); codemod 912 strings -> 891 codes; harness + catalogue tests | ui c3f3ecc |
 | 08 | LP-40.5 | no no-translate / fallback enforcement | params byte-identical across locales; explicit visible fallback (LocaleFallbackNotice) | ui c3f3ecc |
 | 08 | LP-47 / LP-48 | not started | pending (step 6) | — |
+| 07 | LP-25.2 | no UC11 schema (number used for Merkle ledger) | V34/V35 split, closed origin vocabulary, acceptance pair, partial indexes, 7 keys | svc 1008804 |
+| 07 | LP-25.3 | no rules skill | skills/rules deterministic layer + orchestrator | lexie fee7f05 |
+| 07 | LP-25.4 | no tool_scope_rules | policy + Rego tests | svc 1008804 |
+| 07 | LP-25.5 | no coordinator | rules/ decisions, DAO, coordinator, controller; origin in insert | svc ee6d961 |
+| 07 | LP-25.6 / 25.8 / 25.9 | no UI | features/rules panel, shell plumbing, ASK_WIRING | ui 953078f |
+| 07 | LP-25.1 / 25.7 | no harness / reconciliation | scenario harness + cross-language reconciliation | lexie 1d70226 |
 | 07 | LP-39.1 | no TDM schema (number used for "master synthesis") | V32/V33 split migrations, DB-level guarantees, writer-pure queries | svc 2f0c6b6 |
 | 07 | LP-39.2 | no TDM services | training/ package: DAOs, services with gate ordering, controller, ContentSchemaSource | svc 2f0c6b6 |
 | 07 | LP-39.3 | no TDM policies | tdm_ring_fence / tdm_contamination / tdm_training_env + data + Rego tests | svc 2f0c6b6, ec828c5 |
