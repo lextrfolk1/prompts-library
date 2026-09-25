@@ -3,7 +3,7 @@
 **Repository Branches:** `feature/lextr-intelligence-v1.38.0` (active; base implementation by another model, gap-filled here) · `feature/lextr-intelligence-reimplementation` (earlier, Waves 1–4)  
 **Platform Version:** `v1.38.0`  
 **Tracker Mode:** Evidence-based, prompt-by-prompt tracking  
-**Current State:** Working on `feature/lextr-intelligence-v1.38.0`, LP by LP: each prompt verified against the base implementation, gaps filled additively (nothing removed). 242/251 DELIVERED, 0 IN_PROGRESS, 9 PENDING. Gates/tests NOT RUN (final pass). Per-change log in section 6. Last updated 2026-09-25.  
+**Current State:** Working on `feature/lextr-intelligence-v1.38.0`, LP by LP: each prompt verified against the base implementation, gaps filled additively (nothing removed). 247/251 DELIVERED, 0 IN_PROGRESS, 4 PENDING. Gates/tests NOT RUN (final pass). Per-change log in section 6. Last updated 2026-09-25.  
 
 ---
 
@@ -42,7 +42,7 @@ Required fields per prompt:
 | **Wave 05** | Graph Walk, Lineage & Cytoscape DAG | 16 | 0 | 0 | 0 | 16 | 0 | ✅ DELIVERED |
 | **Wave 06** | Assembly, Preset Management & Semantic Queries | 25 | 0 | 0 | 0 | 25 | 0 | ✅ DELIVERED |
 | **Wave 07** | Evidence Ledger, Merkle Chaining & AU-9 Integrity | 58 | 4 | 0 | 0 | 54 | 0 | 🟡 PARTIAL |
-| **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 5 | 0 | 0 | 19 | 0 | 🟡 PARTIAL |
+| **Wave 08** | Reason Code Registry, Locale Tokens & Multi-Tenancy | 24 | 0 | 0 | 0 | 24 | 0 | ✅ DELIVERED |
 | **Wave 09** | Cross-Product Integration Baseline | 0 | 0 | 0 | 0 | 0 | 0 | ⚪ Empty |
 | **Wave 10** | UC10 Refine & Build, Report Store & Domain Resolution | 23 | 0 | 0 | 0 | 23 | 0 | ✅ DELIVERED |
 | **Wave 11** | Knowledge Graph Access Layer | 4 | 0 | 0 | 0 | 4 | 0 | ✅ DELIVERED |
@@ -53,7 +53,7 @@ Required fields per prompt:
 | **Wave 16** | Document Parsing Seam & Sandboxing | 22 | 0 | 0 | 0 | 22 | 0 | ✅ DELIVERED |
 | **Wave 17** | Chunking, Vector Split & OCR Provenance | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
 | **Wave 18** | Footnote Association & Drop Profiles | 11 | 0 | 0 | 0 | 11 | 0 | ✅ DELIVERED |
-| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **9** | **0** | **0** | **242** | **0** | **96.4% delivered** |
+| **TOTAL** | **Full 18-Wave Platform Scope** | **251** | **4** | **0** | **0** | **247** | **0** | **98.4% delivered** |
 
 ---
 
@@ -251,11 +251,11 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-47.4_TS` | `intelligence-ui` | Lexie dispatcher and handoff | - | `DELIVERED` | ui 1abf10b (LexiePanel launches runs: resolve -> planRun -> run -> dispatch; shell/lexie/useCaseAliases.ts (14 lexie-ai constants, sources named), dispatcher.tsx; dark renderers 7 -> 0; lexieDispatch.test.tsx re-derives constants from lexie-ai Python) | 2026-09-25 | FOUND: UC11 claimed by rules AND supervisory_radar; demo asks label UC6/UC7 differently from lexie-ai (forecast/benchmark) - recorded, not re-authored |
 | `LP-47.5_TS` | `intelligence-ui` | Host seam and boot integration | - | `DELIVERED` | ui 1abf10b (shell/host: HostProvider fail-closed default, httpHost with runtime probes, dev/referenceHost withholds governance.audit.view, never accepts/unmasks; main.tsx sole importer; boot splash on var(--lx-boot-accent, CanvasText); brand hex out of App; hostSeam.test.tsx with mutant) | 2026-09-25 | vite build NOT RUN (standing rule); embed exports HostProvider for Core |
 | `LP-47.6_TS` | `intelligence-ui` | Open-items pass and shell contract | - | `DELIVERED` | ui 1abf10b (entities carried into the run by planRun; NavItem content mandatory for Intelligence, one CoreOwnedPlaceholder; typecheck debt 38 -> 32 (App NAV typing x5, TENANTS index x1); scripts/lp47/lp47_run_suites.sh with declared known-red register + declared-tooling check) | 2026-09-25 | a red that stops being red fails the runner |
-| `LP-48.1_SQL` | `intelligence-service` | Governing ingest description schema | - | `PENDING` | - | 2026-09-25 | not started on v1.38.0 — step 6 |
-| `LP-48.2_JAVA` | `intelligence-service` | Ingestion API and disposition handling | - | `PENDING` | - | 2026-09-25 | not started on v1.38.0 — step 6 |
-| `LP-48.3_JAVA` | `intelligence-service` | Rule set server-side semantics | - | `PENDING` | - | 2026-09-25 | not started on v1.38.0 — step 6 |
-| `LP-48.5_TS` | `intelligence-ui` | Governing ingest UI | - | `PENDING` | - | 2026-09-25 | not started on v1.38.0 — step 6 |
-| `LP-48.6_TEST` | `intelligence-service` (+ `intelligence-ui`) | Negative suite and mutation test port | - | `PENDING` | - | 2026-09-25 | not started on v1.38.0 — step 6 |
+| `LP-48.1_SQL` | `intelligence-service` | Governing ingest description schema | - | `DELIVERED` | svc ac003d4 (V41 regulatory_document.description: ADD COLUMN IF NOT EXISTS, nullable, no default, no backfill; read_header query + GET /knowledge/documents/{id}; KnowledgeHubDescriptionMigrationTest) | 2026-09-25 | live UI upload goes through lexie-ai, which keeps the description in document metadata (lexie 46b03f0) |
+| `LP-48.2_JAVA` | `intelligence-service` | Ingestion API and disposition handling | - | `DELIVERED` | svc ac003d4, f798adf (POST /knowledge/ingest/batch: per-file ACCEPTED/REJECTED/FAILED with closed KH_INGEST_* codes + params; verdict derived; nothing accepted/parsed/sent -> 422 ApiResponse with non-null ErrorDetail from the advice; English fallback off by default, owner + end; kh_ingest_batch in lextr.ai.tool_scope_parsing, unreachable OPA denies; AI_PROHIBITED shared hard stop; IngestionBatchServiceTest); lexie 46b03f0 (upload route answers with reason_code + params) | 2026-09-25 | DEVIATION: LP-48 was to author no Rego - no package declared an ingestion op, so ONE op was registered in tool_scope_parsing (+ src/test/opa/tool_scope_parsing_test.rego) |
+| `LP-48.3_JAVA` | `intelligence-service` | Rule set server-side semantics | - | `DELIVERED` | svc ac003d4, f798adf (IngestionRule enumerable table, one code per rule, each rule carries its witness; duplicates in-batch + against existing content_sha256; extensions = lexie's live parser set; IngestionRuleTableTest iterates values()) | 2026-09-25 | a rule added to the table is exercised with no test edit |
+| `LP-48.5_TS` | `intelligence-ui` | Governing ingest UI | - | `DELIVERED` | ui a7f66fb (description field; rules.ts courtesy table + DispositionFileList with reason per file, remove, clear refused/all; upload disabled via canCommit; HowThisWorks + 8 flows / 43 steps; RowHistoryButton + HistoryDrawer on Model Registry, Training Data, AI Risk & Controls, Audit & Evidence) | 2026-09-25 | existing HistoryDrawer kinds fabricate actors/dates (prototype carry-over, untouched); the 5 new kinds derive from record fields only |
+| `LP-48.6_TEST` | `intelligence-service` (+ `intelligence-ui`) | Negative suite and mutation test port | - | `DELIVERED` | ui a7f66fb (khIngestNegative.test.tsx + walkthroughAudit.test.tsx: rules, cross-language agreement with IngestionRule.java, mutants for rule removal x7, catalogue gap, canCommit, first-match, flow removal, short flow, stopPropagation); lexie 46b03f0 (static code-set test) | 2026-09-25 | prototype suites ui25_kh_negative.mjs / ui25_n34_negative.mjs are not in the package - equivalent assertions ported, counts differ from 31/83 |
 
 ### Wave 09 — Cross-Product Integration Baseline
 
@@ -433,11 +433,11 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 |---|---|---|
 | Waves 01–06 | VERIFIED + GAP-FILLED | per-prompt rows below; open: LP-19.4 client tally, LP-38.1 two classifiers |
 | Wave 07 | LP-39, LP-25, LP-26 (31 lanes) DELIVERED (steps 3-5 complete); LP-27/28 design pending | LP-23/24 covered; their Merkle ledger / master synthesis / ratio kept; LP-26 rebuilt on V36-V40 alongside their evidence_chain/agent_run_event (extended, not duplicated) |
-| Wave 08 | LP-29..35, LP-40, LP-47 (6 lanes) DELIVERED (gates NOT RUN except LP-47's static reachability/parse/mutation gates, GREEN); LP-48 PENDING | step 2 complete; step 6 half done |
+| Wave 08 | ALL DELIVERED: LP-29..35, LP-40, LP-47 (6), LP-48 (5) (gates NOT RUN except LP-47 static gates GREEN and LP-48 tool_scope_parsing Rego tests 6/6) | steps 2 and 6 complete |
 | Wave 09 | n/a | folder empty |
 | Waves 10–18 | VERIFIED + GAP-FILLED | step 1 complete; LP-49.2 dependency now met by V38 verify_chain_coverage() |
-| Owner decisions open | — | secret-scan enforcement date (red on arrival); coverage-gate enforcement date; trend/analytical/impact/operational/digital-twin readiness data docs shipped `true`; prod now requires OTLP endpoint; dev-yaml password kept by instruction; OPA-TDM-006/007 sign-off; DEC-LP-26-1 erasure authorities (shipped empty = deny); LP-47 UC11 use-case collision (rules vs supervisory_radar) and demo UC6/UC7 labels; resilience console ownership; agent_run_step additive-input fence deviation; training_env_ready shipped false; Training Data surface exported (host must mount); en-US only shipped, extracted UI fragments to merge before translation |
-| Next | step 6 — LP-48 governing ingestion | then LP-27/28 design docs (step 7) |
+| Owner decisions open | — | secret-scan enforcement date (red on arrival); coverage-gate enforcement date; trend/analytical/impact/operational/digital-twin readiness data docs shipped `true`; prod now requires OTLP endpoint; dev-yaml password kept by instruction; OPA-TDM-006/007 sign-off; DEC-LP-26-1 erasure authorities (shipped empty = deny); LP-47 UC11 use-case collision (rules vs supervisory_radar) and demo UC6/UC7 labels; resilience console ownership; LP-48 ingestion op registered in tool_scope_parsing (LP-48 said no Rego of its own); prototype HistoryDrawer kinds fabricate actors/dates; agent_run_step additive-input fence deviation; training_env_ready shipped false; Training Data surface exported (host must mount); en-US only shipped, extracted UI fragments to merge before translation |
+| Next | step 7 — LP-27/28 as design docs (4 lanes) | last pending |
 
 | Wave | Prompt | Gap found | Added | Commit |
 |---|---|---|---|---|
@@ -502,6 +502,9 @@ Agreed order: (1) verify/fix waves 10–18 → (2) Wave 8 platform LP-29..35 + L
 | 08 | LP-47.3 / 47.6 | 25 of 35 slices unreachable; hardcoded NAV + if-chain | composed mount registry (surface/navItem), 8 new destinations, 9 declared-unmounted, gov-audit double-guarded, M6 enforced at composition; typecheck 38 -> 32 | ui 1abf10b |
 | 08 | LP-47.4 | Lexie never launched a run; 7 answer renderers dark | resolve -> planRun (no default report, entities carried) -> run -> useCase dispatcher; alias table reconciled against lexie-ai | ui 1abf10b |
 | 08 | LP-47.5 | no host seam; vendor blue in shell | HostProvider (fail-closed), http + reference hosts, system-colour boot splash | ui 1abf10b |
+| 08 | LP-48.1 | no description on a document | V41 nullable column, no backfill, header read model | svc ac003d4 |
+| 08 | LP-48.2 / 48.3 | KH ingest: one document, no duplicate check, no per-file outcome, prose errors, no tool_scope | batch API with per-file dispositions + closed codes, enumerable rule table with witnesses, derived verdict, 422 envelope, tool_scope_parsing op, fallback declared; lexie upload route emits the same codes | svc ac003d4, f798adf; lexie 46b03f0 |
+| 08 | LP-48.5 / 48.6 | no description, no reasons per file, no walkthroughs, no audit on four screens | disposition list + courtesy rules, 8 walkthrough flows, per-row history on 4 screens, mutation-tested suites | ui a7f66fb |
 | 08 | LP-47 / LP-48 | not started | pending (step 6) | — |
 | 07 | LP-25.2 | no UC11 schema (number used for Merkle ledger) | V34/V35 split, closed origin vocabulary, acceptance pair, partial indexes, 7 keys | svc 1008804 |
 | 07 | LP-25.3 | no rules skill | skills/rules deterministic layer + orchestrator | lexie fee7f05 |
