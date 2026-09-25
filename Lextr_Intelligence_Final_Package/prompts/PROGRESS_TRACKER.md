@@ -453,3 +453,8 @@ Base implementation by another model on `feature/lextr-intelligence-v1.38.0`; en
 | 05 | LP-14.2 / LP-14.4 | payload could overwrite trusted OPA input keys and assert *_ready; lexie-echoed tenant persisted | trusted keys applied last, *_ready stripped (3 coordinators); caller tenant enforced | svc 9faef0b |
 | 05 | LP-15.1 / LP-17.1 | fabricated 0.95 confidence and narrative fallback | absent renders as absent | ui c1c161d |
 | 05 | LP-19.4 | OPEN: client-side system-driver tally used when server count absent (their conformance test depends on it; server wire field unconfirmed) | not changed | — |
+| 06 | LP-20.1 / LP-20.2 / LP-20.5 / LP-21.1 / LP-21.3 / LP-21.4 / LP-21.5 / LP-22.1 / LP-22.2 / LP-22.4 / LP-22.5 / LP-22.6 / LP-37.1 / LP-37.2 / LP-37.4 / LP-37.5 / LP-38.2 / LP-38.4 / LP-38.5 | covered | — | — |
+| 06 | LP-20.3 / LP-37.3 / LP-38.3 | readiness datums hard-coded true (fail-open, never falsifiable); impact cross-report single-gated; no AI_PROHIBITED stop in impact/trend | default-false datums from opa/data docs (shipped true); both passes for cross_report; hard-stops | svc 31d1ea8 |
+| 06 | LP-21.2 | RunResult lacked intent / route_out | additive components | svc 31d1ea8 |
+| 06 | LP-22.3 | only draft->operational was refused; retired->operational etc. allowed | LEGAL_NEXT table | svc 31d1ea8 |
+| 06 | LP-38.1 | OPEN: two trend classifiers (variance evidence_substeps vs skills/shared) with different vocabularies; spec's own LP-18 vs LP-38 verdict sets differ — owner decision needed | not changed | — |
