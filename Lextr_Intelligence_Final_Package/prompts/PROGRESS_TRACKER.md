@@ -420,3 +420,14 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 - Daily: update prompt status and blockers
 - Weekly: validate evidence against repo state
 - At release: confirm all final `DELIVERED` prompts still match actual implementation
+
+## 6. Gap-fill log — `feature/lextr-intelligence-v1.38.0`
+
+Base implementation by another model on `feature/lextr-intelligence-v1.38.0`; entries below record what was missing and added (additive only, nothing removed). Gates NOT RUN.
+
+| Wave | Prompt | Gap found | Added | Commit |
+|---|---|---|---|---|
+| pre | cross-cutting | non-RFC 8785 canonicaliser; exception text in responses; fail-open /run fallback; unbounded cache; no STOMP; no preset transition legality; tenant CSS injected without OPA | JsonCanonicalizer + shared corpus (Java+Python), hardened GlobalExceptionHandler + 502, RunServiceImpl refusal/STOMP/LRU, PresetServiceImpl legality, OPA-gated TenantThemeProvider + embed | svc 6b4a3a7, lexie 74c0037, ui dcd4850 |
+| 01 | LP-01.1 | regulatory_document reused form_version enum (B1) | V26 kh_ingestion_status | svc 84c244c |
+| 01 | LP-02.1 | covered by pre-row port | — | ui dcd4850 |
+| 01 | LP-02.2 | empty unmasked display blank; RunProgress crash on unknown status; no ledger state; no output_type dispatch; chart formats figures | atom patches + embed/atoms.ts | ui 2260772 |
