@@ -1,5 +1,5 @@
 {
-  "_readme": "L2 live smoke checks run by `run_feature_tests.py smoke`. URLs use {SVC} {LEXIE} {OPA} {UI} (override with env SVC_URL, LEXIE_URL, OPA_URL, UI_URL). 'mutating: true' checks write rows and only run with --allow-writes. expect.status = allowed HTTP codes; expect.json = dotted-path equality; expect.json_has = dotted paths that must exist; expect.body_contains = substrings.",
+  "_readme": "L2 live smoke checks run by `run_feature_tests.py smoke`. Live checks. Each is linked to features by its URL (see feature_catalog.json smoke_checks). URLs use {SVC} {LEXIE} {OPA} {UI} (override with env SVC_URL, LEXIE_URL, OPA_URL, UI_URL). 'mutating: true' checks write rows and only run with --allow-writes. expect.status = allowed HTTP codes; expect.json = dotted-path equality; expect.json_has = dotted paths that must exist; expect.body_contains = substrings.",
   "defaults": {
     "SVC": "http://localhost:8059",
     "LEXIE": "http://localhost:5003",
@@ -16,10 +16,6 @@
   "checks": [
     {
       "id": "svc-health",
-      "features": [
-        "LP-35",
-        "LP-31"
-      ],
       "method": "GET",
       "url": "{SVC}/actuator/health",
       "expect": {
@@ -30,9 +26,6 @@
     },
     {
       "id": "svc-readiness",
-      "features": [
-        "LP-35"
-      ],
       "method": "GET",
       "url": "{SVC}/actuator/health/readiness",
       "expect": {
@@ -44,9 +37,6 @@
     },
     {
       "id": "svc-liveness",
-      "features": [
-        "LP-35"
-      ],
       "method": "GET",
       "url": "{SVC}/actuator/health/liveness",
       "expect": {
@@ -57,9 +47,6 @@
     },
     {
       "id": "svc-openapi",
-      "features": [
-        "LP-29"
-      ],
       "method": "GET",
       "url": "{SVC}/v3/api-docs",
       "expect": {
@@ -73,9 +60,6 @@
     },
     {
       "id": "opa-health",
-      "features": [
-        "LP-04"
-      ],
       "method": "GET",
       "url": "{OPA}/health",
       "expect": {
@@ -86,9 +70,6 @@
     },
     {
       "id": "svc-opa-policies",
-      "features": [
-        "LP-04"
-      ],
       "method": "GET",
       "url": "{SVC}/api/v1/opa/policies",
       "expect": {
@@ -99,10 +80,6 @@
     },
     {
       "id": "lexie-health",
-      "features": [
-        "platform",
-        "BL-09"
-      ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/chatbot/ai/health",
       "expect": {
@@ -113,11 +90,6 @@
     },
     {
       "id": "lexie-variance-health",
-      "features": [
-        "LP-14",
-        "BL-01",
-        "BL-07"
-      ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/health",
       "expect": {
@@ -128,9 +100,6 @@
     },
     {
       "id": "lexie-openapi",
-      "features": [
-        "LP-29"
-      ],
       "method": "GET",
       "url": "{LEXIE}/openapi.json",
       "expect": {
@@ -144,10 +113,6 @@
     },
     {
       "id": "lexie-run-uc5",
-      "features": [
-        "LP-03",
-        "platform"
-      ],
       "method": "POST",
       "url": "{LEXIE}/run",
       "body": {
@@ -205,9 +170,6 @@
     },
     {
       "id": "lexie-run-trusted-keys",
-      "features": [
-        "LP-03"
-      ],
       "method": "POST",
       "url": "{LEXIE}/run",
       "body": {
@@ -248,10 +210,6 @@
     },
     {
       "id": "lexie-run-unknown-uc",
-      "features": [
-        "LP-40",
-        "LP-33"
-      ],
       "method": "POST",
       "url": "{LEXIE}/run",
       "body": {
@@ -270,11 +228,6 @@
     },
     {
       "id": "lexie-run-adapter-unbound",
-      "features": [
-        "LP-13",
-        "LP-21",
-        "LP-20"
-      ],
       "method": "POST",
       "url": "{LEXIE}/run",
       "body": {
@@ -293,10 +246,6 @@
     },
     {
       "id": "lexie-run-invalid-input",
-      "features": [
-        "LP-37",
-        "LP-40"
-      ],
       "method": "POST",
       "url": "{LEXIE}/run",
       "body": {
@@ -318,9 +267,6 @@
     },
     {
       "id": "lexie-run-no-client",
-      "features": [
-        "LP-33"
-      ],
       "method": "POST",
       "url": "{LEXIE}/run",
       "body": {
@@ -334,10 +280,6 @@
     },
     {
       "id": "svc-run-no-client",
-      "features": [
-        "LP-03",
-        "LP-33"
-      ],
       "method": "POST",
       "url": "{SVC}/run",
       "headers": {
@@ -355,9 +297,6 @@
     },
     {
       "id": "svc-presets-resolve",
-      "features": [
-        "LP-12"
-      ],
       "method": "GET",
       "url": "{SVC}/api/v1/presets/resolve?task=variance",
       "expect": {
@@ -370,9 +309,6 @@
     },
     {
       "id": "svc-definitions",
-      "features": [
-        "LP-22"
-      ],
       "method": "GET",
       "url": "{SVC}/api/v1/governance/definitions",
       "expect": {
@@ -383,9 +319,6 @@
     },
     {
       "id": "svc-definitions-tags",
-      "features": [
-        "LP-22"
-      ],
       "method": "GET",
       "url": "{SVC}/api/v1/governance/definitions/tags",
       "expect": {
@@ -396,10 +329,6 @@
     },
     {
       "id": "svc-inbox",
-      "features": [
-        "LP-60",
-        "LP-59"
-      ],
       "method": "GET",
       "url": "{SVC}/api/v1/inbox?surface=INTELLIGENCE",
       "expect": {
@@ -410,9 +339,6 @@
     },
     {
       "id": "svc-estate-ledger-integrity",
-      "features": [
-        "LP-59"
-      ],
       "method": "GET",
       "url": "{SVC}/api/v1/governance/estate-ledger/integrity",
       "expect": {
@@ -423,9 +349,6 @@
     },
     {
       "id": "svc-calibration-metrics",
-      "features": [
-        "LP-51"
-      ],
       "method": "GET",
       "url": "{SVC}/api/v1/calibration/monitoring-metrics",
       "expect": {
@@ -436,9 +359,6 @@
     },
     {
       "id": "svc-assurance-not-measured",
-      "features": [
-        "LP-57"
-      ],
       "method": "GET",
       "url": "{SVC}/api/v1/assurance/documents/smoke-never-measured/status",
       "expect": {
@@ -454,9 +374,6 @@
     },
     {
       "id": "svc-training-datasets",
-      "features": [
-        "LP-39"
-      ],
       "method": "GET",
       "url": "{SVC}/api/intelligence/training/datasets",
       "expect": {
@@ -467,9 +384,6 @@
     },
     {
       "id": "svc-evidence-erasure-reconciliation",
-      "features": [
-        "LP-26"
-      ],
       "method": "GET",
       "url": "{SVC}/api/intelligence/evidence/erasures/reconciliation",
       "expect": {
@@ -480,9 +394,6 @@
     },
     {
       "id": "svc-evidence-involvement",
-      "features": [
-        "LP-26"
-      ],
       "method": "GET",
       "url": "{SVC}/api/intelligence/evidence/involvement?anchorKind=RUN&anchorRef=smoke&from=2026-01-01&to=2026-12-31",
       "expect": {
@@ -497,9 +408,6 @@
     },
     {
       "id": "svc-tenants",
-      "features": [
-        "module:tenant"
-      ],
       "method": "GET",
       "url": "{SVC}/api/v1/tenants",
       "expect": {
@@ -510,9 +418,6 @@
     },
     {
       "id": "svc-hsm-status",
-      "features": [
-        "module:hsm"
-      ],
       "method": "GET",
       "url": "{SVC}/api/v1/hsm/status",
       "expect": {
@@ -523,9 +428,6 @@
     },
     {
       "id": "svc-resilience-topology",
-      "features": [
-        "module:resilience"
-      ],
       "method": "GET",
       "url": "{SVC}/api/v1/resilience/topology",
       "expect": {
@@ -536,11 +438,6 @@
     },
     {
       "id": "lexie-review-queue",
-      "features": [
-        "LP-07",
-        "LP-14",
-        "BL-03"
-      ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/review/queue",
       "expect": {
@@ -551,11 +448,6 @@
     },
     {
       "id": "lexie-kh-documents",
-      "features": [
-        "LP-08",
-        "LP-48",
-        "BL-06"
-      ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/knowledge/documents",
       "expect": {
@@ -566,10 +458,6 @@
     },
     {
       "id": "ui-root",
-      "features": [
-        "LP-47",
-        "LP-02"
-      ],
       "method": "GET",
       "url": "{UI}",
       "expect": {
@@ -580,9 +468,6 @@
     },
     {
       "id": "ui-api-proxy",
-      "features": [
-        "platform"
-      ],
       "method": "GET",
       "url": "{UI_ORIGIN}/api/v1/inbox?surface=INTELLIGENCE",
       "expect": {
@@ -594,9 +479,6 @@
     },
     {
       "id": "lexie-variance-cycles-available",
-      "features": [
-        "BL-01"
-      ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/cycles/available",
       "expect": {
@@ -607,9 +489,6 @@
     },
     {
       "id": "lexie-variance-entities",
-      "features": [
-        "BL-01"
-      ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/entities",
       "expect": {
@@ -620,9 +499,6 @@
     },
     {
       "id": "lexie-review-metrics",
-      "features": [
-        "BL-03"
-      ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/review/metrics",
       "expect": {
@@ -633,9 +509,6 @@
     },
     {
       "id": "lexie-variance-thresholds",
-      "features": [
-        "BL-05"
-      ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/thresholds",
       "expect": {
@@ -646,9 +519,6 @@
     },
     {
       "id": "lexie-model-config",
-      "features": [
-        "BL-05"
-      ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/model-config",
       "expect": {
@@ -659,9 +529,6 @@
     },
     {
       "id": "lexie-variance-cycles",
-      "features": [
-        "BL-05"
-      ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/cycles",
       "expect": {
@@ -672,9 +539,6 @@
     },
     {
       "id": "lexie-kh-collections",
-      "features": [
-        "BL-06"
-      ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/knowledge/collections",
       "expect": {
@@ -685,9 +549,6 @@
     },
     {
       "id": "lexie-demo-console",
-      "features": [
-        "BL-08"
-      ],
       "method": "GET",
       "url": "{LEXIE}/demo/",
       "expect": {
@@ -698,9 +559,6 @@
     },
     {
       "id": "lexie-rules-knowledge-status",
-      "features": [
-        "BL-10"
-      ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/chatbot/ai/knowledge/status",
       "expect": {
@@ -712,11 +570,6 @@
     {
       "id": "svc-run-uc5-persisted",
       "mutating": true,
-      "features": [
-        "LP-03",
-        "LP-06",
-        "LP-07"
-      ],
       "method": "POST",
       "url": "{SVC}/run",
       "body": {
@@ -775,10 +628,6 @@
       "id": "svc-run-get",
       "mutating": true,
       "depends_on": "svc-run-uc5-persisted",
-      "features": [
-        "LP-03",
-        "LP-06"
-      ],
       "method": "GET",
       "url": "{SVC}/run/{run_id}",
       "expect": {
@@ -790,9 +639,6 @@
     {
       "id": "svc-inbox-decide-on-core-refused",
       "mutating": true,
-      "features": [
-        "LP-60"
-      ],
       "method": "POST",
       "url": "{SVC}/api/v1/inbox/smoke-subject/decide?subjectKind=PRESET&capability=preset&action=approve&surface=CORE",
       "expect": {

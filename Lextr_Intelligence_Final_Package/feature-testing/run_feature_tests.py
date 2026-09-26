@@ -1,18 +1,15 @@
 #!/usr/bin/env python3
-"""Feature test runner for Lextr Intelligence v1.38.0 (branch feature/lextr-intelligence-v1.38.0 vs main).
+"""Feature test runner for Lextr Intelligence: the functional features in feature_catalog.json.
 
-Reads feature_catalog.json (build it with tools/build_feature_catalog.py). Stdlib only.
+Build the catalog with tools/build_feature_catalog.py. Stdlib only.
 
   python3 run_feature_tests.py serve                      # the testing page in your browser (http://127.0.0.1:8765)
   python3 run_feature_tests.py preflight                  # what can run on this machine right now
-  python3 run_feature_tests.py list [--domain Variance] [--uc UC10]
-  python3 run_feature_tests.py show LP-14                 # summary, prompts, acceptance criteria, how to test
-  python3 run_feature_tests.py show module:knowledge
-  python3 run_feature_tests.py show BL-06                 # a feature that already existed on main
-  python3 run_feature_tests.py test LP-14 [LP-37 ...] [--repo lexie-ai] [--dry-run]
-  python3 run_feature_tests.py test module:impact
-  python3 run_feature_tests.py suite [--repo lexie-ai]    # run whole repo suites once, map results to every feature
-  python3 run_feature_tests.py smoke [--only LP-57] [--allow-writes]   # L2 live API checks
+  python3 run_feature_tests.py list [--area Knowledge] [--status Available]
+  python3 run_feature_tests.py show impact-analysis       # what it does, where, status, how to test
+  python3 run_feature_tests.py test impact-analysis [kh-upload ...] [--repo lexie-ai] [--dry-run]
+  python3 run_feature_tests.py suite [--repo lexie-ai]    # run whole repo suites once, verdict per feature
+  python3 run_feature_tests.py smoke [--only kh-upload] [--allow-writes]   # live API checks
 
 Results: results/<timestamp>-<cmd>.json and a row appended to results/RESULTS.md.
 Exit code: 0 all passed, 1 something failed, 2 usage/environment error.
@@ -57,46 +54,26 @@ def load() -> dict:
 
 
 def resolve(cat: dict, key: str) -> dict:
-    if key.startswith("module:"):
-        mid = key.split(":", 1)[1]
-        for m in cat["modules"]:
-            if m["id"] == mid:
-                return {**m, "_kind": "module"}
-        sys.exit(f"unknown module {mid}; known: {', '.join(m['id'] for m in cat['modules'])}")
-    k = key.upper()
-    for b in cat.get("baseline_features", []):
-        if b["id"] == k:
-            return {**b, "_kind": "baseline"}
-    if re.fullmatch(r"LP-\d{2}\.\d{1,2}", k):  # a single prompt -> its parent point
-        k = k.split(".")[0]
     for f in cat["features"]:
-        if f["id"] == k:
+        if f["id"] == key:
             return {**f, "_kind": "feature"}
-    sys.exit(f"unknown feature {key}")
+    close = [f["id"] for f in cat["features"] if key.lower() in f["id"] or key.lower() in f["name"].lower()]
+    sys.exit(f"unknown feature {key}" + (f"; did you mean: {', '.join(close)}" if close else "; see: run_feature_tests.py list"))
 
 
 # ---------------------------------------------------------------- commands
 
 def cmd_list(cat: dict, a) -> int:
-    rows = cat["features"]
-    if a.domain:
-        rows = [f for f in rows if a.domain.lower() in (f["domain"] or "").lower()]
-    if a.uc:
-        rows = [f for f in rows if a.uc.upper() in [u.upper() for u in f["use_cases"]]]
-    print(f"{'LP':6} {'wave':>4} {'delivery':10} {'tests s/l/u':11} {'domain':28} title")
-    for f in rows:
-        n = lambda r: len(f["test_files"].get(r, []))
-        print(f"{f['id']:6} {f['wave']:>4} {f['delivery']:10} {n('intelligence-service'):>3}/{n('lexie-ai')}/{n('intelligence-ui'):<5} "
-              f"{(f['domain'] or '')[:28]:28} {f['title'][:80]}")
-    if not a.uc:
-        bl = [b for b in cat.get("baseline_features", []) if not a.domain or a.domain.lower() in (b["domain"] or "").lower()]
-        if bl:
-            print("\nbaseline features already on main:")
-            for b in bl:
-                n = sum(len(v) for v in b["test_files"].values())
-                print(f"{b['id']:6} {b['repo']:16} tests={n if n else 'none (manual)':<14} {b['name']}")
-    if not a.domain and not a.uc:
-        print("\nmodules:", ", ".join(f"module:{m['id']}" for m in cat["modules"]))
+    for area in cat["areas"]:
+        rows = [f for f in cat["features"] if f["area"] == area
+                and (not a.area or a.area.lower() in area.lower())
+                and (not a.status or a.status.lower() in f["status"].lower())]
+        if not rows:
+            continue
+        print(f"\n{area}")
+        for f in rows:
+            n = sum(len(v) for v in f["test_files"].values())
+            print(f"  {f['id']:26} {f['status']:34} tests={n if n else '-':<4} {f['name']}")
     return 0
 
 
@@ -105,47 +82,30 @@ def cmd_show(cat: dict, a) -> int:
     if a.json:
         print(json.dumps(x, indent=2, ensure_ascii=False))
         return 0
-    if x["_kind"] == "baseline":
-        print(f"# {x['id']} - {x['name']}  [{x['repo']}, already on {x['on_base_branch']}]\n\n{x['feature_summary']}\n")
-        for e in x["endpoints"]:
-            print(f"  endpoint  {e['endpoint']}")
-        if x["manual_checks"]:
-            print("\n  manual checks (L3):")
-            for m in x["manual_checks"]:
-                print(f"    - {m}")
-        for nt in x["notes"]:
-            print(f"  NOTE: {nt}")
-        if x["changed_by_branch"]:
-            print(f"  changed by the branch since main: {', '.join(x['changed_by_branch'])}")
-    elif x["_kind"] == "module":
-        print(f"# module:{x['id']} - {x['name']}  [{x['use_case']}]  reach: {x['reach']}")
-        print("related LPs:", ", ".join(x["related_points"]))
-        for e in x["endpoints"]:
-            print(f"  endpoint  {e['repo']:20} {e['endpoint']}")
-    else:
-        print(f"# {x['id']} - {x['title']}\n  wave {x['wave']} | {x['domain']} | UC {', '.join(x['use_cases'])} | delivery {x['delivery']}")
-        print(f"\n{x['feature_summary'] or ''}\n")
-        for s in x["ui_screens"]:
-            print(f"  UI        {s.get('group')} > {s.get('label')}")
-        for e in x["endpoints"]:
-            print(f"  endpoint  {e['repo']:20} {e['endpoint']}")
-        for s in x["subtasks"]:
-            print(f"\n  [{s['sub_id']} {s['lang']}] {s['tracker_status']} - {s['summary']}\n    prompt: {s['prompt_file']}")
-            for i, c in enumerate(s["acceptance_criteria"], 1):
-                print(f"    AC{i}: {c[:220]}{'...' if len(c) > 220 else ''}")
-        if x["manual_checks"]:
-            print("\n  manual checks (L3):")
-            for m in x["manual_checks"]:
-                print(f"    - {m}")
-        for g in x["known_gaps"]:
-            print(f"  KNOWN GAP: {g}")
+    print(f"# {x['name']}  [{x['id']} · {x['area']}]\n  status: {x['status']}\n  where:  {x['where']}\n\n{x['what']}\n")
+    for i in x["known_issues"]:
+        print(f"  KNOWN ISSUE: {i}")
+    for c in x["ui_calls"]:
+        if c["status"] != "ok":
+            print(f"  UI CALL NOT SERVED: {c['url']} ({c['status']})")
+    print("\n  how to test:")
+    for i, st in enumerate(x["steps"], 1):
+        print(f"    {i}. {st}")
+    for e in x["expect"]:
+        print(f"    expect: {e}")
+    for e in x["endpoints"]:
+        print(f"  endpoint  {e['repo']:20} {e['endpoint']}")
+    if x["smoke_checks"]:
+        print(f"  live checks: {', '.join(x['smoke_checks'])}")
+    if x["built_by"]:
+        print(f"  built by prompts: {', '.join(x['built_by'])}")
     print("\n  automated tests:")
     for r, files in x["test_files"].items():
         print(f"    {r}: {len(files)} files")
         for f in files:
             print(f"      {f}")
-    for r, c in x["test_commands"].items():
-        print(f"  cmd[{r}]: {c[:300]}{'...' if len(c) > 300 else ''}")
+    if not x["test_files"]:
+        print("    none")
     return 0
 
 
@@ -299,9 +259,7 @@ def _write(kind: str, payload: dict) -> Path:
 
 
 def cmd_test(cat: dict, a, whole_suite: bool = False) -> int:
-    targets = [resolve(cat, k) for k in a.keys] if not whole_suite else [{**f, "_kind": "feature"} for f in cat["features"]] + \
-        [{**b, "_kind": "baseline"} for b in cat.get("baseline_features", [])] + \
-        [{**m, "_kind": "module"} for m in cat["modules"]]
+    targets = [resolve(cat, k) for k in a.keys] if not whole_suite else [{**f, "_kind": "feature"} for f in cat["features"]]
     repos = [a.repo] if a.repo else list(REPOS)
     work = RESULTS / ("junit-" + dt.datetime.now().strftime("%Y%m%d-%H%M%S"))
     if not a.dry_run:
@@ -327,14 +285,12 @@ def cmd_test(cat: dict, a, whole_suite: bool = False) -> int:
             print("   ", (rr.get("error") or rr.get("log_tail", ""))[-800:].replace("\n", "\n    "))
     print("\n== per-feature")
     for v in verdicts:
-        if whole_suite and v["kind"] == "module":
-            continue
         detail = "  ".join(f"{r[:5]}:{d['verdict']}({d['passed']}p/{d['failed']}f/{d['skipped']}s)" for r, d in v["repos"].items())
         print(f"  {v['id']:8} {v['verdict']:8} {detail}")
         for r, d in v["repos"].items():
             for f in d["failures"][:5]:
                 print(f"      FAIL {f[:200]}")
-    # a failing case no feature or module claims must still be seen
+    # a failing case no feature claims must still be seen
     orphans = []
     for repo, rr in repo_results.items():
         owned = {t for x in targets for t in x["test_files"].get(repo, [])}
@@ -373,14 +329,18 @@ def cmd_smoke(cat: dict, a) -> int:
     m = re.match(r"(https?://[^/]+)", urls["UI"])
     urls["UI_ORIGIN"] = m.group(1) if m else urls["UI"]
     saved, results = {}, []
+    wanted = None
+    if a.only:  # feature ids select their linked checks; anything else is taken as a check id
+        by_feature = {f["id"]: f["smoke_checks"] for f in cat["features"]}
+        wanted = {cid for o in a.only for cid in by_feature.get(o, [o])}
     for c in spec["checks"]:
-        if a.only and not any(o.upper() == f.upper() or o in f for o in a.only for f in c["features"]) and c["id"] not in a.only:
+        if wanted is not None and c["id"] not in wanted:
             continue
         if c.get("mutating") and not a.allow_writes:
-            results.append({"id": c["id"], "features": c["features"], "result": "SKIPPED", "why": "mutating (use --allow-writes)"})
+            results.append({"id": c["id"], "result": "SKIPPED", "why": "mutating (use --allow-writes)"})
             continue
         if c.get("depends_on") and c["depends_on"] not in saved.get("_ok", set()):
-            results.append({"id": c["id"], "features": c["features"], "result": "SKIPPED", "why": f"depends on {c['depends_on']}"})
+            results.append({"id": c["id"], "result": "SKIPPED", "why": f"depends on {c['depends_on']}"})
             continue
         url = c["url"].format(**urls, **{k: v for k, v in saved.items() if k != "_ok"})
         headers = {k: v for k, v in {**d["headers"], **c.get("headers", {})}.items() if v is not None}
@@ -393,7 +353,7 @@ def cmd_smoke(cat: dict, a) -> int:
         except urllib.error.HTTPError as e:
             status, body = e.code, e.read().decode("utf-8", "ignore")
         except (urllib.error.URLError, socket.timeout, ConnectionError) as e:
-            results.append({"id": c["id"], "features": c["features"], "url": url, "result": "UNREACHABLE", "why": str(e)[:200]})
+            results.append({"id": c["id"], "url": url, "result": "UNREACHABLE", "why": str(e)[:200]})
             continue
         problems = []
         exp = c.get("expect", {})
@@ -422,13 +382,13 @@ def cmd_smoke(cat: dict, a) -> int:
         ok = not problems
         if ok:
             saved.setdefault("_ok", set()).add(c["id"])
-        results.append({"id": c["id"], "features": c["features"], "method": c["method"], "url": url, "status": status,
+        results.append({"id": c["id"], "method": c["method"], "url": url, "status": status,
                         "result": "PASS" if ok else "FAIL", "problems": problems, "note": c.get("note"),
                         "body_head": "" if ok else body[:400]})
     tally = {}
     for r in results:
         tally[r["result"]] = tally.get(r["result"], 0) + 1
-        print(f"  {r['result']:11} {r['id']:36} {','.join(r['features']):22} {'; '.join(r.get('problems', [])) or r.get('why', '')}")
+        print(f"  {r['result']:11} {r['id']:36} {'; '.join(r.get('problems', [])) or r.get('why', '')}")
     summary = ", ".join(f"{k}={n}" for k, n in sorted(tally.items()))
     out = _write("smoke", {"scope": " ".join(a.only or ["all"]), "summary": summary, "urls": urls, "checks": results})
     print(f"\n{summary}\nresults -> {out}")
@@ -627,12 +587,12 @@ def serve(cat: dict, port: int) -> int:
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    p = sub.add_parser("list"); p.add_argument("--domain"); p.add_argument("--uc")
+    p = sub.add_parser("list"); p.add_argument("--area"); p.add_argument("--status")
     p = sub.add_parser("show"); p.add_argument("key"); p.add_argument("--json", action="store_true")
     for name in ("test", "suite"):
         p = sub.add_parser(name)
         if name == "test":
-            p.add_argument("keys", nargs="+", help="LP-14, LP-14.2, module:impact ...")
+            p.add_argument("keys", nargs="+", help="feature ids, e.g. impact-analysis kh-upload")
         p.add_argument("--repo", choices=REPOS)
         p.add_argument("--dry-run", action="store_true")
         p.add_argument("--timeout", type=int, default=3600)

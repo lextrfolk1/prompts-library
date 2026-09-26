@@ -1,0 +1,2236 @@
+{
+ "_readme": "Functional features only: things a user or an integrating system can DO, anchored to code. Not listed on purpose: schema/migrations, OpenAPI, logging, datasource/config wiring, error envelope, test gates, observability probes, localisation plumbing, design docs and test harnesses - they support features but are not features. Anchors: ui.slices = intelligence-ui src/features/<slice>; ui.files = extra UI files; service = controller class names; lexie = route file + optional URL regex; lexie_run = the use case lexie-ai's POST /run serves; tests = path prefixes per repo (service prefixes are packages under src/test/java/com/lextr/intelligence/). Everything else (endpoints, test files, UI wiring status, live checks) is derived from the code by build_feature_catalog.py.",
+ "areas": [
+  "Analyst use cases",
+  "Variance (VarianceAI)",
+  "Knowledge Hub",
+  "Governance and approvals",
+  "Evidence and audit",
+  "Training and model improvement",
+  "Rules assistant",
+  "Administration and platform",
+  "Embedding in Lextr Core"
+ ],
+ "features": [
+  {
+   "id": "lexie-ask",
+   "area": "Analyst use cases",
+   "name": "Ask Lexie a question",
+   "what": "Type a question in the Lexie panel; Lexie picks the use case, launches a run and renders the answer inline (impact, trend, digital twin, analytical, lineage, swarm) or opens the right workspace.",
+   "ui": {
+    "where": "Lexie panel (button in the top bar)",
+    "files": [
+     "src/components/organisms/LexiePanel.tsx",
+     "src/shell/host/httpHost.ts",
+     "src/shell/lexie/dispatcher.tsx"
+    ]
+   },
+   "service": [],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-ui": [
+     "src/shell/__tests__/lexieDispatch.test.tsx",
+     "src/components/__tests__/LexiePanel.test.tsx",
+     "src/shell/__tests__/hostSeam.test.tsx"
+    ]
+   },
+   "steps": [
+    "Open the UI, click Lexie, ask \"What is the impact of a change to BHCK2170 on the Y-9C?\"",
+    "Ask \"Show the trend of total assets on the Y-9C\""
+   ],
+   "expect": [
+    "The panel launches a run and shows an inline answer for the use case, or an honest refusal naming what is missing"
+   ],
+   "known_issues": [
+    "In dev mode the panel uses the built-in reference host: it keyword-matches the question and returns a fake run with no output, so no real answer appears",
+    "Outside dev mode it posts to /api/v1/intelligence/run, which no service exposes (the service's run endpoint is POST /run), so every question fails",
+    "There is no question-to-use-case resolver behind the HTTP host (RESOLVER_NOT_EXPOSED)"
+   ],
+   "built_by": [
+    "LP-47"
+   ],
+   "prototype": {
+    "screen": "lexie",
+    "does": [
+     "Ask \"Which report gives exposure by counterparty?\" and get ranked reports (UC10), with Open in Analytical Assist",
+     "Ask \"Write me the rule for COAF6360000 / BHCKF636.\" and get a rule draft with Accept — open in Rules Authoring (UC11)",
+     "Ask \"When is the Y-9C due, and where is the approval sitting?\" and get status (UC12)",
+     "Ask \"What does HC-C line 4.a mean, and where else is it referenced?\" and get a definition plus references (UC8)",
+     "Ask \"If BHCK4435 takes a +$10K topside, what does it touch?\" and get an impact list (UC2)",
+     "Ask \"How has total assets trended the last 6 quarters?\" and get a chart or dataset (UC3)",
+     "Ask \"Show me net income.\" and be asked which line you meant (needs input)",
+     "Ask \"Has the Y-9C been approved yet?\" and see it routed from UC8 to UC12 (route out)",
+     "Every answer carries a review banner and its confidence"
+    ]
+   }
+  },
+  {
+   "id": "impact-analysis",
+   "area": "Analyst use cases",
+   "name": "Impact analysis (UC2)",
+   "what": "Change a value and see what it propagates to: every downstream line, the direction and size of the effect, and where the walk stopped.",
+   "ui": {
+    "where": "Lexie panel inline answer (ImpactAnswer)",
+    "slices": [
+     "impact"
+    ]
+   },
+   "service": [
+    "ImpactRunController"
+   ],
+   "lexie_run": "UC2",
+   "tests": {
+    "intelligence-service": [
+     "impact/"
+    ],
+    "lexie-ai": [
+     "tests/test_impact_analysis_skill.py"
+    ],
+    "intelligence-ui": [
+     "src/features/impact/"
+    ]
+   },
+   "steps": [
+    "POST /api/v1/impact/run on intelligence-service with a node and a delta",
+    "POST lexie-ai /run with use_case UC2 and a numeric delta_amount",
+    "Repeat with a non-numeric delta"
+   ],
+   "expect": [
+    "Propagated impacts per downstream node, with bounds/stops recorded",
+    "The non-numeric delta is refused with RUN_INPUT_INVALID naming the fields"
+   ],
+   "known_issues": [
+    "Only reachable through the API: the Lexie panel does not launch real runs (see Ask Lexie)"
+   ],
+   "built_by": [
+    "LP-37"
+   ],
+   "prototype": {
+    "screen": "impact",
+    "does": [
+     "Open Impact Analysis from the sidebar and describe a change",
+     "See each affected line with direction and size, and the impact graph",
+     "See which edit checks the change touches",
+     "Open the impact drawer for a line; the result carries a review banner"
+    ]
+   }
+  },
+  {
+   "id": "trend-analysis",
+   "area": "Analyst use cases",
+   "name": "Trend analysis (UC3)",
+   "what": "Read the history of a line across periods and get a verdict (in trend / out of trend) with a chart and a short narrative.",
+   "ui": {
+    "where": "Lexie panel inline answer (TrendAnswer)",
+    "slices": [
+     "trend"
+    ]
+   },
+   "service": [
+    "TrendRunController"
+   ],
+   "lexie_run": "UC3",
+   "tests": {
+    "intelligence-service": [
+     "trend/"
+    ],
+    "lexie-ai": [
+     "tests/test_trend_analysis_skill.py"
+    ],
+    "intelligence-ui": [
+     "src/features/trend/"
+    ]
+   },
+   "steps": [
+    "POST /api/v1/trend/run with a node id",
+    "POST lexie-ai /run with use_case UC3 and a series"
+   ],
+   "expect": [
+    "A verdict, the periods analysed and a narrative; too few periods gives UNDETERMINED, not a guess"
+   ],
+   "known_issues": [
+    "Only reachable through the API (see Ask Lexie)"
+   ],
+   "built_by": [
+    "LP-38"
+   ]
+  },
+  {
+   "id": "ratio-reconciliation",
+   "area": "Analyst use cases",
+   "name": "Ratio reconciliation (UC4)",
+   "what": "Compute regulatory ratios from their components and reconcile them against reported values, showing each breach.",
+   "ui": {
+    "where": "Analytics › Ratio Reconciliation",
+    "slices": [
+     "ratio"
+    ]
+   },
+   "service": [
+    "RatioRunController"
+   ],
+   "lexie_run": "UC4",
+   "tests": {
+    "intelligence-service": [
+     "ratio/"
+    ],
+    "lexie-ai": [
+     "tests/test_ratio_calculation_skill.py"
+    ],
+    "intelligence-ui": [
+     "src/features/ratio/"
+    ]
+   },
+   "steps": [
+    "Open Analytics › Ratio Reconciliation and run it",
+    "Or POST /api/v1/ratio/run"
+   ],
+   "expect": [
+    "Each ratio with its computed and reported value and whether it reconciles"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "anomaly-detection",
+   "area": "Analyst use cases",
+   "name": "Anomaly detection (UC5)",
+   "what": "Scan metric series for statistical outliers (z-score and IQR fences) and send anomalies to human review.",
+   "ui": {
+    "where": "Analytics › Anomaly Detection",
+    "slices": [
+     "anomaly"
+    ]
+   },
+   "service": [
+    "AnomalyRunController"
+   ],
+   "lexie_run": "UC5",
+   "tests": {
+    "intelligence-service": [
+     "anomaly/"
+    ],
+    "lexie-ai": [
+     "tests/test_anomaly_detection_skill.py"
+    ],
+    "intelligence-ui": [
+     "src/features/anomaly/"
+    ]
+   },
+   "steps": [
+    "Open Analytics › Anomaly Detection and run a scan",
+    "POST /api/v1/anomaly/run with a series that has one spike",
+    "POST with fewer than 3 points per series"
+   ],
+   "expect": [
+    "The spike is flagged with severity and a review item is created",
+    "Too few points is refused, not scored"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "forecast-projection",
+   "area": "Analyst use cases",
+   "name": "Forecast projection (UC6)",
+   "what": "Project a metric forward under scenarios and show the projection curve with its bands.",
+   "ui": {
+    "where": "Analytics › Forecast Projection",
+    "slices": [
+     "forecast"
+    ]
+   },
+   "service": [
+    "ForecastRunController"
+   ],
+   "lexie_run": "UC6",
+   "tests": {
+    "intelligence-service": [
+     "forecast/"
+    ],
+    "lexie-ai": [
+     "tests/test_forecast_projection_skill.py"
+    ],
+    "intelligence-ui": [
+     "src/features/forecast/"
+    ]
+   },
+   "steps": [
+    "Open Analytics › Forecast Projection, pick a scenario and run it"
+   ],
+   "expect": [
+    "A projection per scenario with its curve"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "peer-benchmarking",
+   "area": "Analyst use cases",
+   "name": "Peer benchmarking (UC7)",
+   "what": "Compare a metric against a peer cohort and see the quartile the institution sits in.",
+   "ui": {
+    "where": "Analytics › Peer Benchmarking",
+    "slices": [
+     "benchmark"
+    ]
+   },
+   "service": [
+    "PeerBenchmarkController"
+   ],
+   "lexie_run": "UC7",
+   "tests": {
+    "intelligence-service": [
+     "benchmark/"
+    ],
+    "lexie-ai": [
+     "tests/test_peer_benchmarking_skill.py"
+    ],
+    "intelligence-ui": [
+     "src/features/benchmark/"
+    ]
+   },
+   "steps": [
+    "Open Analytics › Peer Benchmarking and run it"
+   ],
+   "expect": [
+    "The quartile distribution and the institution's position in it"
+   ],
+   "known_issues": [
+    "The peer cohort chips are fixed in the UI, not loaded from the service"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "semantic-query",
+   "area": "Analyst use cases",
+   "name": "Semantic and reference query (UC8)",
+   "what": "Ask what a line, concept or reference means and get the definition from the semantic layer.",
+   "ui": {
+    "where": "Analyst Workspace › Semantic & Reference",
+    "slices": [
+     "semantic"
+    ]
+   },
+   "service": [
+    "SemanticRunController"
+   ],
+   "lexie_run": "UC8",
+   "tests": {
+    "intelligence-service": [
+     "semantic/"
+    ],
+    "lexie-ai": [
+     "tests/test_semantic_query_skill.py",
+     "tests/test_semantic_cross_layer_wire_through.py"
+    ],
+    "intelligence-ui": [
+     "src/features/semantic/"
+    ]
+   },
+   "steps": [
+    "Open Analyst Workspace › Semantic & Reference and ask what BHCK2170 means",
+    "Or POST /api/v1/semantic/query"
+   ],
+   "expect": [
+    "A definition, or a refusal naming the missing capability"
+   ],
+   "known_issues": [
+    "lexie-ai refuses UC8 with RUN_ADAPTER_UNBOUND until a Lextr Core host adapter exists, so a real answer is not possible yet"
+   ],
+   "built_by": [
+    "LP-21"
+   ]
+  },
+  {
+   "id": "digital-twin",
+   "area": "Analyst use cases",
+   "name": "Analyst digital twin (UC9)",
+   "what": "Ask a multi-step question; the orchestrator routes it across use cases (for example UC8 then UC12) and preserves any refusal from a step.",
+   "ui": {
+    "where": "Lexie panel inline answer (DigitalTwinWorkspace)",
+    "slices": [
+     "digitaltwin"
+    ]
+   },
+   "service": [
+    "DigitalTwinRunController"
+   ],
+   "lexie_run": "UC9",
+   "tests": {
+    "intelligence-service": [
+     "digitaltwin/"
+    ],
+    "lexie-ai": [
+     "tests/test_digital_twin_orchestrator.py"
+    ],
+    "intelligence-ui": [
+     "src/features/digitaltwin/"
+    ]
+   },
+   "steps": [
+    "POST /api/v1/digital-twin/run with a query",
+    "POST lexie-ai /run with use_case UC9"
+   ],
+   "expect": [
+    "The answer, the steps taken and where it routed; a refused step is shown as refused"
+   ],
+   "known_issues": [
+    "Only reachable through the API (see Ask Lexie)"
+   ],
+   "built_by": [
+    "LP-23"
+   ]
+  },
+  {
+   "id": "analytical-assist",
+   "area": "Analyst use cases",
+   "name": "Analytical assist: find and build reports (UC10)",
+   "what": "Describe the report you need; get matching reports with confidence and grounding, refine them in natural language, add derived attributes, resolve ambiguous filter values and open a filed report instance.",
+   "ui": {
+    "where": "Lexie panel inline answer (AnalyticalWorkspace); the sidebar item is a roadmap placeholder",
+    "slices": [
+     "analytical"
+    ]
+   },
+   "service": [
+    "AnalyticalRunController"
+   ],
+   "lexie_run": "UC10",
+   "tests": {
+    "intelligence-service": [
+     "analytical/"
+    ],
+    "lexie-ai": [
+     "tests/test_analytical_",
+     "tests/test_derived_attribute_expression.py",
+     "tests/test_domain_",
+     "tests/test_report_store_",
+     "tests/test_kg_"
+    ],
+    "intelligence-ui": [
+     "src/features/analytical/"
+    ]
+   },
+   "steps": [
+    "POST /api/v1/analytical/run describing a report",
+    "POST lexie-ai /run with use_case UC10"
+   ],
+   "expect": [
+    "Candidate reports with confidence and grounding, or a refusal naming the missing readiness"
+   ],
+   "known_issues": [
+    "Analyst Workspace › Analytical Assist shows only a roadmap placeholder",
+    "Report Store and domain resolution use stubs until Lextr Core's endpoints exist"
+   ],
+   "built_by": [
+    "LP-24",
+    "LP-41",
+    "LP-42",
+    "LP-44",
+    "LP-45",
+    "LP-46"
+   ],
+   "prototype": {
+    "screen": "analytical",
+    "does": [
+     "Ask for a report in the ask bar and see ranked matches",
+     "Build a plan: choose the dataset and banding (use this / change)",
+     "Propose operations to refine the report",
+     "A question that is really operational is handed off (Answered by UC12 →)"
+    ]
+   }
+  },
+  {
+   "id": "rules-assist",
+   "area": "Analyst use cases",
+   "name": "Rules and logic assist (UC11)",
+   "what": "While authoring a rule in Lextr Core: understand, build, check and compare the rule with a copilot that checks correspondence and conflicts.",
+   "ui": {
+    "where": "Embedded in Lextr Core's rule editor; Analyst Workspace › Rules & Logic Assist only shows a Core-owned note",
+    "slices": [
+     "rules"
+    ]
+   },
+   "service": [
+    "RulesAssistController"
+   ],
+   "lexie_run": "UC11",
+   "tests": {
+    "intelligence-service": [
+     "rules/"
+    ],
+    "lexie-ai": [
+     "tests/rules/"
+    ],
+    "intelligence-ui": [
+     "src/features/rules/"
+    ]
+   },
+   "steps": [
+    "POST /api/intelligence/rules/assist with a rule draft",
+    "GET /api/intelligence/rules/sessions/{sessionRef}/runs"
+   ],
+   "expect": [
+    "Findings for the draft; the session lists its runs"
+   ],
+   "known_issues": [
+    "lexie-ai's /run refuses UC11 with RUN_ADAPTER_UNBOUND (no rules adapter bound), so the assist cannot produce findings yet",
+    "The Intelligence UI has no working screen for it; it is meant to be hosted by Core"
+   ],
+   "built_by": [
+    "LP-25"
+   ],
+   "prototype": {
+    "screen": "rules",
+    "does": [
+     "Understand, build, check and compare a rule",
+     "Edit the draft and insert operands; an unregistered operand is refused",
+     "Request registration of a missing operand",
+     "Open How this works"
+    ]
+   }
+  },
+  {
+   "id": "operational-query",
+   "area": "Analyst use cases",
+   "name": "Operational data query (UC12)",
+   "what": "Ask for operational figures (current balance, due items) and get the answer with its evidence from the host's data plane.",
+   "ui": {
+    "where": "No screen; API only"
+   },
+   "service": [
+    "OperationalRunController"
+   ],
+   "lexie_run": "UC12",
+   "tests": {
+    "intelligence-service": [
+     "operational/"
+    ],
+    "lexie-ai": [
+     "tests/test_operational_query_skill.py",
+     "tests/test_operational_cross_layer_wire_through.py"
+    ]
+   },
+   "steps": [
+    "POST /api/v1/operational/query"
+   ],
+   "expect": [
+    "An answer with evidence, or a reasoned refusal"
+   ],
+   "known_issues": [
+    "lexie-ai refuses UC12 with RUN_ADAPTER_UNBOUND until a Lextr Core host adapter exists"
+   ],
+   "built_by": [
+    "LP-20"
+   ]
+  },
+  {
+   "id": "supervisory-radar",
+   "area": "Analyst use cases",
+   "name": "Supervisory radar",
+   "what": "Map regulatory alerts to their compliance impact across reports.",
+   "ui": {
+    "where": "Analytics › Supervisory Radar",
+    "slices": [
+     "supervisory"
+    ]
+   },
+   "service": [
+    "SupervisoryRadarController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "supervisory/"
+    ],
+    "lexie-ai": [
+     "tests/test_supervisory_radar_skill.py"
+    ],
+    "intelligence-ui": [
+     "src/features/supervisory/"
+    ]
+   },
+   "steps": [
+    "Open Analytics › Supervisory Radar and run it"
+   ],
+   "expect": [
+    "Alerts with their impact matrix"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "lineage-extraction",
+   "area": "Analyst use cases",
+   "name": "Calculation lineage",
+   "what": "Extract how a metric is derived as a graph (nodes, edges, depth) and flag circular dependencies.",
+   "ui": {
+    "where": "Lexie panel inline answer (LineageWorkspace)",
+    "slices": [
+     "lineage"
+    ]
+   },
+   "service": [
+    "LineageGraphController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "lineage/"
+    ],
+    "lexie-ai": [
+     "tests/test_dynamic_lineage_skill.py"
+    ],
+    "intelligence-ui": [
+     "src/features/lineage/"
+    ]
+   },
+   "steps": [
+    "POST /api/v1/lineage/extract for a target metric"
+   ],
+   "expect": [
+    "The derivation graph; a cycle is reported and sent to review"
+   ],
+   "known_issues": [
+    "Only reachable through the API (see Ask Lexie)"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "swarm",
+   "area": "Analyst use cases",
+   "name": "Agent swarm consensus",
+   "what": "Run a task through several agents that vote; a failed consensus is sent to human review.",
+   "ui": {
+    "where": "Lexie panel inline answer (SwarmWorkspace)",
+    "slices": [
+     "swarm"
+    ]
+   },
+   "service": [
+    "SwarmRunController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "swarm/"
+    ],
+    "lexie-ai": [
+     "tests/test_autonomous_swarm_skill.py"
+    ],
+    "intelligence-ui": [
+     "src/features/swarm/"
+    ]
+   },
+   "steps": [
+    "POST /api/v1/swarm/run with a root task and protocol"
+   ],
+   "expect": [
+    "Votes, the final decision and whether consensus was reached"
+   ],
+   "known_issues": [
+    "Only reachable through the API (see Ask Lexie)"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "variance-explanation",
+   "area": "Variance (VarianceAI)",
+   "name": "Explain a variance (UC1a)",
+   "what": "Pick a reporting line and period; get why it moved: drivers, evidence (trend, anchor, reconciliation), confidence and a review banner.",
+   "ui": {
+    "where": "Analyst Workspace › Variance Analysis",
+    "slices": [
+     "variance"
+    ]
+   },
+   "service": [
+    "RunController"
+   ],
+   "lexie_run": "UC1a",
+   "lexie": [
+    {
+     "file": "routes/variance_routers.py",
+     "match": "(/analyze|/regenerate)"
+    }
+   ],
+   "tests": {
+    "intelligence-service": [
+     "variance/",
+     "run/"
+    ],
+    "lexie-ai": [
+     "tests/test_variance_horizontal_",
+     "tests/test_evidence_substeps.py",
+     "tests/variance/test_analyze_on_request.py",
+     "tests/variance/test_explanation_",
+     "tests/variance/test_decomposition.py",
+     "tests/variance/test_driver_classification.py",
+     "tests/variance/test_confidence.py",
+     "tests/variance/test_context_and_evidence.py"
+    ],
+    "intelligence-ui": [
+     "src/features/variance/__tests__/VarianceWorkspace",
+     "src/features/variance/__tests__/DriverFindingCard"
+    ]
+   },
+   "steps": [
+    "Open Analyst Workspace › Variance Analysis, pick a line and run it",
+    "POST lexie-ai /api/v1/variance/cycles/{id}/analyze/{mdrm_id}",
+    "POST intelligence-service /run with use_case UC1a"
+   ],
+   "expect": [
+    "Drivers with evidence and confidence, and a review banner; missing confidence shows as unavailable"
+   ],
+   "known_issues": [
+    "The Variance Analysis screen posts to /api/v1/intelligence/run, which no service exposes, so running from the UI fails; the lexie-ai API works"
+   ],
+   "built_by": [
+    "LP-14",
+    "LP-15",
+    "LP-18"
+   ],
+   "prototype": {
+    "screen": "variance",
+    "does": [
+     "Pick a line and see the variance explanation with its drivers and an AI disclosure",
+     "See the evidence beside it: trend sparkline, anchor block and reconciliation bar",
+     "Open the explanation drawer with the full evidence",
+     "Open the triggers panel from the workspace"
+    ]
+   }
+  },
+  {
+   "id": "variance-drilldown",
+   "area": "Variance (VarianceAI)",
+   "name": "Drill into a variance (UC1b)",
+   "what": "Walk down from a report line to its material children in a graph, one level at a time, with a result per node.",
+   "ui": {
+    "where": "Analyst Workspace › Variance Analysis › drill",
+    "files": [
+     "src/features/variance/components/VarianceDrillWorkspace.tsx",
+     "src/features/variance/components/DrillGraph.tsx"
+    ]
+   },
+   "service": [],
+   "lexie_run": null,
+   "tests": {
+    "lexie-ai": [
+     "tests/test_variance_graph_walk_skill.py",
+     "tests/test_variance_vertical_wire_through.py"
+    ],
+    "intelligence-ui": [
+     "src/features/variance/__tests__/DrillGraph",
+     "src/features/variance/__tests__/VarianceDrillWorkspace"
+    ]
+   },
+   "steps": [
+    "Open the drill view from a variance result and click through the nodes"
+   ],
+   "expect": [
+    "Each node appears once with all incoming edges; clicking a node shows its result"
+   ],
+   "known_issues": [
+    "The drill view shows sample data only (fixed nodes); no endpoint serves a drill walk"
+   ],
+   "built_by": [
+    "LP-16",
+    "LP-17"
+   ],
+   "prototype": {
+    "screen": "variance",
+    "does": [
+     "Drill the variance graph node by node from the report line down"
+    ]
+   }
+  },
+  {
+   "id": "variance-rerun",
+   "area": "Variance (VarianceAI)",
+   "name": "Re-run a variance with my input",
+   "what": "Add your own driver hypothesis and re-run; it is shown separately and never counted as a system driver.",
+   "ui": {
+    "where": "Variance result › Re-run with my input",
+    "files": [
+     "src/features/variance/api.ts",
+     "src/features/variance/components/VarianceResult.tsx"
+    ]
+   },
+   "service": [
+    "RerunController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "rerun/"
+    ],
+    "lexie-ai": [
+     "tests/test_variance_rerun_"
+    ],
+    "intelligence-ui": [
+     "src/features/variance/__tests__/VarianceRerunConformance"
+    ]
+   },
+   "steps": [
+    "From a variance result, enter a hypothesis and re-run",
+    "Or POST /run/{runId}/rerun"
+   ],
+   "expect": [
+    "A new run linked to the original, using the latest governed preset; your driver shown as analyst-attributed"
+   ],
+   "known_issues": [
+    "Needs a first run to exist, and the UI's first run fails (see Explain a variance)"
+   ],
+   "built_by": [
+    "LP-19"
+   ]
+  },
+  {
+   "id": "variance-cycles",
+   "area": "Variance (VarianceAI)",
+   "name": "Reporting cycles and variance detection",
+   "what": "Open a reporting cycle, list available cycles and entities, and detect which lines moved materially.",
+   "ui": {
+    "where": "No screen; lexie-ai API and the /demo console"
+   },
+   "service": [],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/variance_routers.py",
+     "match": "^(?!.*(/analyze|/regenerate))"
+    }
+   ],
+   "tests": {
+    "lexie-ai": [
+     "tests/variance/test_detection_engine.py",
+     "tests/variance/test_cycle_",
+     "tests/variance/test_entity_scoping.py",
+     "tests/variance/test_amount_precision.py",
+     "tests/variance/test_variance_item_persistence.py",
+     "tests/variance/test_rule_parser.py"
+    ]
+   },
+   "steps": [
+    "GET /api/v1/variance/cycles/available and /entities",
+    "POST /api/v1/variance/cycles, then POST /cycles/{id}/detect"
+   ],
+   "expect": [
+    "A cycle is created; detected lines come back with their tiers"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "variance-review",
+   "area": "Variance (VarianceAI)",
+   "name": "Review variance explanations",
+   "what": "Work a review queue: accept, correct or reject each explanation; see approved analyses per cycle and review metrics.",
+   "ui": {
+    "where": "Risk & Compliance › AI Risk & Controls (sample data); lexie-ai API",
+    "slices": [
+     "risk"
+    ]
+   },
+   "service": [],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/variance_review_routers.py"
+    }
+   ],
+   "tests": {
+    "intelligence-service": [
+     "review/"
+    ],
+    "lexie-ai": [
+     "tests/variance/test_review_"
+    ],
+    "intelligence-ui": []
+   },
+   "steps": [
+    "GET /api/v1/variance/review/queue",
+    "POST /api/v1/variance/analyses/{id}/review to accept",
+    "GET /cycles/{id}/approved and /review/metrics"
+   ],
+   "expect": [
+    "The accepted analysis leaves the queue, appears as approved and is counted in the metrics"
+   ],
+   "known_issues": [
+    "The AI Risk & Controls screen shows built-in sample data, not the live queue"
+   ],
+   "built_by": [
+    "LP-07"
+   ],
+   "prototype": {
+    "screen": "review",
+    "does": [
+     "Work the review queue: read the answer and its evidence",
+     "Accept, correct or reject; confidence is shown as a signal only",
+     "Opt in to capture a correction for training"
+    ]
+   }
+  },
+  {
+   "id": "variance-config",
+   "area": "Variance (VarianceAI)",
+   "name": "Variance thresholds, model settings and cycle close",
+   "what": "Set materiality thresholds (with a preview), change runtime model settings with history, map source nodes, check completeness, close and reopen a cycle.",
+   "ui": {
+    "where": "No screen; lexie-ai API"
+   },
+   "service": [],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/variance_config_routers.py"
+    }
+   ],
+   "tests": {
+    "lexie-ai": [
+     "tests/variance/test_config_and_lifecycle.py",
+     "tests/variance/test_model_config.py",
+     "tests/variance/test_model_capability_fallback.py"
+    ]
+   },
+   "steps": [
+    "POST /api/v1/variance/thresholds/preview, then save",
+    "PUT /model-config/{key} and read /model-config/history",
+    "Close and reopen a cycle"
+   ],
+   "expect": [
+    "Changes take effect and are recorded in history"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "variance-audit",
+   "area": "Variance (VarianceAI)",
+   "name": "Variance audit trail export",
+   "what": "Export the tamper-evident audit trail of an analysis.",
+   "ui": {
+    "where": "No screen; lexie-ai API"
+   },
+   "service": [],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/variance_audit_routers.py"
+    }
+   ],
+   "tests": {
+    "lexie-ai": [
+     "tests/variance/test_audit_"
+    ]
+   },
+   "steps": [
+    "GET /api/v1/variance/audit/analyses/{id}/export"
+   ],
+   "expect": [
+    "Every action on the analysis, hash-chained"
+   ],
+   "known_issues": [
+    "The chain's JSON canonicalisation is not RFC 8785 (open owner decision)"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "variance-demo",
+   "area": "Variance (VarianceAI)",
+   "name": "Variance demo data and demo console",
+   "what": "Generate or remove demo reporting periods and try VarianceAI in a disposable console at /demo.",
+   "ui": {
+    "where": "lexie-ai /demo console"
+   },
+   "service": [],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/variance_demo_data_routers.py"
+    }
+   ],
+   "tests": {
+    "lexie-ai": [
+     "tests/variance/test_demo_"
+    ]
+   },
+   "steps": [
+    "Open lexie-ai /demo/ in a browser",
+    "Generate a demo period, then delete it"
+   ],
+   "expect": [
+    "Only generated periods can be deleted"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "kh-upload",
+   "area": "Knowledge Hub",
+   "name": "Upload regulatory documents",
+   "what": "Upload one or many documents with a description and classification; each file comes back accepted, rejected or failed with a reason (unsupported type, duplicate, missing classification).",
+   "ui": {
+    "where": "Content › Knowledge Hub",
+    "slices": [
+     "knowledge"
+    ]
+   },
+   "service": [
+    "KnowledgeHubController"
+   ],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/variance_knowledge_routers.py",
+     "match": "/documents"
+    }
+   ],
+   "tests": {
+    "intelligence-service": [
+     "knowledge/",
+     "parsing/",
+     "chunking/",
+     "ocr/",
+     "footnote/",
+     "drops/"
+    ],
+    "lexie-ai": [
+     "tests/knowledge_lp48/",
+     "tests/test_docling_parsing_seam.py",
+     "tests/test_chunking_and_two_table_split.py",
+     "tests/test_ocr_provenance.py",
+     "tests/test_footnote_",
+     "tests/test_drop_profile_proposer.py",
+     "tests/variance/test_knowledge_api.py",
+     "tests/variance/test_knowledge_extraction.py"
+    ],
+    "intelligence-ui": [
+     "src/features/knowledge/ingestion/",
+     "src/features/knowledge/__tests__/"
+    ]
+   },
+   "steps": [
+    "Open Content › Knowledge Hub and upload a PDF, an unsupported file and a duplicate together",
+    "Or POST /knowledge/ingest/batch on intelligence-service"
+   ],
+   "expect": [
+    "Each file shows its own disposition and reason code"
+   ],
+   "known_issues": [
+    "The screen calls lexie-ai's /api/v1/variance/knowledge routes, but the dev server proxies /api to intelligence-service, which does not serve them, so uploads from the UI fail in dev"
+   ],
+   "built_by": [
+    "LP-08",
+    "LP-48",
+    "LP-52",
+    "LP-53",
+    "LP-54",
+    "LP-55",
+    "LP-56"
+   ],
+   "prototype": {
+    "screen": "knowledge",
+    "does": [
+     "Open + Knowledge Ingestion and describe the version (form_code required)",
+     "Load files: duplicates, empty, unsupported and >25 MB files are refused with a reason; Remove all refused",
+     "Watch each file parse; a file that cannot be extracted fails with an instruction",
+     "See the suggested classification and have a person confirm it (Confirm classification)",
+     "Record a per-document drop"
+    ]
+   }
+  },
+  {
+   "id": "kh-search-chat",
+   "area": "Knowledge Hub",
+   "name": "Search and chat over the knowledge base",
+   "what": "Search the ingested documents and ask questions in a chat that answers with citations.",
+   "ui": {
+    "where": "Content › Knowledge Hub (chat)",
+    "slices": [
+     "knowledge"
+    ]
+   },
+   "service": [
+    "KnowledgeHubController"
+   ],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/variance_knowledge_routers.py",
+     "match": "(/search|/chat|/collections)"
+    }
+   ],
+   "tests": {
+    "intelligence-service": [
+     "knowledge/"
+    ],
+    "lexie-ai": [
+     "tests/variance/test_knowledge_chat.py",
+     "tests/variance/test_retrieval.py",
+     "tests/variance/test_pg_store_retrieval.py",
+     "tests/test_knowledge_hub_wire_through.py"
+    ]
+   },
+   "steps": [
+    "Ask a question in the Knowledge Hub chat",
+    "GET lexie-ai /api/v1/variance/knowledge/search?q=...",
+    "POST intelligence-service /knowledge/retrieve"
+   ],
+   "expect": [
+    "Ranked passages; chat answers cite their sources"
+   ],
+   "known_issues": [
+    "Same proxy problem as uploads: the UI chat fails in dev"
+   ],
+   "built_by": [
+    "LP-08"
+   ],
+   "prototype": {
+    "screen": "knowledge",
+    "does": [
+     "Ask the knowledge base a question and see the answer with its evidence and chunks",
+     "Replay a question as of a date, in similarity or intent-resolved mode"
+    ]
+   }
+  },
+  {
+   "id": "kh-graph",
+   "area": "Knowledge Hub",
+   "name": "Knowledge graph and document relations",
+   "what": "Link documents to each other and to reporting concepts, browse neighbours and take snapshots.",
+   "ui": {
+    "where": "No screen; lexie-ai API"
+   },
+   "service": [],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/variance_knowledge_routers.py",
+     "match": "(/relations|/graph|/snapshots)"
+    }
+   ],
+   "tests": {
+    "lexie-ai": [
+     "tests/variance/test_knowledge_graph.py",
+     "tests/test_kg_"
+    ]
+   },
+   "steps": [
+    "POST /documents/{id}/relations, then GET /graph/{node_type}/{node_id}"
+   ],
+   "expect": [
+    "The new relation appears among the neighbours"
+   ],
+   "built_by": [
+    "LP-44"
+   ]
+  },
+  {
+   "id": "kh-assurance",
+   "area": "Knowledge Hub",
+   "name": "Document assurance",
+   "what": "Measure how well the hub answers questions about a document (a graded exam) and show that separately from ingestion and approval.",
+   "ui": {
+    "where": "Not on any screen (the AssuranceTab component exists but nothing mounts it)",
+    "files": [
+     "src/features/knowledge/AssuranceTab.tsx"
+    ]
+   },
+   "service": [
+    "DocumentAssuranceController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "assurance/"
+    ],
+    "lexie-ai": [
+     "tests/test_document_assurance.py"
+    ],
+    "intelligence-ui": [
+     "src/features/knowledge/__tests__/AssuranceTab"
+    ]
+   },
+   "steps": [
+    "GET /api/v1/assurance/documents/{id}/status for a never-measured document",
+    "POST /api/v1/assurance/runs with a 3-question exam"
+   ],
+   "expect": [
+    "NOT_MEASURED, never a score of 0",
+    "The small exam is refused with EXAM_TOO_SMALL"
+   ],
+   "built_by": [
+    "LP-57"
+   ],
+   "prototype": {
+    "screen": "knowledge",
+    "does": [
+     "Run assurance on a document and open the run",
+     "See not-measured shown as not measured, never as a score"
+    ]
+   }
+  },
+  {
+   "id": "presets",
+   "area": "Governance and approvals",
+   "name": "Presets: create, approve and activate",
+   "what": "Create an analysis preset in a wizard, then move it draft → observed → operational; activation needs model-risk approval and a second person.",
+   "ui": {
+    "where": "Governance › Presets",
+    "slices": [
+     "presets"
+    ],
+    "files": [
+     "src/api/presetApi.ts",
+     "src/hooks/usePresetLifecycle.ts",
+     "src/components/organisms/GovernanceEnvelope.tsx"
+    ]
+   },
+   "service": [
+    "PresetController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "preset/"
+    ],
+    "lexie-ai": [
+     "tests/test_preset_management_wire_through.py"
+    ],
+    "intelligence-ui": [
+     "src/components/__tests__/PresetWizard",
+     "src/hooks/__tests__/usePresetLifecycle"
+    ]
+   },
+   "steps": [
+    "Create a preset in the wizard",
+    "Try to activate it as the same person",
+    "Activate it as a second person after it is observed",
+    "GET /api/v1/presets/resolve?task=variance"
+   ],
+   "expect": [
+    "Same-person activation is refused; resolve returns only an operational preset, never a draft"
+   ],
+   "known_issues": [
+    "The preset list shows sample data",
+    "Approve envelope posts to /api/intelligence/presets/{id}/envelope/approve, which no service exposes"
+   ],
+   "built_by": [
+    "LP-12"
+   ],
+   "prototype": {
+    "screen": "presets",
+    "does": [
+     "Create a preset in the 7-step wizard (instruction, grounding by reference, runtime controls)",
+     "Submit it for review",
+     "Have MRM approve or reject it (approver cannot be the author)",
+     "Activate it draft → observed → operational, and retire it",
+     "See the audit trail card for the preset"
+    ]
+   }
+  },
+  {
+   "id": "skill-registry",
+   "area": "Governance and approvals",
+   "name": "Skill registry",
+   "what": "See every registered skill, model and calibrator; approve for model risk, change status, tag and enable or disable them.",
+   "ui": {
+    "where": "Governance › Skill Registry",
+    "slices": [
+     "skills"
+    ]
+   },
+   "service": [
+    "RegisteredDefinitionController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "governance/"
+    ],
+    "lexie-ai": [
+     "tests/test_skill_registry_cross_layer_wire_through.py"
+    ],
+    "intelligence-ui": [
+     "src/features/skills/"
+    ]
+   },
+   "steps": [
+    "Open Governance › Skill Registry and open a skill",
+    "POST /api/v1/governance/definitions/sync"
+   ],
+   "expect": [
+    "Sync adds new skills as drafts and never activates them; status changes follow the approval rules"
+   ],
+   "known_issues": [
+    "The inventory grid shows sample data; the status, approval and tag actions call the real API"
+   ],
+   "built_by": [
+    "LP-22"
+   ],
+   "prototype": {
+    "screen": "skills",
+    "does": [
+     "Browse the registered skills with id and version",
+     "See each skill's tool scope and risk tier",
+     "Move a skill draft → observed → operational (MRM-gated) and enable or disable it",
+     "Retire an adapter or delete a version"
+    ]
+   }
+  },
+  {
+   "id": "approvals-inbox",
+   "area": "Governance and approvals",
+   "name": "Approvals inbox",
+   "what": "See every step waiting for you across governed items and approve or reject it; the Core surface can view but not decide.",
+   "ui": {
+    "where": "Governance › Approvals Inbox",
+    "slices": [
+     "inbox"
+    ]
+   },
+   "service": [
+    "InboxController",
+    "EstateLedgerController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "inbox/"
+    ],
+    "lexie-ai": [
+     "tests/test_approval_workflow_wire_through.py",
+     "tests/test_governance_"
+    ],
+    "intelligence-ui": [
+     "src/features/inbox/"
+    ]
+   },
+   "steps": [
+    "Open Governance › Approvals Inbox and decide an item",
+    "POST /api/v1/inbox/{id}/decide with surface=CORE"
+   ],
+   "expect": [
+    "The decision is recorded on the estate ledger; the CORE surface is refused"
+   ],
+   "built_by": [
+    "LP-59",
+    "LP-60"
+   ],
+   "prototype": {
+    "screen": "todo",
+    "does": [
+     "See every pending step with its step ring and track strip",
+     "Approve or reject a step",
+     "Open the item a step belongs to (deep link)",
+     "See the audit trail card for the item"
+    ]
+   }
+  },
+  {
+   "id": "model-registry",
+   "area": "Governance and approvals",
+   "name": "Model registry",
+   "what": "Browse the models available to Intelligence and their history.",
+   "ui": {
+    "where": "Governance › Model Registry",
+    "slices": [
+     "models"
+    ]
+   },
+   "service": [],
+   "lexie_run": null,
+   "tests": {},
+   "steps": [
+    "Open Governance › Model Registry"
+   ],
+   "expect": [
+    "The models in use"
+   ],
+   "known_issues": [
+    "Built-in sample data only; no endpoint behind it"
+   ],
+   "built_by": [],
+   "prototype": {
+    "screen": "models",
+    "does": [
+     "Browse the models and open a model's history"
+    ]
+   }
+  },
+  {
+   "id": "runtime-policies",
+   "area": "Governance and approvals",
+   "name": "Runtime policies",
+   "what": "See the policies that gate every run and reload them from their source.",
+   "ui": {
+    "where": "Governance › Runtime Policies",
+    "slices": [
+     "policies"
+    ]
+   },
+   "service": [
+    "OpaPolicyController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "policy/"
+    ]
+   },
+   "steps": [
+    "GET /api/v1/opa/policies",
+    "POST /api/v1/opa/refresh",
+    "Stop OPA and call a gated endpoint"
+   ],
+   "expect": [
+    "Loaded policy packages are listed; with OPA down, calls are denied (OPA_UNAVAILABLE), never allowed"
+   ],
+   "known_issues": [
+    "The Runtime Policies screen shows sample data, not the loaded policies"
+   ],
+   "built_by": [
+    "LP-04"
+   ],
+   "prototype": {
+    "screen": "policies",
+    "does": [
+     "Browse the registered OPA packages (reference and scope, never the rule body)",
+     "Open a policy's detail and its audit trail card"
+    ]
+   }
+  },
+  {
+   "id": "role-mapping",
+   "area": "Governance and approvals",
+   "name": "Role mapping",
+   "what": "See which roles map to which Intelligence functions.",
+   "ui": {
+    "where": "Risk & Compliance › Role Mapping",
+    "slices": [
+     "roles"
+    ]
+   },
+   "service": [],
+   "lexie_run": null,
+   "tests": {},
+   "steps": [
+    "Open Risk & Compliance › Role Mapping"
+   ],
+   "expect": [
+    "The role-to-function table"
+   ],
+   "known_issues": [
+    "Built-in sample data only; no endpoint behind it"
+   ],
+   "built_by": [],
+   "prototype": {
+    "screen": "roles",
+    "does": [
+     "Browse role → domain → capabilities"
+    ]
+   }
+  },
+  {
+   "id": "evidence-ledger",
+   "area": "Evidence and audit",
+   "name": "Evidence ledger: who was involved and export pack",
+   "what": "For a run, report or other anchor, see who was involved and the coverage, and export a verifiable evidence pack; hand-back and erasure are governed.",
+   "ui": {
+    "where": "Governance › Evidence Ledger (needs the governance.audit.view capability and a deployment flag)",
+    "slices": [
+     "audit-evidence"
+    ]
+   },
+   "service": [
+    "EvidenceLedgerController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "evidence/",
+     "export/",
+     "merkle/",
+     "synthesis/"
+    ],
+    "lexie-ai": [
+     "tests/evidence_lp26/"
+    ],
+    "intelligence-ui": [
+     "src/features/audit-evidence/",
+     "src/features/evidence/"
+    ]
+   },
+   "steps": [
+    "GET /api/intelligence/evidence/involvement?anchorKind=RUN&anchorRef={runId}&from=...&to=...",
+    "POST /api/intelligence/evidence/export with the same parameters",
+    "POST /api/intelligence/evidence/erasures"
+   ],
+   "expect": [
+    "Involvement and coverage for the anchor; a downloadable pack; erasure is refused (no authorities named yet)"
+   ],
+   "known_issues": [
+    "Hidden in the dev UI: the reference host withholds governance.audit.view",
+    "Erasure authorities ship empty, so every erasure is refused"
+   ],
+   "built_by": [
+    "LP-26",
+    "LP-49"
+   ]
+  },
+  {
+   "id": "population-reconciliation",
+   "area": "Evidence and audit",
+   "name": "Population reconciliation",
+   "what": "Reconcile the lines filed in a report against the lines Intelligence analysed, and refuse when Core's inventory is missing.",
+   "ui": {
+    "where": "No screen; internal service"
+   },
+   "service": [],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "reconciliation/"
+    ]
+   },
+   "steps": [
+    "Covered by the service tests only; there is no endpoint"
+   ],
+   "expect": [
+    "Refusal when the inventory is missing; otherwise matched, missing and extra lines"
+   ],
+   "known_issues": [
+    "No endpoint or screen; Core's line inventory contract is still an ask to Core"
+   ],
+   "built_by": [
+    "LP-50"
+   ]
+  },
+  {
+   "id": "audit-overview",
+   "area": "Evidence and audit",
+   "name": "Audit and evidence overview",
+   "what": "An overview screen of audit activity.",
+   "ui": {
+    "where": "Evidence › Audit & Evidence",
+    "slices": [
+     "audit"
+    ]
+   },
+   "service": [],
+   "lexie_run": null,
+   "tests": {},
+   "steps": [
+    "Open Evidence › Audit & Evidence"
+   ],
+   "expect": [
+    "Audit activity"
+   ],
+   "known_issues": [
+    "Built-in sample data only; no endpoint behind it"
+   ],
+   "built_by": [],
+   "prototype": {
+    "screen": "audit",
+    "does": [
+     "Pick a subject and see both halves (Core acts and Intelligence reasoning) on one timeline",
+     "Step through the chain (◀ ▶) and switch between flow, time and history views",
+     "A leg that cannot be answered is shown as unanswerable, not as a pass"
+    ]
+   }
+  },
+  {
+   "id": "training-data",
+   "area": "Training and model improvement",
+   "name": "Training data and fine-tuning",
+   "what": "Build governed training datasets from reviewed samples, freeze, attest and approve them, run fine-tunes that must pass an evaluation, and trace a model back to its data.",
+   "ui": {
+    "where": "Training › Training Data",
+    "slices": [
+     "training-data"
+    ]
+   },
+   "service": [
+    "TrainingController"
+   ],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/training_routers.py"
+    }
+   ],
+   "tests": {
+    "intelligence-service": [
+     "training/"
+    ],
+    "lexie-ai": [
+     "tests/training/"
+    ],
+    "intelligence-ui": [
+     "src/features/training-data/"
+    ]
+   },
+   "steps": [
+    "Open Training › Training Data and create a dataset",
+    "Freeze, attest and approve it (approval by a second person)",
+    "GET /api/intelligence/training/runs/eligibility for a dataset"
+   ],
+   "expect": [
+    "Each step is recorded; eligibility explains why a run is or is not allowed"
+   ],
+   "known_issues": [
+    "No trainer or evaluator is connected, and the training environment is switched off, so a real fine-tune cannot run"
+   ],
+   "built_by": [
+    "LP-39"
+   ],
+   "prototype": {
+    "screen": "training",
+    "does": [
+     "Capture a sample from a review correction, author one, or bulk-import",
+     "Curate candidates into the draft, then freeze it into a version",
+     "Attest masking on the version, then have MRM approve it",
+     "Initiate a fine-tune run; it must pass the evaluation gate before the model is registered with lineage",
+     "Rebind presets to the new model, monitor accuracy and revalidate flagged samples"
+    ]
+   }
+  },
+  {
+   "id": "training-sandbox",
+   "area": "Training and model improvement",
+   "name": "Training sandbox probes",
+   "what": "Try a scenario or a free-form question against a model without it ever counting as evidence, training data or assurance.",
+   "ui": {
+    "where": "Not mounted (the Sandbox workspace is declared unmounted)",
+    "slices": [
+     "tdm"
+    ]
+   },
+   "service": [
+    "TdmSandboxController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "sandbox/"
+    ],
+    "lexie-ai": [
+     "tests/test_tdm_sandbox_runner.py"
+    ],
+    "intelligence-ui": [
+     "src/features/tdm/"
+    ]
+   },
+   "steps": [
+    "POST /api/v1/sandbox/probes"
+   ],
+   "expect": [
+    "The probe is recorded on the non-evidential track"
+   ],
+   "known_issues": [
+    "It records a probe; nothing executes one yet"
+   ],
+   "built_by": [
+    "LP-58"
+   ]
+  },
+  {
+   "id": "calibration",
+   "area": "Training and model improvement",
+   "name": "Confidence calibration",
+   "what": "Monitor how well confidence scores match reviewer outcomes, and promote a new calibrator when it clears the thresholds.",
+   "ui": {
+    "where": "No screen; API only"
+   },
+   "service": [
+    "CalibrationGovernanceController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "calibration/"
+    ],
+    "lexie-ai": [
+     "tests/test_calibrator_fitting.py",
+     "tests/test_confidence_formula.py"
+    ]
+   },
+   "steps": [
+    "GET /api/v1/calibration/monitoring-metrics",
+    "POST /api/v1/calibration/promote below the threshold"
+   ],
+   "expect": [
+    "Metrics per calibrator; promotion below the threshold is refused"
+   ],
+   "built_by": [
+    "LP-51"
+   ]
+  },
+  {
+   "id": "rules-chatbot",
+   "area": "Rules assistant",
+   "name": "Rules chatbot",
+   "what": "Ask questions about rules in natural language; answers stream back and the conversation is remembered per user.",
+   "ui": {
+    "where": "No Intelligence screen; lexie-ai API (used by Lextr Core)"
+   },
+   "service": [],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/rules_execution_routers.py",
+     "match": "(/query|/memory)"
+    }
+   ],
+   "tests": {},
+   "steps": [
+    "POST /api/v1/chatbot/ai/query with a question and context",
+    "DELETE /api/v1/chatbot/ai/memory/{user_id}"
+   ],
+   "expect": [
+    "A streamed answer; clearing memory starts a fresh conversation"
+   ],
+   "known_issues": [
+    "No automated tests anywhere; needs an OpenAI key"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "rule-summary",
+   "area": "Rules assistant",
+   "name": "Rule description and summary",
+   "what": "Generate a plain-language description or summary of a rule, backed by a rule knowledge index you can refresh.",
+   "ui": {
+    "where": "No Intelligence screen; lexie-ai API (used by Lextr Core)"
+   },
+   "service": [],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/rules_execution_routers.py",
+     "match": "(/rule-|/knowledge)"
+    }
+   ],
+   "tests": {},
+   "steps": [
+    "POST /api/v1/chatbot/ai/rule-description and /rule-summary",
+    "POST /knowledge/refresh, then GET /knowledge/status"
+   ],
+   "expect": [
+    "Readable text for the rule; the index status updates"
+   ],
+   "known_issues": [
+    "No automated tests anywhere; needs an OpenAI key"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "mdrm-recommend",
+   "area": "Rules assistant",
+   "name": "MDRM recommendation",
+   "what": "Suggest MDRM codes for a free-text description.",
+   "ui": {
+    "where": "No Intelligence screen; lexie-ai API (used by Lextr Core)"
+   },
+   "service": [],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/rules_execution_routers.py",
+     "match": "/mdrm"
+    }
+   ],
+   "tests": {},
+   "steps": [
+    "POST /api/v1/chatbot/ai/mdrm/recommend with {\"query\": \"net interest income\"}"
+   ],
+   "expect": [
+    "Ranked MDRM suggestions"
+   ],
+   "known_issues": [
+    "No automated tests anywhere"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "run-api",
+   "area": "Administration and platform",
+   "name": "Run API for Lextr Core",
+   "what": "Core launches any Intelligence use case through one call and reads the run back; runs go to human review.",
+   "ui": {
+    "where": "No screen; the API Core calls"
+   },
+   "service": [
+    "RunController"
+   ],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/run_routers.py"
+    }
+   ],
+   "tests": {
+    "intelligence-service": [
+     "run/",
+     "contract/",
+     "persistence/"
+    ],
+    "lexie-ai": [
+     "tests/test_run_route.py"
+    ]
+   },
+   "steps": [
+    "POST intelligence-service /run with a use case and payload",
+    "GET /run/{runId}",
+    "POST lexie-ai /run with an unknown use case"
+   ],
+   "expect": [
+    "A run id and result; the run is readable afterwards; unknown use cases are refused, not guessed"
+   ],
+   "built_by": [
+    "LP-03",
+    "LP-06"
+   ]
+  },
+  {
+   "id": "tenant-admin",
+   "area": "Administration and platform",
+   "name": "Tenant administration and access rules",
+   "what": "List tenants, run tenant admin operations and evaluate attribute-based access for a user.",
+   "ui": {
+    "where": "Not mounted (tenant administration is Core-owned)",
+    "slices": [
+     "tenant"
+    ]
+   },
+   "service": [
+    "TenantAdminController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "tenant/"
+    ],
+    "intelligence-ui": [
+     "src/features/tenant/"
+    ]
+   },
+   "steps": [
+    "GET /api/v1/tenants",
+    "POST /api/v1/tenants/abac/evaluate"
+   ],
+   "expect": [
+    "Tenants listed; an access decision per request"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "hsm",
+   "area": "Administration and platform",
+   "name": "HSM signing",
+   "what": "Check the hardware security module and run signing operations.",
+   "ui": {
+    "where": "Not mounted (no key-listing endpoint)",
+    "slices": [
+     "hsm"
+    ]
+   },
+   "service": [
+    "HsmSecurityController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "hsm/"
+    ],
+    "intelligence-ui": [
+     "src/features/hsm/"
+    ]
+   },
+   "steps": [
+    "GET /api/v1/hsm/status",
+    "POST /api/v1/hsm/operations"
+   ],
+   "expect": [
+    "The appliance status; an operation result"
+   ],
+   "known_issues": [
+    "No real HSM is connected"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "resilience",
+   "area": "Administration and platform",
+   "name": "Resilience console",
+   "what": "See the cluster topology and run failover or chaos operations.",
+   "ui": {
+    "where": "Not mounted (owner decision pending)",
+    "slices": [
+     "resilience"
+    ]
+   },
+   "service": [
+    "ResilienceController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "resilience/"
+    ],
+    "intelligence-ui": [
+     "src/features/resilience/"
+    ]
+   },
+   "steps": [
+    "GET /api/v1/resilience/topology"
+   ],
+   "expect": [
+    "The topology"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "streaming-audit",
+   "area": "Administration and platform",
+   "name": "Streaming audit ingest",
+   "what": "Ingest a batch of audit events and flag breaches as they arrive.",
+   "ui": {
+    "where": "Not mounted",
+    "slices": [
+     "streaming"
+    ]
+   },
+   "service": [
+    "StreamingAuditController"
+   ],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "streaming/"
+    ],
+    "intelligence-ui": [
+     "src/features/streaming/"
+    ]
+   },
+   "steps": [
+    "POST /api/v1/streaming/ingest with a batch"
+   ],
+   "expect": [
+    "Throughput and any breaches"
+   ],
+   "built_by": []
+  },
+  {
+   "id": "embed-theming",
+   "area": "Embedding in Lextr Core",
+   "name": "Embed Intelligence in Core with tenant theming",
+   "what": "Mount Intelligence inside Lextr Core (npm, Module Federation or the <lx-intelligence> web component) in inline, modal or drawer mode, with the tenant's logo and stylesheet.",
+   "ui": {
+    "where": "Inside Lextr Core",
+    "files": [
+     "src/embed/mountIntelligence.tsx",
+     "src/embed/IntelligenceElement.ts",
+     "src/components/themes/TenantThemeProvider.tsx"
+    ]
+   },
+   "service": [],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-ui": [
+     "src/embed/",
+     "src/components/themes/"
+    ]
+   },
+   "steps": [
+    "Mount <lx-intelligence> on a test page with a tenant config",
+    "Press Escape in a modal or drawer mount"
+   ],
+   "expect": [
+    "The tenant logo replaces the product logo; the overlay closes and focus returns"
+   ],
+   "built_by": [
+    "LP-02"
+   ]
+  },
+  {
+   "id": "governance-profiles",
+   "area": "Governance and approvals",
+   "name": "Governance profiles (DR-01)",
+   "what": "Tenant-configurable governance profiles: which review gates apply at which risk tier, and who may sign.",
+   "ui": {
+    "where": "Not in the real UI (a roadmap card in the prototype)"
+   },
+   "service": [],
+   "lexie_run": null,
+   "tests": {},
+   "steps": [
+    "Look for Governance › Governance Profiles in the real UI"
+   ],
+   "expect": [
+    "The screen exists"
+   ],
+   "known_issues": [
+    "Not built in the real UI; the prototype itself only shows a roadmap card"
+   ],
+   "built_by": [],
+   "prototype": {
+    "screen": "govprofile",
+    "does": [
+     "Configure a profile per tenant",
+     "Set risk-tiered independence above the fixed floor"
+    ]
+   }
+  },
+  {
+   "id": "drop-profiles",
+   "area": "Knowledge Hub",
+   "name": "Drop profiles",
+   "what": "Decide, per document family, what a parse deliberately does not ingest: engineering drops, and an SME ruling to keep or drop each candidate.",
+   "ui": {
+    "where": "Not mounted (DropProfileSmeRulingView is declared unmounted)",
+    "slices": [
+     "governance"
+    ]
+   },
+   "service": [],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-service": [
+     "drops/"
+    ],
+    "lexie-ai": [
+     "tests/test_drop_profile_proposer.py",
+     "tests/test_lp56_wire_through.py"
+    ],
+    "intelligence-ui": [
+     "src/features/governance/"
+    ]
+   },
+   "steps": [
+    "Look for Governance › Drop Profiles in the real UI"
+   ],
+   "expect": [
+    "The SME can rule keep or drop on each candidate"
+   ],
+   "known_issues": [
+    "No screen and no endpoint; the proposer and the ruling view exist only as code"
+   ],
+   "built_by": [
+    "LP-56"
+   ],
+   "prototype": {
+    "screen": "dropprofile",
+    "does": [
+     "See candidates proposed from evidence (position, not frequency)",
+     "Rule Keep as content or Drop on each open question",
+     "See kept-and-why, decided rules and the audit trail"
+    ]
+   }
+  },
+  {
+   "id": "kh-document-lifecycle",
+   "area": "Knowledge Hub",
+   "name": "Document version approval and lifecycle",
+   "what": "Take a document version through attest, submit for approval and approve or reject, then retire, supersede or roll it back.",
+   "ui": {
+    "where": "Content › Knowledge Hub",
+    "slices": [
+     "knowledge"
+    ]
+   },
+   "service": [],
+   "lexie_run": null,
+   "lexie": [
+    {
+     "file": "routes/variance_knowledge_routers.py",
+     "match": "/archive"
+    }
+   ],
+   "tests": {
+    "lexie-ai": [
+     "tests/test_governance_chain.py"
+    ]
+   },
+   "steps": [
+    "Open a document version in the Knowledge Hub and look for Attest / Submit for approval / Approve",
+    "Look for Retire, Supersede and Roll back"
+   ],
+   "expect": [
+    "Each action is available and recorded"
+   ],
+   "known_issues": [
+    "The real Knowledge Hub has none of these actions; only archiving exists, through lexie-ai's API"
+   ],
+   "built_by": [
+    "LP-59"
+   ],
+   "prototype": {
+    "screen": "knowledge",
+    "does": [
+     "Attest a version",
+     "Submit it for approval, then approve or reject it",
+     "Retire, supersede or roll back a version"
+    ]
+   }
+  },
+  {
+   "id": "row-history",
+   "area": "Evidence and audit",
+   "name": "Row history on any list",
+   "what": "Open the history of any row (a preset, a model, a review item, a training record) in a drawer.",
+   "ui": {
+    "where": "History button on rows in Model Registry, AI Risk & Controls, Audit & Evidence and Training Data",
+    "files": [
+     "src/components/organisms/HistoryDrawer.tsx",
+     "src/components/organisms/RowHistoryButton.tsx"
+    ]
+   },
+   "service": [],
+   "lexie_run": null,
+   "tests": {
+    "intelligence-ui": [
+     "src/shell/walkthrough/__tests__/walkthroughAudit"
+    ]
+   },
+   "steps": [
+    "Click the history button on a row in Model Registry"
+   ],
+   "expect": [
+    "A drawer lists that row's events"
+   ],
+   "known_issues": [
+    "The older history kinds show sample data (made-up actors and dates); only the five kinds added by LP-48.5 derive from record fields"
+   ],
+   "built_by": [
+    "LP-48"
+   ],
+   "prototype": {
+    "screen": "history",
+    "does": [
+     "Open any row's history in a drawer"
+    ]
+   }
+  }
+ ],
+ "prototype": {
+  "file": "files/Lextr_Intelligence_UI_v1.38.0_FINAL.jsx",
+  "_readme": "The approved UI prototype. Each screen below is a sidebar item (or an overlay) in the prototype; real_screen is the matching mount id in intelligence-ui (null = the real UI has no such screen). placeholder = the real screen exists but only shows a stand-in.",
+  "screens": {
+   "variance": {
+    "label": "Variance Analysis — UC1",
+    "group": "Analyst Workspace",
+    "component": "VarianceWorkspace",
+    "real_screen": "variance"
+   },
+   "impact": {
+    "label": "Impact Analysis — UC2",
+    "group": "Analyst Workspace",
+    "component": "ImpactWorkspace",
+    "real_screen": null,
+    "real_note": "only as a Lexie inline answer"
+   },
+   "analytical": {
+    "label": "Analytical Assist — UC10",
+    "group": "Analyst Workspace",
+    "component": "AnalyticalAssistWorkspace",
+    "real_screen": "analytical",
+    "placeholder": true,
+    "real_note": "sidebar item shows a roadmap placeholder"
+   },
+   "rules": {
+    "label": "Rules & Logic Assist — UC11",
+    "group": "Analyst Workspace",
+    "component": "RulesAssistWorkspace",
+    "real_screen": "rules",
+    "placeholder": true,
+    "real_note": "shows a Core-owned note; the panel is meant to be hosted by Core"
+   },
+   "todo": {
+    "label": "To-do Inbox",
+    "group": "Work",
+    "component": "TodoInbox",
+    "real_screen": "inbox",
+    "real_note": "named Approvals Inbox, under Governance"
+   },
+   "knowledge": {
+    "label": "Knowledge Hub",
+    "group": "Content",
+    "component": "KnowledgeHub",
+    "real_screen": "knowledge"
+   },
+   "policies": {
+    "label": "Runtime Policies",
+    "group": "Governance",
+    "component": "Policies",
+    "real_screen": "policies"
+   },
+   "presets": {
+    "label": "Presets",
+    "group": "Governance",
+    "component": "PresetManagement",
+    "real_screen": "presets"
+   },
+   "skills": {
+    "label": "Skill Registry",
+    "group": "Governance",
+    "component": "SkillRegistry",
+    "real_screen": "skills"
+   },
+   "govprofile": {
+    "label": "Governance Profiles — DR-01",
+    "group": "Governance",
+    "component": "RoadmapScreen",
+    "real_screen": null,
+    "real_note": "a roadmap card in the prototype too"
+   },
+   "dropprofile": {
+    "label": "Drop Profiles",
+    "group": "Governance",
+    "component": "DropProfiles",
+    "real_screen": null,
+    "real_note": "the SME ruling view exists but is declared unmounted"
+   },
+   "models": {
+    "label": "Model Registry",
+    "group": "Governance",
+    "component": "Models",
+    "real_screen": "models"
+   },
+   "training": {
+    "label": "Training Data & Models",
+    "group": "Governance",
+    "component": "TrainingDataModule",
+    "real_screen": "training-data",
+    "real_note": "named Training Data, in its own Training group"
+   },
+   "review": {
+    "label": "AI Risk & Controls",
+    "group": "Risk & Compliance",
+    "component": "ReviewQueue",
+    "real_screen": "review"
+   },
+   "roles": {
+    "label": "Role Mapping",
+    "group": "Risk & Compliance",
+    "component": "RoleMapping",
+    "real_screen": "roles"
+   },
+   "audit": {
+    "label": "Audit & Evidence",
+    "group": "Evidence",
+    "component": "Audit",
+    "real_screen": "audit"
+   },
+   "lexie": {
+    "label": "Lexie panel (10 example asks)",
+    "group": "Overlay",
+    "component": "LexiePanel",
+    "real_screen": null,
+    "real_overlay": true
+   },
+   "history": {
+    "label": "Row history drawer",
+    "group": "Overlay",
+    "component": "HistoryDrawer",
+    "real_screen": null,
+    "real_overlay": true
+   }
+  }
+ }
+}

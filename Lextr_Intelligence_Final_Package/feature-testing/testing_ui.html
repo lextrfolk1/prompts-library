@@ -117,24 +117,18 @@ a.go:hover { text-decoration: underline; }
   <main>
     <aside>
       <div class="filters">
-        <input type="search" id="q" placeholder="Search id, title, UC, endpoint…">
+        <input type="search" id="q" placeholder="Search features, screens, endpoints…">
+        <select id="fArea"><option value="all">All areas</option></select>
         <div class="row">
-          <select id="fScope">
-            <option value="all">All scopes</option>
-            <option value="LP">Built by prompts (LP)</option>
-            <option value="BL">Already on main (BL)</option>
-            <option value="BR">Branch changes (BR)</option>
-            <option value="MOD">Modules</option>
-          </select>
-          <select id="fStatus">
-            <option value="all">Any status</option>
-            <option value="untested">Not run yet</option>
+          <select id="fStatus"><option value="all">Any status</option></select>
+          <select id="fRun">
+            <option value="all">Any result</option>
+            <option value="untested">Not tested yet</option>
             <option value="failing">Failing</option>
             <option value="passing">Passing</option>
             <option value="open">Checklist open</option>
           </select>
         </div>
-        <select id="fDomain"><option value="all">All domains</option></select>
       </div>
       <div class="list" id="list"></div>
     </aside>
@@ -157,67 +151,57 @@ const api = async (path, opts) => {
   return body;
 };
 
-let CAT, SMOKE, LATEST = { verdicts: {}, smoke: {}, runs: [] }, MANUAL = {}, ITEMS = [], SEL = null, JOB = null, ENV = [];
-// which preflight port backs each "needs_live" dependency
-const LIVE = { service: "intelligence-service :8059", lexie: "lexie-ai :5003", opa: "OPA :8181", ui: "UI vite :5173" };
+let CAT, SMOKE, LATEST = { verdicts: {}, smoke: {}, runs: [] }, MANUAL = {}, SEL = null, JOB = null, ENV = [];
+const LIVE = { "intelligence-service": "intelligence-service :8059", "lexie-ai": "lexie-ai :5003" };
+// status -> colour class
+const TONE = (s) => s === "Available" ? "PASS" : /missing|Refused/.test(s) ? "FAIL" : /sample|Lexie panel|not mounted/.test(s) ? "SKIPPED" : "";
+const PTONE = (p) => p === "Screen present" ? "PASS" : p === "Missing in real UI" ? "FAIL" : p ? "SKIPPED" : "";
+const features = () => CAT.features;
+const byId = (id) => CAT.features.find((f) => f.id === id);
 
-// ---------------------------------------------------------------- data
-function buildItems() {
-  const lp = CAT.features.map((f) => ({ key: f.id, scope: "LP", id: f.id, title: f.title, domain: f.domain || "", f }));
-  const bl = (CAT.baseline_features || []).map((b) => ({ key: b.id, scope: "BL", id: b.id, title: b.name, domain: b.domain || "", f: b }));
-  const mod = CAT.modules.map((m) => ({ key: "module:" + m.id, scope: "MOD", id: "module:" + m.id, title: m.name, domain: "Module · " + m.use_case, f: m }));
-  const br = (CAT.platform_changes || []).map((c, i) => {
-    const id = "BR-" + String(i + 1).padStart(2, "0");
-    return { key: id, scope: "BR", id, title: c.change.split(/[.;:]/)[0], domain: "Branch change · " + c.repo,
-      f: { feature_summary: c.change, repo: c.repo, commit: c.commit, manual_checks: ["How to test: " + c.test],
-           use_case: c.repo + " " + c.commit } };
-  });
-  ITEMS = [...lp, ...bl, ...br, ...mod];
-  const doms = [...new Set([...lp, ...bl].map((i) => i.domain).filter(Boolean))].sort();
-  $("#fDomain").innerHTML = '<option value="all">All domains</option>' + doms.map((d) => `<option>${esc(d)}</option>`).join("");
+// ---------------------------------------------------------------- checklist model
+function checklist(f) {
+  return [...(f.prototype?.does || []).map((t, i) => ({ key: `ui/${i + 1}`, kind: "Prototype UI", text: t })),
+          ...f.steps.map((t, i) => ({ key: `step/${i + 1}`, kind: "Step", text: t })),
+          ...f.expect.map((t, i) => ({ key: `expect/${i + 1}`, kind: "Expected", text: t }))];
 }
-
-function checklist(item) {
-  const rows = [];
-  (item.f.subtasks || []).forEach((s) => (s.acceptance_criteria || []).forEach((ac, i) =>
-    rows.push({ key: `${s.sub_id}/AC${i + 1}`, text: ac, group: s.sub_id })));
-  (item.f.manual_checks || []).forEach((m, i) => rows.push({ key: `manual/${i + 1}`, text: m, group: "manual" }));
-  return rows;
-}
-function progress(item) {
-  const rows = checklist(item), st = MANUAL[item.key] || {};
+function progress(f) {
+  const rows = checklist(f), st = MANUAL[f.id] || {};
   const c = { total: rows.length, pass: 0, fail: 0, blocked: 0 };
   rows.forEach((r) => { const s = st[r.key]?.s; if (s) c[s]++; });
   c.done = c.pass + c.fail + c.blocked;
   return c;
 }
-function verdictOf(item) { return LATEST.verdicts[item.id]?.verdict; }
+const verdictOf = (f) => LATEST.verdicts[f.id]?.verdict;
 
 // ---------------------------------------------------------------- list
+function fillFilters() {
+  $("#fArea").innerHTML = '<option value="all">All areas</option>' + CAT.areas.filter((a) => features().some((f) => f.area === a)).map((a) => `<option>${esc(a)}</option>`).join("");
+  $("#fStatus").innerHTML = '<option value="all">Any status</option>' + Object.keys(CAT.totals.by_status).sort().map((s) => `<option>${esc(s)}</option>`).join("");
+}
 function renderList() {
-  const q = $("#q").value.trim().toLowerCase(), scope = $("#fScope").value, status = $("#fStatus").value, dom = $("#fDomain").value;
-  const shown = ITEMS.filter((it) => {
-    if (scope !== "all" && it.scope !== scope) return false;
-    if (dom !== "all" && it.domain !== dom) return false;
-    const v = verdictOf(it), p = progress(it);
-    if (status === "untested" && v) return false;
-    if (status === "failing" && !(["FAIL", "ERROR"].includes(v) || p.fail)) return false;
-    if (status === "passing" && v !== "PASS") return false;
-    if (status === "open" && !(p.total && p.done < p.total)) return false;
-    if (!q) return true;
-    const hay = [it.id, it.title, it.domain, (it.f.use_cases || []).join(" "), it.f.use_case,
-      (it.f.endpoints || []).map((e) => e.endpoint).join(" ")].join(" ").toLowerCase();
-    return hay.includes(q);
-  });
-  const groups = { LP: "Built by the prompts", BL: "Already on main", BR: "Branch changes outside the prompts", MOD: "Capability modules" };
-  let html = "", last = null;
-  for (const it of shown) {
-    if (it.scope !== last) { html += `<div class="group-h">${groups[it.scope]}</div>`; last = it.scope; }
-    const v = verdictOf(it), p = progress(it);
-    html += `<div class="item ${SEL === it.key ? "sel" : ""}" data-k="${esc(it.key)}">
-      <span class="id">${esc(it.id)}</span>
-      <span class="meta">${v ? `<span class="v ${v}">${v}</span>` : ""}${p.total ? `<span class="v ${p.fail ? "fail" : p.done === p.total ? "pass" : ""}">${p.done}/${p.total}</span>` : ""}</span>
-      <span class="t" title="${esc(it.title)}">${esc(it.title)}</span></div>`;
+  const q = $("#q").value.trim().toLowerCase(), area = $("#fArea").value, st = $("#fStatus").value, run = $("#fRun").value;
+  let html = "";
+  for (const a of CAT.areas) {
+    const rows = features().filter((f) => {
+      if (f.area !== a || (area !== "all" && area !== a) || (st !== "all" && f.status !== st)) return false;
+      const v = verdictOf(f), p = progress(f);
+      if (run === "untested" && (v || p.done)) return false;
+      if (run === "failing" && !(["FAIL", "ERROR"].includes(v) || p.fail)) return false;
+      if (run === "passing" && v !== "PASS") return false;
+      if (run === "open" && !(p.total && p.done < p.total)) return false;
+      if (!q) return true;
+      return [f.id, f.name, f.what, f.where, f.status, f.endpoints.map((e) => e.endpoint).join(" ")].join(" ").toLowerCase().includes(q);
+    });
+    if (!rows.length) continue;
+    html += `<div class="group-h">${esc(a)}</div>`;
+    for (const f of rows) {
+      const v = verdictOf(f), p = progress(f);
+      html += `<div class="item ${SEL === f.id ? "sel" : ""}" data-k="${esc(f.id)}">
+        <span class="id">${esc(f.name)}</span>
+        <span class="meta">${v ? `<span class="v ${v}">${v}</span>` : ""}${p.done ? `<span class="v ${p.fail ? "fail" : p.done === p.total ? "pass" : ""}">${p.done}/${p.total}</span>` : ""}</span>
+        <span class="t"><span class="v ${TONE(f.status)}">${esc(f.status)}</span>${f.prototype && f.prototype.parity !== "Screen present" ? ` <span class="v ${PTONE(f.prototype.parity)}" title="Compared with the prototype">${esc(f.prototype.parity)}</span>` : ""} ${esc(f.where)}</span></div>`;
+    }
   }
   $("#list").innerHTML = html || '<p class="muted" style="padding:12px">Nothing matches.</p>';
 }
@@ -228,25 +212,12 @@ function banners() {
   let h = "";
   const stale = staleRepos();
   if (stale.length) h += `<div class="banner amber"><div class="grow"><b>The feature list is out of date.</b> ${stale.map((r) => esc(r.name.slice(5)) + ": " + esc(r.detail)).join("; ")}.
-    Rebuild it so tests and files match the current code.</div><button class="primary" data-rebuild>Rebuild list</button></div>`;
+    Rebuild it so endpoints, tests and statuses match the current code.</div><button class="primary" data-rebuild>Rebuild list</button></div>`;
   const last = (LATEST.runs || []).find((r) => r.kind === "suite" || r.kind === "test");
   if (last?.unmapped_failures?.length) h += `<div class="banner red"><div class="grow"><b>${last.unmapped_failures.length} failing test(s) in the last run belong to no feature</b>
     (${esc(last.file)}). Every feature can look green while these fail:
     <ul class="plain small">${last.unmapped_failures.map((u) => `<li class="mono">${esc(u)}</li>`).join("")}</ul></div></div>`;
   return h;
-}
-function liveChips(needs) {
-  if (!needs?.length) return "";
-  return needs.map((n) => {
-    const row = ENV.find((r) => r.name === "live " + LIVE[n]);
-    const cls = row ? (row.ok ? "ok" : "bad") : "";
-    const tip = row ? row.detail : n === "db" ? "the database is not checked by preflight" : "unknown";
-    return `<span class="chip ${cls}" title="${esc(tip)}"><span class="dot"></span>${esc(n)}</span>`;
-  }).join(" ");
-}
-const goLink = (id) => ITEMS.some((i) => i.key === id) ? `<a class="go" data-go="${esc(id)}">${esc(id)}</a>` : esc(id);
-function fileList(label, files) {
-  return files?.length ? `<details><summary>${esc(label)} (${files.length})</summary>${files.map((x) => `<div class="mono">${esc(x)}</div>`).join("")}</details>` : "";
 }
 function runsTable(n) {
   const runs = (LATEST.runs || []).slice(0, n);
@@ -256,86 +227,100 @@ function runsTable(n) {
     return `<tr><td class="mono small">${esc(when)}</td><td>${esc(r.kind)}</td><td class="small">${esc(r.scope)}</td>
       <td class="small">${esc(r.summary)}${r.unmapped_failures?.length ? ` <span class="v FAIL">${r.unmapped_failures.length} unmapped</span>` : ""}</td>
       <td class="small">${Object.entries(r.repos || {}).map(([k, d]) => `<span class="v ${d.state === "passed" ? "PASS" : d.state === "failed" ? "FAIL" : ""}">${esc(k)}</span>`).join(" ")}</td></tr>`;
-  }).join("")}</table><div class="small muted" style="margin-top:6px">Full history: <code>results/RESULTS.md</code>; each run's detail is the JSON file named above.</div>`;
+  }).join("")}</table><div class="small muted" style="margin-top:6px">Full history: <code>results/RESULTS.md</code>.</div>`;
+}
+function liveChips(f) {
+  const repos = [...new Set(f.endpoints.map((e) => e.repo))];
+  return repos.map((r) => {
+    const row = ENV.find((x) => x.name === "live " + LIVE[r]);
+    return `<span class="chip ${row ? (row.ok ? "ok" : "bad") : ""}" title="${esc(row?.detail || "")}"><span class="dot"></span>${esc(r)}</span>`;
+  }).join(" ");
 }
 
 // ---------------------------------------------------------------- detail
 function overview() {
-  const all = ITEMS.filter((i) => i.scope !== "MOD");
-  const tally = {}; all.forEach((i) => { const v = verdictOf(i) || "not run"; tally[v] = (tally[v] || 0) + 1; });
-  let tot = 0, done = 0, fail = 0; all.forEach((i) => { const p = progress(i); tot += p.total; done += p.done; fail += p.fail; });
-  const b = CAT.branches;
-  return `${banners()}<h2>Start here</h2>
-  <div class="sub">${CAT.totals.points} features built by the prompts, ${CAT.totals.baseline_features} already on main and
-    ${(CAT.platform_changes || []).length} branch changes outside the prompts, on
-    ${Object.entries(b).map(([r, x]) => `<code>${esc(r)}@${esc(x.head)}</code>`).join(" · ")}.</div>
+  const t = CAT.totals;
+  let tot = 0, done = 0, fail = 0; features().forEach((f) => { const p = progress(f); tot += p.total; done += p.done; fail += p.fail; });
+  const tested = features().filter((f) => verdictOf(f)).length;
+  return `${banners()}<h2>Lextr Intelligence features</h2>
+  <div class="sub">${t.features} things a user or an integrating system can do, found by scanning the code on
+    ${Object.entries(CAT.branches).map(([r, x]) => `<code>${esc(r)}@${esc(x.head)}</code>`).join(" · ")}.
+    Not listed: ${esc(CAT.not_features)}.</div>
+  <div class="card"><h3>Status</h3><div class="stats">
+    ${Object.entries(t.by_status).sort((a, b) => b[1] - a[1]).map(([k, n]) => `<div class="stat" data-status="${esc(k)}" style="cursor:pointer" title="Show these"><span class="v ${TONE(k)}">${esc(k)}</span><b>${n}</b>features</div>`).join("")}
+  </div></div>
   <div class="card"><div class="stats">
-    ${Object.entries(tally).sort().map(([k, n]) => `<div class="stat"><span class="v ${k}">${esc(k)}</span><b>${n}</b>features</div>`).join("")}
+    <div class="stat">Automated tests run<b>${tested} / ${t.with_automated_tests}</b>features with tests</div>
     <div class="stat">Checklist<b>${done} / ${tot}</b><div class="bar"><span style="width:${tot ? (100 * done / tot).toFixed(1) : 0}%"></span></div>${fail ? `<span class="v fail">${fail} failed</span>` : ""}</div>
   </div></div>
   <div class="card"><h3>How to test</h3><ol class="small" style="margin:0;padding-left:18px">
-    <li><b>Check the environment</b> in the header. Green chips are ready. Automated tests need java/mvn, the lexie venv and UI node_modules; live checks need the services running (see the README's "Live stack").</li>
-    <li><b>Pick a feature</b> on the left. Filter by scope, domain or status, or search for an id, a use case (UC10) or an endpoint.</li>
-    <li><b>Run its automated tests</b> with one click. Verdicts and failures show on the feature and in the list.</li>
-    <li><b>Run its live checks</b> once the stack is up. They're read-only unless you tick "allow writes".</li>
-    <li><b>Work through the checklist</b>: mark each acceptance criterion and manual check Pass, Fail or Blocked, and add a note. It saves automatically to <code>results/manual_status.json</code>.</li>
-    <li><b>Export report</b> writes everything to a Markdown file you can share.</li></ol></div>
+    <li><b>Check the environment</b> in the header. Automated tests need java/mvn, the lexie venv and UI node_modules; live checks and manual steps need the services running (README, "Live stack").</li>
+    <li><b>Pick a feature</b> on the left. Filter by area or status; statuses are honest: "UI calls a missing endpoint" means the screen will fail even with everything running.</li>
+    <li><b>Run its automated tests</b>, then its <b>live checks</b> once the stack is up.</li>
+    <li><b>Follow the test steps</b> and mark each step and expected result Pass, Fail or Blocked with a note. It saves to <code>results/manual_status.json</code>.</li>
+    <li><b>Export report</b> when you're done.</li></ol></div>
+  ${CAT.prototype ? `<div class="card"><h3>UI compared with the prototype</h3>
+    <div class="small muted" style="margin-bottom:6px">Reference: <code>${esc(CAT.prototype.file)}</code>. Each prototype screen, and whether the real UI has it.</div>
+    <table><tr><th>Prototype screen</th><th>Real UI</th><th>Line</th></tr>${CAT.prototype.screens.map((p) => `<tr>
+      <td>${esc(p.label)} <span class="muted small">${esc(p.group)}</span></td>
+      <td><span class="v ${PTONE(p.parity)}">${esc(p.parity)}</span> <span class="small muted">${esc(p.real_label || "")}${p.real_note ? " · " + esc(p.real_note) : ""}</span></td>
+      <td class="mono small">${p.line ?? "—"}</td></tr>`).join("")}</table>
+    ${CAT.prototype.real_screens_not_in_prototype.length ? `<div class="small muted" style="margin-top:6px">Real screens with no prototype screen: ${CAT.prototype.real_screens_not_in_prototype.map(esc).join(", ")}.</div>` : ""}</div>` : ""}
   <div class="card"><h3>Recent runs</h3>${runsTable(12)}</div>`;
 }
 
-function repoRows(item) {
-  const v = LATEST.verdicts[item.id];
-  const repos = Object.keys(item.f.test_files || {});
-  if (!repos.length) return '<p class="muted">No automated tests are mapped to this feature. Use the checklist below.</p>';
+function repoRows(f) {
+  const v = LATEST.verdicts[f.id], repos = Object.keys(f.test_files);
+  if (!repos.length) return '<p class="muted">No automated tests exist for this feature. Use the test steps below.</p>';
   return `<table><tr><th>Repo</th><th>Test files</th><th>Last result</th></tr>${repos.map((r) => {
     const d = v?.repos?.[r];
-    return `<tr><td>${esc(r)}</td><td><details><summary>${item.f.test_files[r].length} files</summary>${item.f.test_files[r].map((t) => `<div class="mono">${esc(t)}</div>`).join("")}</details></td>
+    return `<tr><td>${esc(r)}</td><td><details><summary>${f.test_files[r].length} files</summary>${f.test_files[r].map((t) => `<div class="mono">${esc(t)}</div>`).join("")}</details></td>
       <td>${d ? `<span class="v ${d.verdict}">${d.verdict}</span> <span class="small muted">${d.passed} passed · ${d.failed} failed · ${d.skipped} skipped</span>
         ${d.failures?.length ? `<ul class="plain small">${d.failures.map((x) => `<li class="mono">${esc(x)}</li>`).join("")}</ul>` : ""}
         ${d.files_not_executed?.length ? `<div class="small gap">not executed: ${d.files_not_executed.map(esc).join(", ")}</div>` : ""}` : '<span class="muted small">not run yet</span>'}</td></tr>`;
   }).join("")}</table>${v ? `<div class="small muted" style="margin-top:6px">from ${esc(v.file)}</div>` : ""}`;
 }
 
-function smokeFor(item) {
-  const ids = [item.id, item.id.replace(/^module:/, "module:")];
-  return (SMOKE?.checks || []).filter((c) => c.features.some((f) => ids.includes(f)));
-}
-
-function checkRow(itemKey, r) {
-  const st = (MANUAL[itemKey] || {})[r.key] || {};
+function checkRow(fid, r) {
+  const st = (MANUAL[fid] || {})[r.key] || {};
   const b = (s, label) => `<button class="${s} ${st.s === s ? "on" : ""}" data-set="${s}">${label}</button>`;
-  return `<div class="check" data-item="${esc(itemKey)}" data-key="${esc(r.key)}">
-    <div class="txt"><div class="k">${esc(r.key)}</div>${esc(r.text)}</div>
+  return `<div class="check" data-item="${esc(fid)}" data-key="${esc(r.key)}">
+    <div class="txt"><div class="k">${esc(r.kind)} ${esc(r.key.split("/")[1])}</div>${esc(r.text)}</div>
     <div class="seg">${b("pass", "Pass")}${b("fail", "Fail")}${b("blocked", "Blocked")}</div>
     <input type="text" class="note" placeholder="Note (what you saw, ticket, evidence)" value="${esc(st.n || "")}">
   </div>`;
 }
 
 function renderDetail() {
-  const it = ITEMS.find((i) => i.key === SEL);
-  if (!it) { $("#detail").innerHTML = overview(); return; }
-  const f = it.f, running = !!(JOB && JOB.state === "running");
-  const badges = [it.scope === "LP" ? "Built by prompts" : it.scope === "BL" ? "Already on main" : "Capability module",
-    f.domain, f.wave && `wave ${f.wave}`, f.layer, (f.languages || []).join("/"), f.delivery && f.delivery !== "code" && f.delivery, f.repo,
-    ...(f.use_cases || []), f.use_case, f.reach].filter(Boolean);
-  const smoke = smokeFor(it);
-  const rows = checklist(it);
-  const groups = [...new Set(rows.map((r) => r.group))];
-  const sub = Object.fromEntries((f.subtasks || []).map((s) => [s.sub_id, s]));
-  const gaps = [...(f.known_gaps || []), ...(f.notes || [])];
+  const f = byId(SEL);
+  if (!f) { $("#detail").innerHTML = overview(); return; }
+  const running = !!(JOB && JOB.state === "running");
+  const smoke = (SMOKE?.checks || []).filter((c) => f.smoke_checks.includes(c.id));
+  const bad = f.ui_calls.filter((c) => c.status !== "ok");
+  const rows = checklist(f), p = progress(f);
   $("#detail").innerHTML = `${banners()}
-    <h2>${esc(it.id)} — ${esc(it.title)}</h2>
-    <div class="badges">${badges.map((b) => `<span class="chip">${esc(b)}</span>`).join("")}</div>
-    ${f.feature_summary ? `<p>${esc(f.feature_summary)}</p>` : ""}
-    ${gaps.length ? `<div class="card"><h3>Known gaps and notes</h3><ul class="plain small">${gaps.map((g) => `<li class="gap">${esc(g)}</li>`).join("")}</ul></div>` : ""}
+    <h2>${esc(f.name)}</h2>
+    <div class="badges"><span class="v ${TONE(f.status)}">${esc(f.status)}</span><span class="chip">${esc(f.area)}</span><span class="chip mono">${esc(f.id)}</span></div>
+    <p>${esc(f.what)}</p>
+    <p class="small"><b>Where:</b> ${esc(f.where)}</p>
+    ${f.known_issues.length ? `<div class="card"><h3>Known issues</h3><ul class="plain small">${f.known_issues.map((g) => `<li class="gap">${esc(g)}</li>`).join("")}</ul></div>` : ""}
+    ${bad.length ? `<div class="banner red"><div class="grow"><b>The UI calls ${bad.length === 1 ? "an endpoint" : "endpoints"} that no running service answers</b>
+      <ul class="plain small">${bad.map((c) => `<li><span class="mono">${esc(c.url)}</span> — ${c.status === "lexie-only" ? "a lexie-ai route, but the dev server proxies /api to intelligence-service" : "no service exposes it"}</li>`).join("")}</ul></div></div>` : ""}
+
+    ${f.prototype ? `<div class="card"><h3>Prototype: ${esc(f.prototype.label)} <span class="v ${PTONE(f.prototype.parity)}">${esc(f.prototype.parity)}</span></h3>
+      <div class="small muted">In the approved prototype (<code>${esc(CAT.prototype.file)}</code>, line ${f.prototype.line ?? "?"}), this screen lets you do the
+        "Prototype UI" items in the checklist below. Check each one on the real screen${f.prototype.real_label ? ` (<b>${esc(f.prototype.real_label)}</b>)` : ""}.
+        ${f.prototype.real_note ? `<br>Real UI: ${esc(f.prototype.real_note)}.` : ""}</div></div>` : `<p class="small muted">Not in the prototype: this capability was added by the build.</p>`}
+    <div class="card"><h3>How to test <span class="sp"></span><span class="small muted" id="ckCount">${p.done} of ${rows.length} marked</span></h3>
+      <div class="small muted" style="margin-bottom:4px">Needs running: ${liveChips(f) || "nothing (UI only)"}</div>
+      ${rows.map((r) => checkRow(f.id, r)).join("")}</div>
 
     <div class="card"><h3>Automated tests <span class="sp"></span>
-      <select id="runRepo"><option value="">all repos</option>${Object.keys(f.test_files || {}).map((r) => `<option>${esc(r)}</option>`).join("")}</select>
-      <button class="primary" id="btnTest" ${running || !Object.keys(f.test_files || {}).length ? "disabled" : ""}>Run tests</button></h3>
-      ${repoRows(it)}
-      ${(f.test_files_missing || []).length ? `<div class="small gap">Named test files that no longer exist: ${f.test_files_missing.map(esc).join(", ")}</div>` : ""}
+      <select id="runRepo"><option value="">all repos</option>${Object.keys(f.test_files).map((r) => `<option>${esc(r)}</option>`).join("")}</select>
+      <button class="primary" id="btnTest" ${running || !Object.keys(f.test_files).length ? "disabled" : ""}>Run tests</button></h3>
+      ${repoRows(f)}
       ${Object.keys(f.test_commands || {}).length ? `<details><summary>Command-line equivalent</summary>
-        <div class="mono small">python3 run_feature_tests.py test ${esc(it.key)}</div>
+        <div class="mono small">python3 run_feature_tests.py test ${esc(f.id)}</div>
         ${Object.entries(f.test_commands).map(([r, c]) => `<div class="mono small" style="margin-top:4px"># ${esc(r)}<br>${esc(c)}</div>`).join("")}</details>` : ""}</div>
 
     <div class="card"><h3>Live checks <span class="sp"></span>
@@ -346,37 +331,16 @@ function renderDetail() {
         return `<tr><td class="mono">${esc(c.id)}${c.mutating ? ' <span class="v blocked">writes</span>' : ""}</td>
           <td class="mono small">${esc(c.method)} ${esc(c.url)}${c.note ? `<div class="muted">${esc(c.note)}</div>` : ""}</td>
           <td>${l ? `<span class="v ${l.result}">${l.result}</span> <span class="small muted">${esc(l.status ?? "")} ${esc((l.problems || []).join("; ") || l.why || "")}</span>` : '<span class="muted small">not run yet</span>'}</td></tr>`;
-      }).join("")}</table>` : '<p class="muted">No live checks are tagged with this feature. Use the manual checks below.</p>'}</div>
+      }).join("")}</table>` : '<p class="muted">No live checks hit this feature\'s endpoints. Use the test steps above.</p>'}</div>
 
-    <div class="card"><h3>Checklist <span class="sp"></span><span class="small muted" id="ckCount">${progress(it).done} of ${rows.length} marked</span></h3>
-      ${rows.length ? groups.map((g) => `
-        <details open><summary><b>${g === "manual" ? "Manual checks (against the running stack)" : esc(g) + " — acceptance criteria"}</b>
-          ${sub[g] ? `<span class="small muted"> · ${esc(sub[g].summary || "")} · <span class="mono">${esc(sub[g].prompt_file || "")}</span></span>` : ""}
-          ${g === "manual" && (f.needs_live || []).length ? `<span class="small muted"> · needs </span>${liveChips(f.needs_live)}` : ""}</summary>
-          ${sub[g] ? `<div class="trk"><span class="v ${sub[g].tracker_status === "DELIVERED" ? "PASS" : ""}">tracker: ${esc(sub[g].tracker_status || "—")}</span>
-            <span class="muted">repo ${esc(sub[g].target_repo || "—")} · manifest ${esc(sub[g].manifest_status || "—")}</span>
-            ${sub[g].evidence ? `<div class="muted"><b>Evidence:</b> ${esc(sub[g].evidence)}</div>` : ""}
-            ${sub[g].notes_risks ? `<div class="gap"><b>Notes / risks:</b> ${esc(sub[g].notes_risks)}</div>` : ""}</div>` : ""}
-          ${rows.filter((r) => r.group === g).map((r) => checkRow(it.key, r)).join("")}
-        </details>`).join("") : '<p class="muted">Nothing to tick for this item.</p>'}</div>
+    <div class="card"><h3>Endpoints</h3>
+      ${f.endpoints.length ? f.endpoints.map((e) => `<div class="mono small">${esc(e.endpoint)} <span class="muted">${esc(e.repo)}</span></div>`).join("") : '<p class="muted small">None: this feature has no API.</p>'}
+      ${f.ui_calls.length ? `<details><summary>URLs its UI calls (${f.ui_calls.length})</summary>${f.ui_calls.map((c) => `<div class="mono small"><span class="v ${c.status === "ok" ? "PASS" : "FAIL"}">${c.status === "ok" ? "served" : c.status}</span> ${esc(c.url)}</div>`).join("")}</details>` : ""}
+      ${f.built_by.length ? `<div class="small muted" style="margin-top:6px">Built by prompts: ${f.built_by.map(esc).join(", ")}</div>` : ""}</div>`;
 
-    <div class="card"><h3>Where it lives</h3>
-      ${f.commit ? `<div class="small"><b>Commit:</b> <span class="mono">${esc(f.repo)} ${esc(f.commit)}</span></div>` : ""}
-      ${(f.related_points || []).length ? `<div class="small"><b>Related features:</b> ${f.related_points.map(goLink).join(", ")}</div>` : ""}
-      ${Object.entries(f.implementation_files || {}).map(([r, fs]) => fileList("Implementation files in " + r, fs)).join("")}
-      ${Object.entries(f.files || {}).map(([r, fs]) => fileList("Files in " + r, fs)).join("")}
-      ${fileList("Source files on " + (f.on_base_branch || "main"), f.source_files)}
-      ${fileList("Of those, changed by the branch", f.changed_by_branch)}
-      ${(subtasksFiles(f)).length ? fileList("Files named by its prompts", subtasksFiles(f)) : ""}
-      ${(f.ui_screens || []).length ? `<div class="small"><b>UI:</b> ${f.ui_screens.map((s) => esc((s.group && s.group !== "—" ? s.group + " › " : "") + s.label)).join("; ")}</div>` : ""}
-      ${(f.endpoints || []).length ? `<details><summary>${f.endpoints.length} endpoints</summary>${f.endpoints.map((e) => `<div class="mono">${esc(e.endpoint)} <span class="muted">${esc(e.repo)}</span></div>`).join("")}</details>` : ""}
-    </div>`;
-
-  $("#btnTest")?.addEventListener("click", () => startRun({ kind: "test", keys: [it.key], repo: $("#runRepo").value || null }));
-  $("#btnSmoke")?.addEventListener("click", () => startRun({ kind: "smoke", keys: [it.id], allow_writes: $("#allowWrites").checked }));
+  $("#btnTest")?.addEventListener("click", () => startRun({ kind: "test", keys: [f.id], repo: $("#runRepo").value || null }));
+  $("#btnSmoke")?.addEventListener("click", () => startRun({ kind: "smoke", keys: [f.id], allow_writes: $("#allowWrites").checked }));
 }
-
-function subtasksFiles(f) { return [...new Set((f.subtasks || []).flatMap((s) => s.files || []))]; }
 
 // ---------------------------------------------------------------- checklist persistence
 let saveTimer = null;
@@ -389,20 +353,7 @@ $("#detail").addEventListener("click", (e) => {
   MANUAL[item][key] = { ...cur, s: cur.s === s ? "" : s, at: new Date().toISOString() };
   row.querySelectorAll("[data-set]").forEach((b) => b.classList.toggle("on", b.dataset.set === MANUAL[item][key].s));
   saveManual(); renderList();
-  const hdr = $("#ckCount"); // refresh the "n of m marked" counter without re-rendering the notes
-  if (hdr) { const it = ITEMS.find((i) => i.key === item); hdr.textContent = `${progress(it).done} of ${checklist(it).length} marked`; }
-});
-document.addEventListener("click", async (e) => {
-  const go = e.target.closest("[data-go]");
-  if (go) { SEL = go.dataset.go; history.replaceState(null, "", "#" + encodeURIComponent(SEL)); renderList(); renderDetail(); $("#detail").scrollTop = 0; return; }
-  const rb = e.target.closest("[data-rebuild]");
-  if (!rb) return;
-  rb.disabled = true; rb.textContent = "Rebuilding…";
-  try {
-    await api("/api/rebuild", { method: "POST" });
-    [CAT, LATEST] = await Promise.all([api("/api/catalog"), api("/api/latest")]);
-    buildItems(); await loadEnv(); renderList(); renderDetail();
-  } catch (err) { alert("Rebuild failed: " + err.message); rb.disabled = false; rb.textContent = "Rebuild list"; }
+  const hdr = $("#ckCount"); if (hdr) { const f = byId(item); hdr.textContent = `${progress(f).done} of ${checklist(f).length} marked`; }
 });
 $("#detail").addEventListener("input", (e) => {
   if (!e.target.classList.contains("note")) return;
@@ -410,6 +361,18 @@ $("#detail").addEventListener("input", (e) => {
   MANUAL[item] = MANUAL[item] || {};
   MANUAL[item][key] = { ...(MANUAL[item][key] || {}), n: e.target.value, at: new Date().toISOString() };
   saveManual();
+});
+document.addEventListener("click", async (e) => {
+  const stat = e.target.closest("[data-status]");
+  if (stat) { $("#fStatus").value = stat.dataset.status; renderList(); return; }
+  const rb = e.target.closest("[data-rebuild]");
+  if (!rb) return;
+  rb.disabled = true; rb.textContent = "Rebuilding…";
+  try {
+    await api("/api/rebuild", { method: "POST" });
+    [CAT, LATEST] = await Promise.all([api("/api/catalog"), api("/api/latest")]);
+    fillFilters(); await loadEnv(); renderList(); renderDetail();
+  } catch (err) { alert("Rebuild failed: " + err.message); rb.disabled = false; rb.textContent = "Rebuild list"; }
 });
 
 // ---------------------------------------------------------------- runs
@@ -435,7 +398,7 @@ function renderJob() {
   const r = JOB.request || {}, what = r.kind === "suite" ? "full suite" : `${r.kind} ${(r.keys || []).join(" ")}${r.repo ? " (" + r.repo + ")" : ""}`;
   $("#jobState").innerHTML = JOB.state === "running" ? `<span class="spin"></span> Running ${esc(what)}…`
     : `${JOB.state === "done" ? "Finished" : "Failed"}: ${esc(what)} — ${esc(JOB.result?.summary || "")} ${JOB.result?.file ? `<span class="muted small">(${esc(JOB.result.file)})</span>` : ""}
-       ${JOB.result?.unmapped_failures?.length ? `<span class="v FAIL">${JOB.result.unmapped_failures.length} failures belong to no feature (see banner)</span>` : ""}`;
+       ${JOB.result?.unmapped_failures?.length ? `<span class="v FAIL">${JOB.result.unmapped_failures.length} failures belong to no feature</span>` : ""}`;
   const pre = $("#jobLog"), atEnd = pre.scrollTop + pre.clientHeight >= pre.scrollHeight - 20;
   pre.textContent = JOB.log || "";
   if (atEnd) pre.scrollTop = pre.scrollHeight;
@@ -449,9 +412,8 @@ $("#btnSmokeAll").addEventListener("click", () => startRun({ kind: "smoke" }));
 async function loadEnv() {
   $("#env").innerHTML = '<span class="chip">checking…</span>';
   try {
-    const rows = await api("/api/preflight");
-    ENV = rows;
-    $("#env").innerHTML = rows.map((r) => `<span class="chip ${r.ok ? "ok" : r.name.startsWith("live") || r.name.startsWith("opa cli") ? "" : "bad"}" title="${esc(r.detail)}"><span class="dot"></span>${esc(r.name.replace(/^live /, ""))}</span>`).join("");
+    ENV = await api("/api/preflight");
+    $("#env").innerHTML = ENV.map((r) => `<span class="chip ${r.ok ? "ok" : r.name.startsWith("live") || r.name.startsWith("opa cli") ? "" : "bad"}" title="${esc(r.detail)}"><span class="dot"></span>${esc(r.name.replace(/^live /, ""))}</span>`).join("");
   } catch (e) { $("#env").innerHTML = `<span class="chip bad">${esc(e.message)}</span>`; }
   if (CAT) renderDetail();
 }
@@ -459,15 +421,17 @@ $("#btnEnv").addEventListener("click", loadEnv);
 
 // ---------------------------------------------------------------- export
 $("#btnExport").addEventListener("click", () => {
-  const L = [`# Lextr feature testing report`, ``, `Generated ${new Date().toLocaleString()} · ` +
-    Object.entries(CAT.branches).map(([r, x]) => `${r}@${x.head}`).join(" · "), ``,
-    `| Item | Title | Automated | Live checks | Checklist | Failed / blocked items |`, `|---|---|---|---|---|---|`];
-  for (const it of ITEMS) {
-    const p = progress(it), v = verdictOf(it) || "not run", sm = smokeFor(it).map((c) => LATEST.smoke[c.id]?.result).filter(Boolean);
-    const bad = checklist(it).filter((r) => ["fail", "blocked"].includes(MANUAL[it.key]?.[r.key]?.s))
-      .map((r) => `${r.key} ${MANUAL[it.key][r.key].s}${MANUAL[it.key][r.key].n ? ": " + MANUAL[it.key][r.key].n : ""}`);
-    if (it.scope === "MOD" && v === "not run" && !p.done) continue;
-    L.push(`| ${it.id} | ${it.title.replace(/\|/g, "/")} | ${v} | ${sm.length ? sm.join(", ") : "—"} | ${p.done}/${p.total} | ${bad.join("<br>").replace(/\|/g, "/") || "—"} |`);
+  const L = ["# Lextr feature testing report", "", `Generated ${new Date().toLocaleString()} · ` +
+    Object.entries(CAT.branches).map(([r, x]) => `${r}@${x.head}`).join(" · ")];
+  for (const a of CAT.areas) {
+    const fs = features().filter((f) => f.area === a); if (!fs.length) continue;
+    L.push("", `## ${a}`, "", "| Feature | Status | Automated | Live checks | Checklist | Failed / blocked |", "|---|---|---|---|---|---|");
+    for (const f of fs) {
+      const p = progress(f), sm = f.smoke_checks.map((id) => LATEST.smoke[id]?.result).filter(Boolean);
+      const bad = checklist(f).filter((r) => ["fail", "blocked"].includes(MANUAL[f.id]?.[r.key]?.s))
+        .map((r) => `${r.kind} ${r.key.split("/")[1]} ${MANUAL[f.id][r.key].s}${MANUAL[f.id][r.key].n ? ": " + MANUAL[f.id][r.key].n : ""}`);
+      L.push(`| ${f.name} | ${f.status} | ${verdictOf(f) || "not run"} | ${sm.length ? sm.join(", ") : "—"} | ${p.done}/${p.total} | ${bad.join("<br>").replace(/\|/g, "/") || "—"} |`);
+    }
   }
   const last = (LATEST.runs || []).find((r) => r.kind === "suite" || r.kind === "test");
   if (last?.unmapped_failures?.length) L.push("", `## Failures that belong to no feature (${last.file})`, "", ...last.unmapped_failures.map((u) => "- " + u));
@@ -478,7 +442,7 @@ $("#btnExport").addEventListener("click", () => {
 });
 
 // ---------------------------------------------------------------- boot
-["#q", "#fScope", "#fStatus", "#fDomain"].forEach((s) => $(s).addEventListener("input", renderList));
+["#q", "#fArea", "#fStatus", "#fRun"].forEach((s) => $(s).addEventListener("input", renderList));
 $("#list").addEventListener("click", (e) => {
   const el = e.target.closest(".item"); if (!el) return;
   SEL = el.dataset.k; history.replaceState(null, "", "#" + encodeURIComponent(SEL));
@@ -491,7 +455,7 @@ $("#list").addEventListener("click", (e) => {
     $("#detail").innerHTML = `<div class="card"><h3>Can't reach the local runner</h3><p>Start it with <code>python3 run_feature_tests.py serve</code> and open the address it prints.</p><p class="muted">${esc(e.message)}</p></div>`;
     return;
   }
-  buildItems();
+  fillFilters();
   SEL = decodeURIComponent(location.hash.slice(1)) || null;
   renderList(); renderDetail(); loadEnv();
 })();

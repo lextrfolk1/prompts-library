@@ -1,87 +1,68 @@
-# Lextr Intelligence v1.38.0 — testable feature list
+# Lextr Intelligence — features and how to test them
 
-Which features exist, and how to test each one. There are two scopes:
+This lists the 52 things a user or an integrating system can actually **do** with Lextr Intelligence, found by scanning the code of
+intelligence-service, lexie-ai and intelligence-ui. Each feature says where you use it, whether it works today,
+how to test it, and which automated tests and live checks cover it.
 
-- **The 59 features the prompt-driven build added** (`LP-xx`). They were found by comparing
-  `feature/lextr-intelligence-v1.38.0` with `main` in intelligence-service, lexie-ai and intelligence-ui,
-  and mapping the result onto this package's manifest, prompts and tracker.
-- **12 baseline features that already existed on `main`** (`BL-xx`), so the branch comparison does not list them:
-  - BL-01 to BL-08: lexie-ai's VarianceAI application (cycles, detection, analysis, review, audit, configuration, knowledge base, runtime, demo data).
-  - BL-09 to BL-11: the rules chatbot, rule description and summary, and MDRM recommendation. **These have no automated tests; manual checks only.**
-  - BL-12: the UI screens that were on `main`.
+**UI is compared with the approved prototype** (`files/Lextr_Intelligence_UI_v1.38.0_FINAL.jsx`):
+- Each prototype screen is marked, from the code, as present in the real UI, a placeholder, or missing.
+- Everything the prototype says a screen lets you do becomes a "Prototype UI" checklist item to verify on the real screen.
+- Real screens that the prototype doesn't have are listed too.
 
-`list`, `show`, `test`, `suite` and `smoke --only` accept `BL-xx` the same way as `LP-xx`.
+**Not listed on purpose:** schema and migrations, OpenAPI, logging, datasource and config wiring, the error envelope, test gates,
+observability probes, localisation plumbing, design documents and test harnesses. They support features but are not features.
 
-| File | What it is |
-|---|---|
-| [FEATURES.md](FEATURES.md) | The feature list. It covers all 59 logic points, 31 capability modules, branch changes made outside the prompts, and the 12 baseline features (section 4). Each feature's detail section gives its prompts, acceptance criteria (as a checklist), how to test it and its known gaps. |
-| [feature_catalog.json](feature_catalog.json) | The same data in machine-readable form, for agents and for the runner. |
-| [run_feature_tests.py](run_feature_tests.py) | The runner, using only the Python standard library. Commands: `preflight`, `list`, `show`, `test`, `suite`, `smoke`. |
-| [testing_ui.html](testing_ui.html) | The testing page, served by `python3 run_feature_tests.py serve`. It lets you browse features, run tests and live checks, and mark the checklist; checklist state is saved to `results/manual_status.json`. |
-| [smoke_checks.json](smoke_checks.json) | Live API checks. Read-only unless you pass `--allow-writes`. |
-| [tools/](tools/) | `build_feature_catalog.py` regenerates the two files above from the repos. `feature_summaries.json` is its only hand-written input: summaries, manual checks, known gaps and modules. |
-
-The runner writes its output to `results/`, which git ignores.
-
-## Quick start
+## Start here
 
 ```bash
 cd /Users/tejal/codebase/utils/prompts-library/Lextr_Intelligence_Final_Package/feature-testing
-python3 run_feature_tests.py serve              # the testing page: opens http://127.0.0.1:8765
-python3 run_feature_tests.py preflight          # what can run here: toolchain, branches, live ports
-python3 run_feature_tests.py list --uc UC10     # features, filterable by --uc or --domain
-python3 run_feature_tests.py show LP-57         # summary, prompts, acceptance criteria, tests, manual checks (also BL-06)
-python3 run_feature_tests.py test LP-57         # that feature's automated tests in every repo (also LP-57.2, module:impact)
-python3 run_feature_tests.py suite              # all three repo suites once, verdict per feature
-python3 run_feature_tests.py smoke              # live API checks (needs the stack running)
-python3 tools/build_feature_catalog.py          # regenerate after a branch moves (read-only against the repos)
+python3 run_feature_tests.py serve        # the testing page: opens http://127.0.0.1:8765
 ```
 
-## Test levels and verdicts
+On the testing page:
+1. Check the environment chips in the header.
+2. Pick a feature.
+3. Run its automated tests and live checks.
+4. Work through its test steps, marking each Pass, Fail or Blocked with a note. The checklist saves to `results/manual_status.json`.
+5. Export a report.
 
-| Level | What | Needs | Command |
-|---|---|---|---|
-| L0 | Unit, static and contract tests | Toolchain only (java + mvn, the lexie venv, UI node_modules) | `test` / `suite` |
-| L1 | Tests that need Docker (Testcontainers), OPA or sibling repos; some skip when those are absent | Those dependencies | same |
-| L2 | Live API smoke | The running stack (below) | `smoke` |
-| L3 | Manual UI/API walkthrough | The running stack plus a browser | listed by `show` |
+The same things from the command line:
 
-**Verdicts:**
-- `PASS`: every mapped test passed.
-- `FAIL`: a test case failed.
-- `ERROR`: the runner errored, or an unhandled error was raised in one of the feature's test files.
-- `SKIPPED`: only skipped cases ran.
-- `NOT_RUN`: the feature's tests produced no results. LP-32's `secret-scan` test is excluded by the pom by default.
-- `NO_TESTS`: nothing is mapped to the feature.
+```bash
+python3 run_feature_tests.py list [--area Knowledge] [--status Available]
+python3 run_feature_tests.py show kh-upload             # what it does, where, status, known issues, steps, endpoints, tests
+python3 run_feature_tests.py test kh-upload [--repo lexie-ai]
+python3 run_feature_tests.py suite                      # all three test suites once, verdict per feature
+python3 run_feature_tests.py smoke [--only kh-upload] [--allow-writes]
+python3 tools/build_feature_catalog.py                  # rebuild after the code changes
+```
 
-A failing test that belongs to no feature is reported as `UNMAPPED_FAIL`. Each run is saved to `results/<ts>-<cmd>.json` and logged in `results/RESULTS.md`.
+## Files
 
-## For an agent testing a feature
+| File | What it is |
+|---|---|
+| [FEATURES.md](FEATURES.md) | The feature list, grouped by area, with status and how to test each feature. |
+| [feature_catalog.json](feature_catalog.json) | The same data, read by the runner and the page. |
+| [testing_ui.html](testing_ui.html) | The testing page, served by `run_feature_tests.py serve`. |
+| [run_feature_tests.py](run_feature_tests.py) | The runner, using only the Python standard library. |
+| [smoke_checks.json](smoke_checks.json) | Live API checks. Each one is linked to features by its URL. Read-only unless you pass `--allow-writes`. |
+| [tools/features.json](tools/features.json) | **The only hand-written input.** Each feature, anchored to code: UI slice, controllers, lexie routes and test paths, plus its test steps and its prototype screen with what that screen should let you do. |
+| [tools/build_feature_catalog.py](tools/build_feature_catalog.py) | Derives, from the code: endpoints, test files, every URL the UI calls (checked against the real endpoints), linked live checks and a status. |
 
-**Rules:**
-- Don't edit, commit, push or switch branches in the product repos unless asked. Report defects rather than fixing them silently.
-- Never commit in `lextr/java/config-service`.
-- Use `smoke --allow-writes` only when the user allows test rows in the dev DB.
-- Don't apply migrations to the shared dev DB (`[::1]:5433/lextr`).
-- `SKIPPED`, `NOT_RUN` and flaky passes are findings, never `PASS`.
+## Status labels
 
-**Steps:**
-1. Run `preflight`. If a repo's branch or HEAD differs from the catalog, run `tools/build_feature_catalog.py` first.
-2. Run `show <LP>`. Its acceptance criteria are the definition of done. The full spec is the prompt file listed per sub-task (`prompts/wave_NN/LP-XX.Y_<LANG>.md`).
-3. Run `test <LP>`. For a use case end to end, run `test module:<id>`; the ids are listed by `list`.
-4. Run the UI gates: `cd intelligence-ui && scripts/lp47/lp47_run_suites.sh` must be all GREEN, with typecheck at 0 errors.
-5. For L2 and L3, start the stack (below), then run `smoke --only <LP>` and work through the manual checks from `show`.
-   - intelligence-service responses are wrapped as `{"data": …}`, and it expects `X-Client-Id: client_001` plus `X-User-Id`/`X-Principal-Id`.
-   - A screen shown as `Lexie panel inline: X` is reached by asking in the Lexie panel.
-   - A screen shown as `(declared unmounted)` has no UI by design; see `intelligence-ui/src/shell/declaredUnmounted.ts`.
-6. Report, for each level:
-   - the verdict and counts;
-   - each failure, with its message and file:line;
-   - which acceptance criteria are covered, and which are not;
-   - known gaps, kept separate from new findings;
-   - the results file.
+Each status comes from the code, not from a claim:
 
-**Live stack** (dev mode, one terminal each):
+| Status | Meaning |
+|---|---|
+| Available | Usable from its screen, and the screen's calls reach a real endpoint. |
+| UI calls a missing endpoint | The screen calls a URL that no running service answers. It fails even with everything up. |
+| Refused until Core adapter exists | The code refuses by design (`RUN_ADAPTER_UNBOUND`) until Lextr Core provides the adapter. |
+| API works; UI shows sample data | The API is real, but the screen shows built-in sample data. |
+| UI shows sample data only | A screen with no endpoint behind it. |
+| API only / API only (UI not mounted) / API only (Lexie panel not live) | Test it through the API; the screen doesn't exist, isn't mounted, or depends on the Lexie panel, which doesn't launch real runs. |
+
+## Running the stack for live checks and manual steps
 
 | # | Service | Command |
 |---|---|---|
@@ -91,28 +72,9 @@ A failing test that belongs to no feature is reported as `UNMAPPED_FAIL`. Each r
 | 4 | intelligence-service | `LEXIE_URL=http://localhost:5003 mvn clean spring-boot:run` (serves :8059; its built-in default looks for lexie-ai on 8004) |
 | 5 | UI | `cd intelligence-ui && npx vite`, then open http://localhost:5173/intelligence/ (proxies `/api` to :8059) |
 
-## Status as of 2026-09-26
+## For an agent
 
-The first full run of all three suites:
-
-| Repo | Passed | Failed | Skipped |
-|---|---|---|---|
-| intelligence-service | 622 | 0 | 0 |
-| lexie-ai | 1,237 | 0 | 8 |
-| intelligence-ui | 407 | 0 | 0 |
-
-The LP-47 gates are GREEN and the UI typecheck is at 0 errors. The 8 lexie-ai skips are 7 strict xfails for the canonicaliser (see "Still open") and 1 test that needs the `opa` binary.
-
-**Fixed:** intelligence-service `33b6330`, lexie-ai `fdac52a`, intelligence-ui `4c3bd49`.
-- The embed crash from its Emotion cache key.
-- The evidence store silently failing every insert.
-- UC9 returning canned answers without calling lexie-ai.
-- The anomaly, lineage and swarm coordinators enqueuing runs they never persisted.
-- Fabricated run ids.
-- Missing reason codes in two policies.
-- 32 UI type errors, including three silently dead MUI style props.
-- Stale or over-broad tests.
-
-The commit messages have the detail.
-
-**Still open** (owner decision): lexie-ai's `service/variance/audit/events.canonical_json` is not RFC 8785. A compliant `intelligence/evidence/jcs.py` exists, but switching to it changes the variance audit-chain hashes, so events need a canonicalisation version first.
+- Don't edit, commit or push the product repos unless asked; report defects. Never commit in `lextr/java/config-service`.
+- Use `smoke --allow-writes` only when the user allows test rows in the dev DB.
+- `SKIPPED`, `NOT_RUN` and flaky passes are findings, never `PASS`.
+- Report each feature's status, test verdicts, live-check results, and which steps passed, failed or couldn't be run.
