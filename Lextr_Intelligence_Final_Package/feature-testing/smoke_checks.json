@@ -1,0 +1,688 @@
+{
+  "_readme": "L2 live smoke checks run by `run_feature_tests.py smoke`. URLs use {SVC} {LEXIE} {OPA} {UI} (override with env SVC_URL, LEXIE_URL, OPA_URL, UI_URL). 'mutating: true' checks write rows and only run with --allow-writes. expect.status = allowed HTTP codes; expect.json = dotted-path equality; expect.json_has = dotted paths that must exist; expect.body_contains = substrings.",
+  "defaults": {
+    "SVC": "http://localhost:8059",
+    "LEXIE": "http://localhost:8004",
+    "OPA": "http://localhost:8181",
+    "UI": "http://localhost:5173/intelligence/",
+    "headers": {
+      "X-Client-Id": "client_001",
+      "X-User-Id": "smoke-tester",
+      "X-Principal-Id": "smoke-tester",
+      "X-Actor-Id": "smoke-tester",
+      "Content-Type": "application/json"
+    }
+  },
+  "checks": [
+    {
+      "id": "svc-health",
+      "features": [
+        "LP-35",
+        "LP-31"
+      ],
+      "method": "GET",
+      "url": "{SVC}/actuator/health",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-readiness",
+      "features": [
+        "LP-35"
+      ],
+      "method": "GET",
+      "url": "{SVC}/actuator/health/readiness",
+      "expect": {
+        "status": [
+          200
+        ]
+      },
+      "note": "503 means db/opa/lexie is DOWN - the body names which"
+    },
+    {
+      "id": "svc-liveness",
+      "features": [
+        "LP-35"
+      ],
+      "method": "GET",
+      "url": "{SVC}/actuator/health/liveness",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-openapi",
+      "features": [
+        "LP-29"
+      ],
+      "method": "GET",
+      "url": "{SVC}/v3/api-docs",
+      "expect": {
+        "status": [
+          200
+        ],
+        "json_has": [
+          "paths"
+        ]
+      }
+    },
+    {
+      "id": "opa-health",
+      "features": [
+        "LP-04"
+      ],
+      "method": "GET",
+      "url": "{OPA}/health",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-opa-policies",
+      "features": [
+        "LP-04"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/v1/opa/policies",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-health",
+      "features": [
+        "platform"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/api/v1/chatbot/ai/health",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-variance-health",
+      "features": [
+        "LP-14"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/api/v1/variance/health",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-openapi",
+      "features": [
+        "LP-29"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/openapi.json",
+      "expect": {
+        "status": [
+          200
+        ],
+        "json_has": [
+          "paths./run"
+        ]
+      }
+    },
+    {
+      "id": "lexie-run-uc5",
+      "features": [
+        "LP-03",
+        "platform"
+      ],
+      "method": "POST",
+      "url": "{LEXIE}/run",
+      "body": {
+        "client_id": "client_001",
+        "use_case": "UC5",
+        "correlation_id": "smoke-1",
+        "input_payload": {
+          "series": [
+            {
+              "metric_name": "total_assets",
+              "data_points": [
+                {
+                  "timestamp_or_label": "2025-Q1",
+                  "value": 100.0
+                },
+                {
+                  "timestamp_or_label": "2025-Q2",
+                  "value": 101.0
+                },
+                {
+                  "timestamp_or_label": "2025-Q3",
+                  "value": 99.5
+                },
+                {
+                  "timestamp_or_label": "2025-Q4",
+                  "value": 100.5
+                },
+                {
+                  "timestamp_or_label": "2026-Q1",
+                  "value": 100.2
+                },
+                {
+                  "timestamp_or_label": "2026-Q2",
+                  "value": 250.0
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expect": {
+        "status": [
+          200
+        ],
+        "json": {
+          "use_case": "UC5",
+          "output.output_type": "dataset",
+          "correlation_id": "smoke-1"
+        },
+        "json_has": [
+          "run_id",
+          "steps"
+        ]
+      }
+    },
+    {
+      "id": "lexie-run-trusted-keys",
+      "features": [
+        "LP-03"
+      ],
+      "method": "POST",
+      "url": "{LEXIE}/run",
+      "body": {
+        "client_id": "client_001",
+        "use_case": "UC5",
+        "input_payload": {
+          "client_id": "other_tenant",
+          "run_id": "forged",
+          "series": [
+            {
+              "metric_name": "m",
+              "data_points": [
+                {
+                  "timestamp_or_label": "a",
+                  "value": 1.0
+                },
+                {
+                  "timestamp_or_label": "b",
+                  "value": 2.0
+                },
+                {
+                  "timestamp_or_label": "c",
+                  "value": 3.0
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expect": {
+        "status": [
+          200
+        ],
+        "json": {
+          "client_id": "client_001"
+        }
+      }
+    },
+    {
+      "id": "lexie-run-unknown-uc",
+      "features": [
+        "LP-40",
+        "LP-33"
+      ],
+      "method": "POST",
+      "url": "{LEXIE}/run",
+      "body": {
+        "client_id": "client_001",
+        "use_case": "UC99"
+      },
+      "expect": {
+        "status": [
+          200
+        ],
+        "json": {
+          "status": "failed",
+          "output.extra_fields.reason_code": "RUN_USE_CASE_UNKNOWN"
+        }
+      }
+    },
+    {
+      "id": "lexie-run-adapter-unbound",
+      "features": [
+        "LP-13",
+        "LP-21",
+        "LP-20"
+      ],
+      "method": "POST",
+      "url": "{LEXIE}/run",
+      "body": {
+        "client_id": "client_001",
+        "use_case": "UC8"
+      },
+      "expect": {
+        "status": [
+          200
+        ],
+        "json": {
+          "status": "failed",
+          "output.extra_fields.reason_code": "RUN_ADAPTER_UNBOUND"
+        }
+      }
+    },
+    {
+      "id": "lexie-run-invalid-input",
+      "features": [
+        "LP-37",
+        "LP-40"
+      ],
+      "method": "POST",
+      "url": "{LEXIE}/run",
+      "body": {
+        "client_id": "client_001",
+        "use_case": "UC2",
+        "input_payload": {
+          "delta_amount": "not-a-number"
+        }
+      },
+      "expect": {
+        "status": [
+          200
+        ],
+        "json": {
+          "status": "failed",
+          "output.extra_fields.reason_code": "RUN_INPUT_INVALID"
+        }
+      }
+    },
+    {
+      "id": "lexie-run-no-client",
+      "features": [
+        "LP-33"
+      ],
+      "method": "POST",
+      "url": "{LEXIE}/run",
+      "body": {
+        "use_case": "UC5"
+      },
+      "expect": {
+        "status": [
+          422
+        ]
+      }
+    },
+    {
+      "id": "svc-run-no-client",
+      "features": [
+        "LP-03",
+        "LP-33"
+      ],
+      "method": "POST",
+      "url": "{SVC}/run",
+      "headers": {
+        "X-Client-Id": null
+      },
+      "body": {
+        "use_case": "UC5"
+      },
+      "expect": {
+        "status": [
+          400,
+          422
+        ]
+      }
+    },
+    {
+      "id": "svc-presets-resolve",
+      "features": [
+        "LP-12"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/v1/presets/resolve?task=variance",
+      "expect": {
+        "status": [
+          200,
+          404
+        ]
+      },
+      "note": "404 = no operational preset for the axis (drafts are never returned)"
+    },
+    {
+      "id": "svc-definitions",
+      "features": [
+        "LP-22"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/v1/governance/definitions",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-definitions-tags",
+      "features": [
+        "LP-22"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/v1/governance/definitions/tags",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-inbox",
+      "features": [
+        "LP-60",
+        "LP-59"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/v1/inbox?surface=INTELLIGENCE",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-estate-ledger-integrity",
+      "features": [
+        "LP-59"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/v1/governance/estate-ledger/integrity",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-calibration-metrics",
+      "features": [
+        "LP-51"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/v1/calibration/monitoring-metrics",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-assurance-not-measured",
+      "features": [
+        "LP-57"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/v1/assurance/documents/smoke-never-measured/status",
+      "expect": {
+        "status": [
+          200,
+          404
+        ],
+        "body_contains": [
+          "NOT_MEASURED"
+        ]
+      },
+      "note": "a never-measured document must read NOT_MEASURED, never a score of 0"
+    },
+    {
+      "id": "svc-training-datasets",
+      "features": [
+        "LP-39"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/intelligence/training/datasets",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-evidence-erasure-reconciliation",
+      "features": [
+        "LP-26"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/intelligence/evidence/erasures/reconciliation",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-evidence-involvement",
+      "features": [
+        "LP-26"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/intelligence/evidence/involvement?anchorKind=RUN&anchorRef=smoke&from=2026-01-01&to=2026-12-31",
+      "expect": {
+        "status": [
+          200,
+          400,
+          403,
+          404
+        ]
+      },
+      "note": "must not 5xx; 403 is a legitimate policy refusal"
+    },
+    {
+      "id": "svc-tenants",
+      "features": [
+        "module:tenant"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/v1/tenants",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-hsm-status",
+      "features": [
+        "module:hsm"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/v1/hsm/status",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-resilience-topology",
+      "features": [
+        "module:resilience"
+      ],
+      "method": "GET",
+      "url": "{SVC}/api/v1/resilience/topology",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-review-queue",
+      "features": [
+        "LP-07",
+        "LP-14"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/api/v1/variance/review/queue",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-kh-documents",
+      "features": [
+        "LP-08",
+        "LP-48"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/api/v1/variance/knowledge/documents",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "ui-root",
+      "features": [
+        "LP-47",
+        "LP-02"
+      ],
+      "method": "GET",
+      "url": "{UI}",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "ui-api-proxy",
+      "features": [
+        "platform"
+      ],
+      "method": "GET",
+      "url": "{UI_ORIGIN}/api/v1/inbox?surface=INTELLIGENCE",
+      "expect": {
+        "status": [
+          200
+        ]
+      },
+      "note": "vite dev server proxies /api to intelligence-service"
+    },
+    {
+      "id": "svc-run-uc5-persisted",
+      "mutating": true,
+      "features": [
+        "LP-03",
+        "LP-06",
+        "LP-07"
+      ],
+      "method": "POST",
+      "url": "{SVC}/run",
+      "body": {
+        "client_id": "client_001",
+        "use_case": "UC5",
+        "correlation_id": "smoke-svc-1",
+        "input_payload": {
+          "series": [
+            {
+              "metric_name": "total_assets",
+              "data_points": [
+                {
+                  "timestamp_or_label": "2025-Q1",
+                  "value": 100.0
+                },
+                {
+                  "timestamp_or_label": "2025-Q2",
+                  "value": 101.0
+                },
+                {
+                  "timestamp_or_label": "2025-Q3",
+                  "value": 99.5
+                },
+                {
+                  "timestamp_or_label": "2025-Q4",
+                  "value": 100.5
+                },
+                {
+                  "timestamp_or_label": "2026-Q1",
+                  "value": 100.2
+                },
+                {
+                  "timestamp_or_label": "2026-Q2",
+                  "value": 250.0
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "expect": {
+        "status": [
+          200,
+          201
+        ],
+        "json_has": [
+          "data.run_id"
+        ]
+      },
+      "save": {
+        "run_id": "data.run_id"
+      },
+      "note": "service responses are wrapped in ApiResponse {data: ...}"
+    },
+    {
+      "id": "svc-run-get",
+      "mutating": true,
+      "depends_on": "svc-run-uc5-persisted",
+      "features": [
+        "LP-03",
+        "LP-06"
+      ],
+      "method": "GET",
+      "url": "{SVC}/run/{run_id}",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "svc-inbox-decide-on-core-refused",
+      "mutating": true,
+      "features": [
+        "LP-60"
+      ],
+      "method": "POST",
+      "url": "{SVC}/api/v1/inbox/smoke-subject/decide?subjectKind=PRESET&capability=preset&action=approve&surface=CORE",
+      "expect": {
+        "status": [
+          400,
+          403,
+          404,
+          409,
+          422
+        ]
+      },
+      "note": "the Core surface may never decide; refusal is recorded"
+    }
+  ]
+}
