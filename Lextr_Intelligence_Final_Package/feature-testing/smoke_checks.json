@@ -100,7 +100,8 @@
     {
       "id": "lexie-health",
       "features": [
-        "platform"
+        "platform",
+        "BL-09"
       ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/chatbot/ai/health",
@@ -113,7 +114,9 @@
     {
       "id": "lexie-variance-health",
       "features": [
-        "LP-14"
+        "LP-14",
+        "BL-01",
+        "BL-07"
       ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/health",
@@ -535,7 +538,8 @@
       "id": "lexie-review-queue",
       "features": [
         "LP-07",
-        "LP-14"
+        "LP-14",
+        "BL-03"
       ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/review/queue",
@@ -549,7 +553,8 @@
       "id": "lexie-kh-documents",
       "features": [
         "LP-08",
-        "LP-48"
+        "LP-48",
+        "BL-06"
       ],
       "method": "GET",
       "url": "{LEXIE}/api/v1/variance/knowledge/documents",
@@ -586,6 +591,123 @@
         ]
       },
       "note": "vite dev server proxies /api to intelligence-service"
+    },
+    {
+      "id": "lexie-variance-cycles-available",
+      "features": [
+        "BL-01"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/api/v1/variance/cycles/available",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-variance-entities",
+      "features": [
+        "BL-01"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/api/v1/variance/entities",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-review-metrics",
+      "features": [
+        "BL-03"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/api/v1/variance/review/metrics",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-variance-thresholds",
+      "features": [
+        "BL-05"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/api/v1/variance/thresholds",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-model-config",
+      "features": [
+        "BL-05"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/api/v1/variance/model-config",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-variance-cycles",
+      "features": [
+        "BL-05"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/api/v1/variance/cycles",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-kh-collections",
+      "features": [
+        "BL-06"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/api/v1/variance/knowledge/collections",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-demo-console",
+      "features": [
+        "BL-08"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/demo/",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
+    },
+    {
+      "id": "lexie-rules-knowledge-status",
+      "features": [
+        "BL-10"
+      ],
+      "method": "GET",
+      "url": "{LEXIE}/api/v1/chatbot/ai/knowledge/status",
+      "expect": {
+        "status": [
+          200
+        ]
+      }
     },
     {
       "id": "svc-run-uc5-persisted",

@@ -1,12 +1,20 @@
 # Lextr Intelligence v1.38.0 — testable feature list
 
-Which features the prompt-driven build added, and how to test each one. Built by comparing
-`feature/lextr-intelligence-v1.38.0` with `main` in intelligence-service, lexie-ai and intelligence-ui,
-and mapping the result onto this package's manifest, prompts and tracker.
+Which features exist, and how to test each one. There are two scopes:
+
+- **The 59 features the prompt-driven build added** (`LP-xx`). They were found by comparing
+  `feature/lextr-intelligence-v1.38.0` with `main` in intelligence-service, lexie-ai and intelligence-ui,
+  and mapping the result onto this package's manifest, prompts and tracker.
+- **12 baseline features that already existed on `main`** (`BL-xx`), so the branch comparison does not list them:
+  - BL-01 to BL-08: lexie-ai's VarianceAI application (cycles, detection, analysis, review, audit, configuration, knowledge base, runtime, demo data).
+  - BL-09 to BL-11: the rules chatbot, rule description and summary, and MDRM recommendation. **These have no automated tests; manual checks only.**
+  - BL-12: the UI screens that were on `main`.
+
+`list`, `show`, `test`, `suite` and `smoke --only` accept `BL-xx` the same way as `LP-xx`.
 
 | File | What it is |
 |---|---|
-| [FEATURES.md](FEATURES.md) | The feature list. It covers all 59 logic points and 31 capability modules, plus branch changes made outside the prompts. Each feature's detail section gives its prompts, acceptance criteria (as a checklist), how to test it and its known gaps. |
+| [FEATURES.md](FEATURES.md) | The feature list. It covers all 59 logic points, 31 capability modules, branch changes made outside the prompts, and the 12 baseline features (section 4). Each feature's detail section gives its prompts, acceptance criteria (as a checklist), how to test it and its known gaps. |
 | [feature_catalog.json](feature_catalog.json) | The same data in machine-readable form, for agents and for the runner. |
 | [run_feature_tests.py](run_feature_tests.py) | The runner, using only the Python standard library. Commands: `preflight`, `list`, `show`, `test`, `suite`, `smoke`. |
 | [smoke_checks.json](smoke_checks.json) | Live API checks. Read-only unless you pass `--allow-writes`. |
@@ -20,7 +28,7 @@ The runner writes its output to `results/`, which git ignores.
 cd /Users/tejal/codebase/utils/prompts-library/Lextr_Intelligence_Final_Package/feature-testing
 python3 run_feature_tests.py preflight          # what can run here: toolchain, branches, live ports
 python3 run_feature_tests.py list --uc UC10     # features, filterable by --uc or --domain
-python3 run_feature_tests.py show LP-57         # summary, prompts, acceptance criteria, tests, manual checks
+python3 run_feature_tests.py show LP-57         # summary, prompts, acceptance criteria, tests, manual checks (also BL-06)
 python3 run_feature_tests.py test LP-57         # that feature's automated tests in every repo (also LP-57.2, module:impact)
 python3 run_feature_tests.py suite              # all three repo suites once, verdict per feature
 python3 run_feature_tests.py smoke              # live API checks (needs the stack running)

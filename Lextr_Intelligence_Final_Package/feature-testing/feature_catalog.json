@@ -275,7 +275,9 @@
     "points": 59,
     "subtasks": 251,
     "points_with_automated_tests": 58,
-    "subtasks_delivered": 251
+    "subtasks_delivered": 251,
+    "baseline_features": 12,
+    "baseline_with_automated_tests": 9
   },
   "ui_mounts": [
     {
@@ -497,7 +499,7 @@
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [run_router]/run"
+          "endpoint": "POST /run"
         }
       ],
       "related_points": [
@@ -596,67 +598,67 @@
       "endpoints": [
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/thresholds"
+          "endpoint": "GET /api/v1/variance/thresholds"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [config_router]/thresholds"
+          "endpoint": "POST /api/v1/variance/thresholds"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "DELETE [config_router]/thresholds/{threshold_id}"
+          "endpoint": "DELETE /api/v1/variance/thresholds/{threshold_id}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/model-config"
+          "endpoint": "GET /api/v1/variance/model-config"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/model-config/history"
+          "endpoint": "GET /api/v1/variance/model-config/history"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "PUT [config_router]/model-config/{setting_key}"
+          "endpoint": "PUT /api/v1/variance/model-config/{setting_key}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "DELETE [config_router]/model-config/{setting_key}"
+          "endpoint": "DELETE /api/v1/variance/model-config/{setting_key}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/source-nodes"
+          "endpoint": "GET /api/v1/variance/source-nodes"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/source-nodes/candidates"
+          "endpoint": "GET /api/v1/variance/source-nodes/candidates"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [config_router]/source-nodes"
+          "endpoint": "POST /api/v1/variance/source-nodes"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "DELETE [config_router]/source-nodes/{mapping_id}"
+          "endpoint": "DELETE /api/v1/variance/source-nodes/{mapping_id}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [config_router]/thresholds/preview"
+          "endpoint": "POST /api/v1/variance/thresholds/preview"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/cycles"
+          "endpoint": "GET /api/v1/variance/cycles"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/cycles/{cycle_id}/completeness"
+          "endpoint": "GET /api/v1/variance/cycles/{cycle_id}/completeness"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [config_router]/cycles/{cycle_id}/close"
+          "endpoint": "POST /api/v1/variance/cycles/{cycle_id}/close"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [config_router]/cycles/{cycle_id}/reopen"
+          "endpoint": "POST /api/v1/variance/cycles/{cycle_id}/reopen"
         }
       ],
       "related_points": [
@@ -1815,59 +1817,59 @@
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [knowledge_router]/documents"
+          "endpoint": "POST /api/v1/variance/knowledge/documents"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [knowledge_router]/documents/upload"
+          "endpoint": "POST /api/v1/variance/knowledge/documents/upload"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/documents"
+          "endpoint": "GET /api/v1/variance/knowledge/documents"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/documents/{doc_id}"
+          "endpoint": "GET /api/v1/variance/knowledge/documents/{doc_id}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/documents/{doc_id}/download"
+          "endpoint": "GET /api/v1/variance/knowledge/documents/{doc_id}/download"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [knowledge_router]/documents/{doc_id}/archive"
+          "endpoint": "POST /api/v1/variance/knowledge/documents/{doc_id}/archive"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/collections"
+          "endpoint": "GET /api/v1/variance/knowledge/collections"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/search"
+          "endpoint": "GET /api/v1/variance/knowledge/search"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [knowledge_router]/chat"
+          "endpoint": "POST /api/v1/variance/knowledge/chat"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/chat/{session_id}"
+          "endpoint": "GET /api/v1/variance/knowledge/chat/{session_id}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "DELETE [knowledge_router]/chat/{session_id}"
+          "endpoint": "DELETE /api/v1/variance/knowledge/chat/{session_id}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [knowledge_router]/documents/{doc_id}/relations"
+          "endpoint": "POST /api/v1/variance/knowledge/documents/{doc_id}/relations"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/graph/{node_type}/{node_id}"
+          "endpoint": "GET /api/v1/variance/knowledge/graph/{node_type}/{node_id}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [knowledge_router]/snapshots"
+          "endpoint": "POST /api/v1/variance/knowledge/snapshots"
         }
       ],
       "related_points": [
@@ -2750,7 +2752,7 @@
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [training_router]/jobs"
+          "endpoint": "POST /api/v1/training/jobs"
         }
       ],
       "related_points": [
@@ -3873,6 +3875,920 @@
         "intelligence-service": "cd intelligence-service && mvn -q test -Dsurefire.failIfNoSpecifiedTests=false -Dtest='AnalyticalMigrationSqlTest,BaselineSchemaMigrationTest,CalibrationSqlReadTest,CompletenessGateTest,ControlPlanePersistenceTest,EvidenceMigrationSqlTest,EvidenceNotarizationSqlTest,LogRedactorTest,MerkleMigrationSqlTest,ModelResolutionTest,ObservabilityResilienceTest,OpenApiRouteCoverageTest,PopulationReconciliationSqlTest,QueryCatalogIntegrityTest,QueryKeyCoverageTest,RegisteredDefinitionMigrationSqlTest,ReportingCycleMaterialityMigrationTest,RerunAuditMigrationTest,ReviewQueueSqlReadTest,SQLQueryLoaderTest,StrandedRunSweepTest'",
         "lexie-ai": "cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/test_canonical_cross_layer.py tests/test_manifest_ui_sync_gate.py tests/test_no_composed_prose.py tests/test_platform_regression_harness.py"
       }
+    }
+  ],
+  "baseline_features": [
+    {
+      "id": "BL-01",
+      "title": "Variance cycles and variance detection",
+      "name": "Variance cycles and variance detection",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "feature_summary": "Create a reporting cycle, list available cycles and entities, and detect material variances per MDRM line from the regulatory ledger (rule_json parsing, precision-safe amounts, entity scoping).",
+      "on_base_branch": "main",
+      "source_files": [
+        "models/variance/__init__.py",
+        "models/variance/classification.py",
+        "models/variance/cycle.py",
+        "models/variance/enums.py",
+        "models/variance/explanation.py",
+        "models/variance/review.py",
+        "routes/variance_routers.py",
+        "service/variance/detection/cycle_service.py",
+        "service/variance/detection/engine.py",
+        "service/variance/detection/queries.py",
+        "service/variance/detection/repositories.py",
+        "service/variance/detection/rule_parser.py"
+      ],
+      "changed_by_branch": [],
+      "endpoints": [
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/health"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/cycles/available"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/entities"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/cycles"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/cycles/{cycle_id}/detect"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/cycles/{cycle_id}"
+        }
+      ],
+      "test_files": {
+        "lexie-ai": [
+          "tests/variance/test_detection_engine.py",
+          "tests/variance/test_cycle_availability.py",
+          "tests/variance/test_cycle_persistence.py",
+          "tests/variance/test_cycle_service.py",
+          "tests/variance/test_entity_scoping.py",
+          "tests/variance/test_amount_precision.py",
+          "tests/variance/test_variance_item_persistence.py",
+          "tests/variance/test_rule_parser.py"
+        ]
+      },
+      "test_files_missing": [],
+      "test_commands": {
+        "lexie-ai": "cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_amount_precision.py tests/variance/test_cycle_availability.py tests/variance/test_cycle_persistence.py tests/variance/test_cycle_service.py tests/variance/test_detection_engine.py tests/variance/test_entity_scoping.py tests/variance/test_rule_parser.py tests/variance/test_variance_item_persistence.py"
+      },
+      "manual_checks": [
+        "GET :8004/api/v1/variance/health is 200",
+        "GET :8004/api/v1/variance/cycles/available and /entities list data from the dev DB",
+        "POST :8004/api/v1/variance/cycles creates a cycle; POST /cycles/{id}/detect returns detected lines with tiers",
+        "GET /cycles/{id} returns the cycle with its status"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ],
+      "notes": []
+    },
+    {
+      "id": "BL-02",
+      "title": "Variance analysis and explanation",
+      "name": "Variance analysis and explanation",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "feature_summary": "Analyse detected lines (all, one, or regenerate one): driver decomposition and classification, context and evidence gathering, masked LLM explanation with guardrails and schema validation, confidence, evaluation routing, and versioned analyses.",
+      "on_base_branch": "main",
+      "source_files": [
+        "routes/variance_routers.py",
+        "service/variance/analysis/__init__.py",
+        "service/variance/analysis/calibration.py",
+        "service/variance/analysis/confidence.py",
+        "service/variance/analysis/context.py",
+        "service/variance/analysis/decomposition.py",
+        "service/variance/analysis/driver_classifier.py",
+        "service/variance/analysis/evidence_service.py",
+        "service/variance/analysis/explainability.py",
+        "service/variance/analysis/explanation_generator.py",
+        "service/variance/analysis/grounding.py",
+        "service/variance/analysis/guardrails.py",
+        "service/variance/analysis/orchestrator.py",
+        "service/variance/analysis/pipeline_steps.py",
+        "service/variance/analysis/record.py",
+        "service/variance/evaluation/__init__.py",
+        "service/variance/evaluation/artifacts.py",
+        "service/variance/evaluation/gates.py",
+        "service/variance/evaluation/metrics.py",
+        "service/variance/prompts/__init__.py",
+        "service/variance/prompts/registry.py"
+      ],
+      "changed_by_branch": [],
+      "endpoints": [
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/cycles/{cycle_id}/analyze"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/cycles/{cycle_id}/analyze/{mdrm_id}"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/cycles/{cycle_id}/regenerate/{mdrm_id}"
+        }
+      ],
+      "test_files": {
+        "lexie-ai": [
+          "tests/variance/test_analyze_on_request.py",
+          "tests/variance/test_decomposition.py",
+          "tests/variance/test_driver_classification.py",
+          "tests/variance/test_explanation_and_guardrails.py",
+          "tests/variance/test_explanation_schema.py",
+          "tests/variance/test_explainability_accuracy.py",
+          "tests/variance/test_confidence.py",
+          "tests/variance/test_context_and_evidence.py",
+          "tests/variance/test_evaluation_and_routing.py",
+          "tests/variance/test_evidence_wiring.py",
+          "tests/variance/test_masking.py",
+          "tests/variance/test_analysis_versioning.py",
+          "tests/variance/test_version_history.py"
+        ]
+      },
+      "test_files_missing": [],
+      "test_commands": {
+        "lexie-ai": "cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_analysis_versioning.py tests/variance/test_analyze_on_request.py tests/variance/test_confidence.py tests/variance/test_context_and_evidence.py tests/variance/test_decomposition.py tests/variance/test_driver_classification.py tests/variance/test_evaluation_and_routing.py tests/variance/test_evidence_wiring.py tests/variance/test_explainability_accuracy.py tests/variance/test_explanation_and_guardrails.py tests/variance/test_explanation_schema.py tests/variance/test_masking.py tests/variance/test_version_history.py"
+      },
+      "manual_checks": [
+        "POST :8004/api/v1/variance/cycles/{id}/analyze/{mdrm_id} returns an explanation with drivers, evidence and confidence",
+        "POST .../regenerate/{mdrm_id} creates a new analysis version (GET /analyses/{id}/versions lists both)",
+        "With OPENAI_API_KEY unset the run degrades visibly rather than inventing a narrative"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ],
+      "notes": [
+        "Needs an LLM key for a real narrative; without one it runs in the documented degraded mode"
+      ]
+    },
+    {
+      "id": "BL-03",
+      "title": "Variance review workflow",
+      "name": "Variance review workflow",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "feature_summary": "Review queue, per-analysis review state and actions (accept / correct / reject), approved analyses per cycle, and review metrics; review state survives restarts.",
+      "on_base_branch": "main",
+      "source_files": [
+        "routes/variance_review_routers.py",
+        "service/variance/review/__init__.py",
+        "service/variance/review/feedback.py",
+        "service/variance/review/service.py",
+        "service/variance/review/workflow.py"
+      ],
+      "changed_by_branch": [],
+      "endpoints": [
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/review/queue"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/analyses/{analysis_id}"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/cycles/{cycle_id}/lines/{mdrm_id}/analysis"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/cycles/{cycle_id}/approved"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/analyses/{analysis_id}/versions"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/analyses/{analysis_id}/review"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/analyses/{analysis_id}/review"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/review/metrics"
+        }
+      ],
+      "test_files": {
+        "lexie-ai": [
+          "tests/variance/test_review_workflow.py",
+          "tests/variance/test_review_persistence.py",
+          "tests/variance/test_review_rehydration.py"
+        ]
+      },
+      "test_files_missing": [],
+      "test_commands": {
+        "lexie-ai": "cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_review_persistence.py tests/variance/test_review_rehydration.py tests/variance/test_review_workflow.py"
+      },
+      "manual_checks": [
+        "GET :8004/api/v1/variance/review/queue lists pending analyses",
+        "POST /analyses/{id}/review with an accept action; GET /analyses/{id}/review shows the new state; GET /cycles/{id}/approved includes it",
+        "GET /review/metrics counts the decision"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ],
+      "notes": []
+    },
+    {
+      "id": "BL-04",
+      "title": "Variance audit trail and export",
+      "name": "Variance audit trail and export",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "feature_summary": "Hash-chained audit events for every analysis action, and an audit export per analysis.",
+      "on_base_branch": "main",
+      "source_files": [
+        "routes/variance_audit_routers.py",
+        "service/variance/audit/__init__.py",
+        "service/variance/audit/events.py",
+        "service/variance/audit/export.py",
+        "service/variance/audit/model_documentation.py",
+        "service/variance/audit/notarization.py"
+      ],
+      "changed_by_branch": [],
+      "endpoints": [
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/audit/analyses/{analysis_id}/export"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/audit/analyses/{analysis_id}/manifest"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/audit/cycles/{cycle_id}/export"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/audit/cycles/{cycle_id}/notarize"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/audit/cycles/{cycle_id}/verify"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/audit/verify-pack"
+        }
+      ],
+      "test_files": {
+        "lexie-ai": [
+          "tests/variance/test_audit_chain.py",
+          "tests/variance/test_audit_export.py"
+        ]
+      },
+      "test_files_missing": [],
+      "test_commands": {
+        "lexie-ai": "cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_audit_chain.py tests/variance/test_audit_export.py"
+      },
+      "manual_checks": [
+        "GET :8004/api/v1/variance/audit/analyses/{id}/export returns the chain for an analysis"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ],
+      "notes": [
+        "canonical_json here is not RFC 8785 - the open owner decision in README 'Still open'"
+      ]
+    },
+    {
+      "id": "BL-05",
+      "title": "Variance configuration and cycle lifecycle",
+      "name": "Variance configuration and cycle lifecycle",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "feature_summary": "Materiality thresholds (with preview), runtime model configuration with history, source-node mappings, cycle completeness, and close / reopen of a cycle.",
+      "on_base_branch": "main",
+      "source_files": [
+        "routes/variance_config_routers.py",
+        "service/variance/detection/config_repo.py",
+        "service/variance/detection/thresholds.py",
+        "service/variance/runtime_config.py",
+        "service/variance/settings.py"
+      ],
+      "changed_by_branch": [
+        "routes/variance_config_routers.py"
+      ],
+      "endpoints": [
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/thresholds"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/thresholds"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "DELETE /api/v1/variance/thresholds/{threshold_id}"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/model-config"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/model-config/history"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "PUT /api/v1/variance/model-config/{setting_key}"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "DELETE /api/v1/variance/model-config/{setting_key}"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/source-nodes"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/source-nodes/candidates"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/source-nodes"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "DELETE /api/v1/variance/source-nodes/{mapping_id}"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/thresholds/preview"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/cycles"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/cycles/{cycle_id}/completeness"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/cycles/{cycle_id}/close"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/cycles/{cycle_id}/reopen"
+        }
+      ],
+      "test_files": {
+        "lexie-ai": [
+          "tests/variance/test_config_and_lifecycle.py",
+          "tests/variance/test_model_config.py",
+          "tests/variance/test_model_capability_fallback.py"
+        ]
+      },
+      "test_files_missing": [],
+      "test_commands": {
+        "lexie-ai": "cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_config_and_lifecycle.py tests/variance/test_model_capability_fallback.py tests/variance/test_model_config.py"
+      },
+      "manual_checks": [
+        "GET/POST :8004/api/v1/variance/thresholds; POST /thresholds/preview shows the effect before saving",
+        "PUT /model-config/{key} then GET /model-config/history shows the change",
+        "GET /cycles/{id}/completeness, then POST /cycles/{id}/close and /reopen"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ],
+      "notes": []
+    },
+    {
+      "id": "BL-06",
+      "title": "Variance knowledge base",
+      "name": "Variance knowledge base",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "feature_summary": "Regulatory knowledge documents: upload, list, download, archive, collections, semantic search, chat sessions, document relations, knowledge graph and snapshots, with pgvector retrieval.",
+      "on_base_branch": "main",
+      "source_files": [
+        "etl/knowledge_etl.py",
+        "routes/variance_knowledge_routers.py",
+        "service/variance/knowledge/__init__.py",
+        "service/variance/knowledge/chat.py",
+        "service/variance/knowledge/documents.py",
+        "service/variance/knowledge/extraction.py",
+        "service/variance/knowledge/graph.py",
+        "service/variance/knowledge/masking.py",
+        "service/variance/knowledge/pg_graph_store.py",
+        "service/variance/knowledge/pg_store.py",
+        "service/variance/knowledge/retrieval.py",
+        "service/variance/knowledge/store.py"
+      ],
+      "changed_by_branch": [
+        "routes/variance_knowledge_routers.py"
+      ],
+      "endpoints": [
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/knowledge/documents"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/knowledge/documents/upload"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/knowledge/documents"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/knowledge/documents/{doc_id}"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/knowledge/documents/{doc_id}/download"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/knowledge/documents/{doc_id}/archive"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/knowledge/collections"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/knowledge/search"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/knowledge/chat"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/knowledge/chat/{session_id}"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "DELETE /api/v1/variance/knowledge/chat/{session_id}"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/knowledge/documents/{doc_id}/relations"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/variance/knowledge/graph/{node_type}/{node_id}"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/variance/knowledge/snapshots"
+        }
+      ],
+      "test_files": {
+        "lexie-ai": [
+          "tests/variance/test_knowledge_api.py",
+          "tests/variance/test_knowledge_chat.py",
+          "tests/variance/test_knowledge_extraction.py",
+          "tests/variance/test_knowledge_graph.py",
+          "tests/variance/test_knowledge_hub.py",
+          "tests/variance/test_retrieval.py",
+          "tests/variance/test_pg_store_retrieval.py",
+          "tests/variance/test_embedding_dimensions.py",
+          "tests/variance/test_object_store_resilience.py"
+        ]
+      },
+      "test_files_missing": [],
+      "test_commands": {
+        "lexie-ai": "cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_embedding_dimensions.py tests/variance/test_knowledge_api.py tests/variance/test_knowledge_chat.py tests/variance/test_knowledge_extraction.py tests/variance/test_knowledge_graph.py tests/variance/test_knowledge_hub.py tests/variance/test_object_store_resilience.py tests/variance/test_pg_store_retrieval.py tests/variance/test_retrieval.py"
+      },
+      "manual_checks": [
+        "POST :8004/api/v1/variance/knowledge/documents/upload, then GET /documents lists it",
+        "GET /search?q=... returns ranked passages",
+        "POST /chat answers with citations; GET/DELETE /chat/{session_id}",
+        "GET /graph/{node_type}/{node_id} returns neighbours"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ],
+      "notes": [
+        "The upload route was extended by LP-48 (reason codes); that part is listed under LP-48"
+      ]
+    },
+    {
+      "id": "BL-07",
+      "title": "VarianceAI runtime, orchestration and database",
+      "name": "VarianceAI runtime, orchestration and database",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "feature_summary": "Runtime bootstrap (degrades visibly without infrastructure), agent runtime and adapter registry, SQL and tracing resilience, the variance schema migrations and consolidated DDL/DML, and the evidence seed script.",
+      "on_base_branch": "main",
+      "source_files": [
+        "migrations/variance/001_variance_schema.sql",
+        "migrations/variance/002_audit_schema.sql",
+        "migrations/variance/003_knowledge_schema.sql",
+        "migrations/variance/004_cycle_lifecycle.sql",
+        "migrations/variance/005_review_outcome.sql",
+        "migrations/variance/006_runtime_config.sql",
+        "migrations/variance/007_knowledge_document_status.sql",
+        "migrations/variance/008_knowledge_classification_period.sql",
+        "migrations/variance/009_knowledge_graph.sql",
+        "migrations/variance/010_reconcile_008_ai_prohibited_hash.sql",
+        "migrations/variance/variance_ddl.sql",
+        "migrations/variance/variance_dml.sql",
+        "scripts/__init__.py",
+        "scripts/run_variance_migrations.py",
+        "scripts/seed_variance_evidence.py",
+        "service/variance/bootstrap.py",
+        "service/variance/runtime/__init__.py",
+        "service/variance/runtime/adapters/__init__.py",
+        "service/variance/runtime/adapters/agno_runtime.py",
+        "service/variance/runtime/adapters/langgraph_runtime.py",
+        "service/variance/runtime/adapters/object_store.py",
+        "service/variance/runtime/adapters/openai_provider.py",
+        "service/variance/runtime/adapters/tracing.py",
+        "service/variance/runtime/pipeline.py",
+        "service/variance/runtime/ports.py",
+        "service/variance/runtime/registry.py",
+        "service/variance/runtime/routing.py"
+      ],
+      "changed_by_branch": [
+        "migrations/variance/variance_ddl.sql",
+        "scripts/run_variance_migrations.py"
+      ],
+      "endpoints": [],
+      "test_files": {
+        "lexie-ai": [
+          "tests/variance/test_bootstrap_and_orchestrator.py",
+          "tests/variance/test_runtime_and_registry.py",
+          "tests/variance/test_sql_and_tracing_resilience.py",
+          "tests/variance/test_consolidated_sql.py",
+          "tests/variance/test_seed_evidence_script.py"
+        ]
+      },
+      "test_files_missing": [],
+      "test_commands": {
+        "lexie-ai": "cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_bootstrap_and_orchestrator.py tests/variance/test_consolidated_sql.py tests/variance/test_runtime_and_registry.py tests/variance/test_seed_evidence_script.py tests/variance/test_sql_and_tracing_resilience.py"
+      },
+      "manual_checks": [
+        "Start lexie-ai without OPENAI_API_KEY: /api/v1/variance/health reports the degradations",
+        "python scripts/run_variance_migrations.py on a scratch DB applies 001..011 once and is idempotent on re-run"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ],
+      "notes": []
+    },
+    {
+      "id": "BL-08",
+      "title": "Variance demo data generator and demo console",
+      "name": "Variance demo data generator and demo console",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "feature_summary": "Generates and removes demo reporting periods (tracked so only generated periods are ever deleted), and serves a disposable demo console at /demo.",
+      "on_base_branch": "main",
+      "source_files": [
+        "demo-ui/README.md",
+        "demo-ui/index.html",
+        "routes/variance_demo_data_routers.py"
+      ],
+      "changed_by_branch": [],
+      "endpoints": [
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/demo/status"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/demo/diagnose"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/demo/periods"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/demo/lines"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/demo/generate-period"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "DELETE /api/v1/demo/periods/{period}"
+        }
+      ],
+      "test_files": {
+        "lexie-ai": [
+          "tests/variance/test_demo_data_router.py",
+          "tests/variance/test_demo_ui_mount.py"
+        ]
+      },
+      "test_files_missing": [],
+      "test_commands": {
+        "lexie-ai": "cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_demo_data_router.py tests/variance/test_demo_ui_mount.py"
+      },
+      "manual_checks": [
+        "Open :8004/demo/ in a browser",
+        "Generate a demo period via the demo-data API, then delete it; a period it did not create cannot be deleted"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ],
+      "notes": []
+    },
+    {
+      "id": "BL-09",
+      "title": "Rules chatbot (Lexie query)",
+      "name": "Rules chatbot (Lexie query)",
+      "domain": "Rules assistant (main)",
+      "repo": "lexie-ai",
+      "feature_summary": "Natural-language rule questions answered by a streaming chatbot agent with per-user memory, plus a legacy query route.",
+      "on_base_branch": "main",
+      "source_files": [
+        "prompts/variance/driver_classification.yaml",
+        "prompts/variance/evidence_grounding.yaml",
+        "prompts/variance/explanation_generation.yaml",
+        "prompts/variance/knowledge_chat.yaml",
+        "routes/rules_execution_routers.py",
+        "service/agents/chatbot_agent.py",
+        "service/execution_chain.py",
+        "service/prompt_loader_service.py",
+        "service/validation_service.py",
+        "utils/query_classifier.py",
+        "utils/response_handler.py"
+      ],
+      "changed_by_branch": [],
+      "endpoints": [
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/chatbot/ai/health"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/chatbot/ai/query-old"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/chatbot/ai/query"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "DELETE /api/v1/chatbot/ai/memory/{user_id}"
+        }
+      ],
+      "test_files": {},
+      "test_files_missing": [],
+      "test_commands": {},
+      "manual_checks": [
+        "GET :8004/api/v1/chatbot/ai/health is 200",
+        "POST :8004/api/v1/chatbot/ai/query with {\"query\": \"...\", \"context\": {...}} streams an answer (needs an LLM key)",
+        "DELETE /api/v1/chatbot/ai/memory/{user_id} clears that user's conversation"
+      ],
+      "needs_live": [
+        "lexie"
+      ],
+      "notes": [
+        "NO automated tests exist on main or the branch - manual checks only"
+      ]
+    },
+    {
+      "id": "BL-10",
+      "title": "Rule description, rule summary and rule knowledge",
+      "name": "Rule description, rule summary and rule knowledge",
+      "domain": "Rules assistant (main)",
+      "repo": "lexie-ai",
+      "feature_summary": "Generate a plain-language description or summary of a Core rule, and manage the rule knowledge index (refresh, status, clear).",
+      "on_base_branch": "main",
+      "source_files": [
+        "routes/rules_execution_routers.py",
+        "rule_generator/.env",
+        "rule_generator/app/.env",
+        "service/agents/rule_summary_agent.py",
+        "service/agents/rule_summary_service.py",
+        "tools/rule_generator_tool.py",
+        "utils/rule_logical_converter.py",
+        "utils/rule_tree_util.py"
+      ],
+      "changed_by_branch": [],
+      "endpoints": [
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/chatbot/ai/rule-description"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/chatbot/ai/rule-summary"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/chatbot/ai/knowledge/refresh"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "GET /api/v1/chatbot/ai/knowledge/status"
+        },
+        {
+          "repo": "lexie-ai",
+          "endpoint": "DELETE /api/v1/chatbot/ai/knowledge/clear"
+        }
+      ],
+      "test_files": {},
+      "test_files_missing": [],
+      "test_commands": {},
+      "manual_checks": [
+        "POST :8004/api/v1/chatbot/ai/rule-description and /rule-summary with a rule return text (needs an LLM key)",
+        "POST /knowledge/refresh, then GET /knowledge/status shows the index; DELETE /knowledge/clear empties it"
+      ],
+      "needs_live": [
+        "lexie"
+      ],
+      "notes": [
+        "NO automated tests - manual checks only"
+      ]
+    },
+    {
+      "id": "BL-11",
+      "title": "MDRM recommendation",
+      "name": "MDRM recommendation",
+      "domain": "Rules assistant (main)",
+      "repo": "lexie-ai",
+      "feature_summary": "Suggest MDRM codes for a free-text query using an embedding index.",
+      "on_base_branch": "main",
+      "source_files": [
+        "routes/rules_execution_routers.py",
+        "service/mdrm_suggestion_service.py",
+        "utils/semantic_service_client.py",
+        "utils/suggestions_embedding_builder_util.py"
+      ],
+      "changed_by_branch": [],
+      "endpoints": [
+        {
+          "repo": "lexie-ai",
+          "endpoint": "POST /api/v1/chatbot/ai/mdrm/recommend"
+        }
+      ],
+      "test_files": {},
+      "test_files_missing": [],
+      "test_commands": {},
+      "manual_checks": [
+        "POST :8004/api/v1/chatbot/ai/mdrm/recommend with {\"query\": \"net interest income\", \"context\": {...}} returns ranked MDRM suggestions"
+      ],
+      "needs_live": [
+        "lexie"
+      ],
+      "notes": [
+        "NO automated tests - manual checks only"
+      ]
+    },
+    {
+      "id": "BL-12",
+      "title": "Intelligence UI prototype screens (on main before the build)",
+      "name": "Intelligence UI prototype screens (on main before the build)",
+      "domain": "UI (main)",
+      "repo": "intelligence-ui",
+      "feature_summary": "The screens that existed on main - variance workspace with drill graph and driver cards, knowledge, presets (wizard), skills, policies, models, risk, roles, audit - with the Lexie panel, masked values, confidence signal, evidence ledger viewer and the run / preset / skills hooks. The branch changed most of them; those changes are listed under the LP features.",
+      "on_base_branch": "main",
+      "source_files": [
+        "src/components/atoms/ConfidenceSignal.tsx",
+        "src/components/atoms/LextrChart.tsx",
+        "src/components/atoms/MaskedValue.tsx",
+        "src/components/atoms/RunProgress.tsx",
+        "src/components/organisms/DebugConsole.tsx",
+        "src/components/organisms/EvidenceDrawer.tsx",
+        "src/components/organisms/EvidenceLedgerViewer.tsx",
+        "src/components/organisms/GovernanceEnvelope.tsx",
+        "src/components/organisms/HistoryDrawer.tsx",
+        "src/components/organisms/LexiePanel.tsx",
+        "src/components/organisms/OutputRenderer.tsx",
+        "src/components/organisms/PresetWizard.tsx",
+        "src/components/organisms/SurfaceMap.tsx",
+        "src/components/pages/PresetManagementScreen.tsx",
+        "src/components/themes/TenantThemeProvider.tsx",
+        "src/features/audit/components/AuditEvidence.tsx",
+        "src/features/knowledge/components/KnowledgeHub.tsx",
+        "src/features/knowledge/components/knowledgeMocks.ts",
+        "src/features/models/components/ModelRegistry.tsx",
+        "src/features/policies/components/Policies.tsx",
+        "src/features/policies/components/policiesMocks.ts",
+        "src/features/presets/components/Presets.tsx",
+        "src/features/presets/components/presetsMocks.ts",
+        "src/features/risk/components/ReviewQueue.tsx",
+        "src/features/roles/components/RoleMapping.tsx",
+        "src/features/skills/components/SkillDetailPanel.tsx",
+        "src/features/skills/components/SkillRegistry.tsx",
+        "src/features/skills/components/skillMocks.ts",
+        "src/features/skills/types.ts",
+        "src/features/variance/components/DrillGraph.tsx",
+        "src/features/variance/components/DriverFindingCard.tsx",
+        "src/features/variance/components/VarianceAtoms.tsx",
+        "src/features/variance/components/VarianceDrillWorkspace.tsx",
+        "src/features/variance/components/VarianceResult.tsx",
+        "src/features/variance/components/VarianceWorkspace.tsx",
+        "src/features/variance/components/varianceMocks.ts",
+        "src/hooks/useIntelligenceRun.ts",
+        "src/hooks/usePresetLifecycle.ts",
+        "src/hooks/useSkills.ts",
+        "src/themes/ThemeProvider.tsx",
+        "src/themes/compStyleOverride.ts",
+        "src/themes/palette.ts",
+        "src/themes/scss/_theme1.module.scss",
+        "src/themes/scss/_theme2.module.scss",
+        "src/themes/scss/_theme3.module.scss",
+        "src/themes/scss/_theme4.module.scss",
+        "src/themes/scss/_theme5.module.scss",
+        "src/themes/scss/_theme6.module.scss",
+        "src/themes/scss/_themes-vars.module.scss",
+        "src/themes/scss/style.scss",
+        "src/themes/shadows.ts",
+        "src/themes/themeColorOverrides.ts",
+        "src/themes/themeConstants.ts",
+        "src/themes/typography.ts"
+      ],
+      "changed_by_branch": [
+        "src/components/atoms/ConfidenceSignal.tsx",
+        "src/components/atoms/LextrChart.tsx",
+        "src/components/atoms/MaskedValue.tsx",
+        "src/components/atoms/RunProgress.tsx",
+        "src/components/organisms/DebugConsole.tsx",
+        "src/components/organisms/EvidenceDrawer.tsx",
+        "src/components/organisms/EvidenceLedgerViewer.tsx",
+        "src/components/organisms/GovernanceEnvelope.tsx",
+        "src/components/organisms/HistoryDrawer.tsx",
+        "src/components/organisms/LexiePanel.tsx",
+        "src/components/organisms/OutputRenderer.tsx",
+        "src/components/organisms/PresetWizard.tsx",
+        "src/components/organisms/SurfaceMap.tsx",
+        "src/components/pages/PresetManagementScreen.tsx",
+        "src/components/themes/TenantThemeProvider.tsx",
+        "src/features/audit/components/AuditEvidence.tsx",
+        "src/features/knowledge/components/KnowledgeHub.tsx",
+        "src/features/models/components/ModelRegistry.tsx",
+        "src/features/policies/components/Policies.tsx",
+        "src/features/presets/components/Presets.tsx",
+        "src/features/risk/components/ReviewQueue.tsx",
+        "src/features/roles/components/RoleMapping.tsx",
+        "src/features/skills/components/SkillDetailPanel.tsx",
+        "src/features/skills/components/SkillRegistry.tsx",
+        "src/features/variance/components/DrillGraph.tsx",
+        "src/features/variance/components/DriverFindingCard.tsx",
+        "src/features/variance/components/VarianceAtoms.tsx",
+        "src/features/variance/components/VarianceDrillWorkspace.tsx",
+        "src/features/variance/components/VarianceResult.tsx",
+        "src/features/variance/components/VarianceWorkspace.tsx",
+        "src/hooks/usePresetLifecycle.ts",
+        "src/themes/compStyleOverride.ts",
+        "src/themes/themeColorOverrides.ts",
+        "src/themes/themeConstants.ts"
+      ],
+      "endpoints": [],
+      "test_files": {
+        "intelligence-ui": [
+          "src/components/__tests__/ConfidenceSignal.test.tsx",
+          "src/components/__tests__/LexiePanel.test.tsx",
+          "src/components/__tests__/MaskedValue.test.tsx",
+          "src/components/__tests__/PresetWizard.test.tsx",
+          "src/components/organisms/__tests__/EvidenceLedgerViewer.test.tsx",
+          "src/features/skills/__tests__/SkillRegistry.test.tsx",
+          "src/features/variance/__tests__/DrillGraph.test.tsx",
+          "src/features/variance/__tests__/DriverFindingCard.test.tsx",
+          "src/features/variance/__tests__/VarianceWorkspace.test.tsx",
+          "src/hooks/__tests__/useIntelligenceRun.test.tsx",
+          "src/hooks/__tests__/usePresetLifecycle.test.tsx",
+          "src/hooks/__tests__/useSkills.test.tsx"
+        ]
+      },
+      "test_files_missing": [],
+      "test_commands": {
+        "intelligence-ui": "cd intelligence-ui && npx vitest run src/components/__tests__/ConfidenceSignal.test.tsx src/components/__tests__/LexiePanel.test.tsx src/components/__tests__/MaskedValue.test.tsx src/components/__tests__/PresetWizard.test.tsx src/components/organisms/__tests__/EvidenceLedgerViewer.test.tsx src/features/skills/__tests__/SkillRegistry.test.tsx src/features/variance/__tests__/DrillGraph.test.tsx src/features/variance/__tests__/DriverFindingCard.test.tsx src/features/variance/__tests__/VarianceWorkspace.test.tsx src/hooks/__tests__/useIntelligenceRun.test.tsx src/hooks/__tests__/usePresetLifecycle.test.tsx src/hooks/__tests__/useSkills.test.tsx"
+      },
+      "manual_checks": [
+        "Open :5173/intelligence/ and visit each sidebar screen; each renders content",
+        "Theme selector (Appearance) switches between the six themes"
+      ],
+      "needs_live": [
+        "ui"
+      ],
+      "notes": []
     }
   ],
   "features": [
@@ -7661,7 +8577,7 @@
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [training_router]/jobs"
+          "endpoint": "POST /api/v1/training/jobs"
         }
       ],
       "manual_checks": [
@@ -10171,67 +11087,67 @@
       "endpoints": [
         {
           "repo": "lexie-ai",
-          "endpoint": "DELETE [config_router]/model-config/{setting_key}"
+          "endpoint": "DELETE /api/v1/variance/model-config/{setting_key}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "DELETE [config_router]/source-nodes/{mapping_id}"
+          "endpoint": "DELETE /api/v1/variance/source-nodes/{mapping_id}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "DELETE [config_router]/thresholds/{threshold_id}"
+          "endpoint": "DELETE /api/v1/variance/thresholds/{threshold_id}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/cycles"
+          "endpoint": "GET /api/v1/variance/cycles"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/cycles/{cycle_id}/completeness"
+          "endpoint": "GET /api/v1/variance/cycles/{cycle_id}/completeness"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/model-config"
+          "endpoint": "GET /api/v1/variance/model-config"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/model-config/history"
+          "endpoint": "GET /api/v1/variance/model-config/history"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/source-nodes"
+          "endpoint": "GET /api/v1/variance/source-nodes"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/source-nodes/candidates"
+          "endpoint": "GET /api/v1/variance/source-nodes/candidates"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [config_router]/thresholds"
+          "endpoint": "GET /api/v1/variance/thresholds"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [config_router]/cycles/{cycle_id}/close"
+          "endpoint": "POST /api/v1/variance/cycles/{cycle_id}/close"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [config_router]/cycles/{cycle_id}/reopen"
+          "endpoint": "POST /api/v1/variance/cycles/{cycle_id}/reopen"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [config_router]/source-nodes"
+          "endpoint": "POST /api/v1/variance/source-nodes"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [config_router]/thresholds"
+          "endpoint": "POST /api/v1/variance/thresholds"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [config_router]/thresholds/preview"
+          "endpoint": "POST /api/v1/variance/thresholds/preview"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "PUT [config_router]/model-config/{setting_key}"
+          "endpoint": "PUT /api/v1/variance/model-config/{setting_key}"
         }
       ],
       "manual_checks": [
@@ -11195,59 +12111,59 @@
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "DELETE [knowledge_router]/chat/{session_id}"
+          "endpoint": "DELETE /api/v1/variance/knowledge/chat/{session_id}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/chat/{session_id}"
+          "endpoint": "GET /api/v1/variance/knowledge/chat/{session_id}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/collections"
+          "endpoint": "GET /api/v1/variance/knowledge/collections"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/documents"
+          "endpoint": "GET /api/v1/variance/knowledge/documents"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/documents/{doc_id}"
+          "endpoint": "GET /api/v1/variance/knowledge/documents/{doc_id}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/documents/{doc_id}/download"
+          "endpoint": "GET /api/v1/variance/knowledge/documents/{doc_id}/download"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/graph/{node_type}/{node_id}"
+          "endpoint": "GET /api/v1/variance/knowledge/graph/{node_type}/{node_id}"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "GET [knowledge_router]/search"
+          "endpoint": "GET /api/v1/variance/knowledge/search"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [knowledge_router]/chat"
+          "endpoint": "POST /api/v1/variance/knowledge/chat"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [knowledge_router]/documents"
+          "endpoint": "POST /api/v1/variance/knowledge/documents"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [knowledge_router]/documents/upload"
+          "endpoint": "POST /api/v1/variance/knowledge/documents/upload"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [knowledge_router]/documents/{doc_id}/archive"
+          "endpoint": "POST /api/v1/variance/knowledge/documents/{doc_id}/archive"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [knowledge_router]/documents/{doc_id}/relations"
+          "endpoint": "POST /api/v1/variance/knowledge/documents/{doc_id}/relations"
         },
         {
           "repo": "lexie-ai",
-          "endpoint": "POST [knowledge_router]/snapshots"
+          "endpoint": "POST /api/v1/variance/knowledge/snapshots"
         }
       ],
       "manual_checks": [

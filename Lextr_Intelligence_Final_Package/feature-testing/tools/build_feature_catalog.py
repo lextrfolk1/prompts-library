@@ -124,8 +124,14 @@ def endpoints_in(repo: str, repo_dir: Path, path: str) -> list[str]:
         for mm in re.finditer(r'@(Get|Post|Put|Patch|Delete)Mapping(?:\(\s*(?:value\s*=\s*|path\s*=\s*)?"?([^")]*)"?[^)]*\))?', src):
             out.append(f"{mm.group(1).upper()} {base}{mm.group(2) or ''}")
     elif repo == "lexie-ai" and path.startswith("routes/") and path.endswith(".py"):
+        # full URL = include_router prefix (app.py) + APIRouter prefix (this file) + route path
+        app_py = (repo_dir / "app.py").read_text(encoding="utf-8", errors="ignore") if (repo_dir / "app.py").exists() else ""
         for mm in re.finditer(r'@(\w+)\.(get|post|put|delete|patch)\(\s*[\'"]([^\'"]*)[\'"]', src):
-            out.append(f"{mm.group(2).upper()} [{mm.group(1)}]{mm.group(3)}")
+            var = mm.group(1)
+            own = re.search(rf'{var}\s*=\s*APIRouter\([^)]*prefix\s*=\s*[\'"]([^\'"]*)', src)
+            mounted = re.search(rf'include_router\(\s*{var}\b[^)]*prefix\s*=\s*[\'"]([^\'"]*)', app_py)
+            url = (mounted.group(1) if mounted else "") + (own.group(1) if own else "") + mm.group(3)
+            out.append(f"{mm.group(2).upper()} {url}")
     return out
 
 
@@ -314,6 +320,8 @@ def main() -> None:
     modules = build_modules(root, summaries.get("_modules", []), mounts, a.venv, a.base, a.head,
                             {f["id"] for f in features})
 
+    baseline = build_baseline(root, summaries.get("_baseline", []), a.venv, a.base, a.head)
+
     catalog = {
         "schema": "lextr-feature-catalog/1",
         "generated_by": "feature-testing/tools/build_feature_catalog.py",
@@ -324,10 +332,13 @@ def main() -> None:
             "subtasks": sum(len(f["subtasks"]) for f in features),
             "points_with_automated_tests": sum(1 for f in features if f["test_commands"]),
             "subtasks_delivered": sum(1 for f in features for s in f["subtasks"] if s["tracker_status"] == "DELIVERED"),
+            "baseline_features": len(baseline),
+            "baseline_with_automated_tests": sum(1 for b in baseline if b["test_commands"]),
         },
         "ui_mounts": list(mounts.values()),
         "platform_changes": summaries.get("_platform", []),
         "modules": modules,
+        "baseline_features": baseline,
         "features": features,
         "unmapped_changed_files": {r: sorted(v) for r, v in unmapped.items()},
     }
@@ -338,6 +349,42 @@ def main() -> None:
     (OUT_DIR / "feature_catalog.json").write_text(json.dumps(catalog, indent=2, ensure_ascii=False) + "\n")
     (OUT_DIR / "FEATURES.md").write_text(render_markdown(catalog))
     print(json.dumps(catalog["totals"]), "->", OUT_DIR / "feature_catalog.json", "+ FEATURES.md")
+
+
+def build_baseline(root: Path, defs: list[dict], venv: str, base: str, head: str) -> list[dict]:
+    """Features that already existed on the base branch (main), which the prompt diff does not cover."""
+    out = []
+    for d in defs:
+        repo = d["repo"]
+        rd = root / repo
+        on_base = [p for p in git(rd, "ls-tree", "-r", "--name-only", base).splitlines() if "__pycache__" not in p]
+        changed = set(git(rd, "diff", "--name-only", f"{base}...{head}").splitlines())
+        src = sorted(p for p in on_base if p.startswith(tuple(d.get("paths", []))) and not is_test(repo, p))
+        eps = []
+        for r in d.get("routes", []):
+            route_files = [r["file"]]
+            src = sorted(set(src) | {r["file"]})
+            for rf in route_files:
+                for e in endpoints_in(repo, rd, rf):
+                    path = e.split(" ", 1)[-1]
+                    if not r.get("match") or re.search(r["match"], path):
+                        eps.append({"repo": repo, "endpoint": e})
+        tests = [t for t in d.get("tests", []) if (rd / t).exists()]
+        missing = sorted(set(d.get("tests", [])) - set(tests))
+        out.append({
+            "id": d["id"], "title": d["name"], "name": d["name"], "domain": d.get("domain"), "repo": repo,
+            "feature_summary": d.get("summary"), "on_base_branch": base,
+            "source_files": src,
+            "changed_by_branch": sorted(p for p in src if p in changed),
+            "endpoints": eps,
+            "test_files": {repo: tests} if tests else {},
+            "test_files_missing": missing,
+            "test_commands": {repo: c} if (c := test_command(repo, tests, venv)) else {},
+            "manual_checks": d.get("manual_checks", []),
+            "needs_live": d.get("needs_live", []),
+            "notes": d.get("notes", []),
+        })
+    return out
 
 
 def build_modules(root: Path, defs: list[dict], mounts: dict, venv: str, base: str, head: str,
@@ -398,7 +445,8 @@ def render_markdown(c: dict) -> str:
         L.append(f"| {r} | `{b['branch']}` | `{b['head']}` | {b['commits_ahead']} | {b['shortstat']} |")
     t = c["totals"]
     L += ["", f"**{t['points']} logic points · {t['subtasks']} prompts · {t['subtasks_delivered']} DELIVERED per tracker · "
-              f"{t['points_with_automated_tests']} points with automated tests mapped.**", "",
+              f"{t['points_with_automated_tests']} points with automated tests mapped · "
+              f"{t.get('baseline_features', 0)} baseline features already on main (section 4).**", "",
           "Test levels used below: **L0** automated unit/static (no infra) · **L1** automated needing DB/OPA/sibling repos · "
           "**L2** live API smoke (`run_feature_tests.py smoke`) · **L3** manual UI/API check.", "",
           "## 1. Feature index (by logic point)", "",
@@ -418,7 +466,37 @@ def render_markdown(c: dict) -> str:
     L += ["", "## 3. Branch changes outside the prompt set", "", "| Repo | Commit | Change | How to test |", "|---|---|---|---|"]
     for p in c["platform_changes"]:
         L.append(f"| {p['repo']} | `{p['commit']}` | {p['change']} | {p['test']} |")
-    L += ["", "## 4. Feature detail", ""]
+    bl = c.get("baseline_features", [])
+    if bl:
+        L += ["", f"## 4. Baseline features already on {c['branches']['lexie-ai']['base']}", "",
+              "These existed before the prompt-driven build, so the branch diff does not list them. Their tests run in",
+              "`suite` like any other; `show BL-xx` / `test BL-xx` work the same way as for an LP.", "",
+              "| ID | Domain | Feature | Repo | Endpoints | Automated tests | Files changed by the branch |", "|---|---|---|---|---|---|---|"]
+        for b in bl:
+            n = sum(len(v) for v in b["test_files"].values())
+            L.append(f"| [{b['id']}](#{b['id'].lower()}) | {b['domain']} | {b['name']} | {b['repo']} | {len(b['endpoints'])} | "
+                     f"{n if n else '**none - manual only**'} | {len(b['changed_by_branch'])} of {len(b['source_files'])} |")
+        L.append("")
+        for b in bl:
+            L += [f"### {b['id']}", "", f"**{b['name']}** — {b['repo']}, on `{b['on_base_branch']}` before the build", "", b["feature_summary"] or "", ""]
+            if b["endpoints"]:
+                L.append("- **Endpoints:** " + "; ".join(f"`{e['endpoint']}`" for e in b["endpoints"]))
+            L += ["", "**How to test**", ""]
+            for r, cmd in b["test_commands"].items():
+                L.append(f"- L0/L1 `{r}`: `{cmd}`" if len(cmd) < 400 else f"- L0/L1 `{r}`: {len(b['test_files'][r])} test files — `python3 run_feature_tests.py test {b['id']}`")
+            if not b["test_commands"]:
+                L.append("- No automated tests exist for this feature.")
+            L.append(f"- Runner: `python3 run_feature_tests.py test {b['id']}`")
+            for mc in b["manual_checks"]:
+                L.append(f"- L3 manual: {mc}")
+            if b["needs_live"]:
+                L.append(f"- Live dependencies for manual checks: {', '.join(b['needs_live'])}")
+            for nt in b["notes"]:
+                L.append(f"- Note: {nt}")
+            if b["changed_by_branch"]:
+                L.append(f"- Changed by the branch since main: {', '.join(f'`{x}`' for x in b['changed_by_branch'])}")
+            L.append("")
+    L += ["", "## 5. Feature detail (by logic point)", ""]
     for f in c["features"]:
         L += [f"### {f['id']}", "", f"**{f['title']}** — wave {f['wave']}, {f['layer']}, {'/'.join(f['languages'])}", ""]
         if f["feature_summary"]:

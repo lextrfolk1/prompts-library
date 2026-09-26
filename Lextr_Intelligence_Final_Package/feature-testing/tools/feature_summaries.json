@@ -1734,5 +1734,408 @@
       "change": "Vite dev server proxies /api to intelligence-service (:8059).",
       "test": "manual: npx vite, open :5173/intelligence/"
     }
+  ],
+  "_baseline": [
+    {
+      "id": "BL-01",
+      "name": "Variance cycles and variance detection",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "summary": "Create a reporting cycle, list available cycles and entities, and detect material variances per MDRM line from the regulatory ledger (rule_json parsing, precision-safe amounts, entity scoping).",
+      "paths": [
+        "service/variance/detection/engine.py",
+        "service/variance/detection/cycle_service.py",
+        "service/variance/detection/queries.py",
+        "service/variance/detection/repositories.py",
+        "service/variance/detection/rule_parser.py",
+        "models/variance/"
+      ],
+      "routes": [
+        {
+          "file": "routes/variance_routers.py",
+          "match": "^(?!.*(/analyze|/regenerate))"
+        }
+      ],
+      "tests": [
+        "tests/variance/test_detection_engine.py",
+        "tests/variance/test_cycle_availability.py",
+        "tests/variance/test_cycle_persistence.py",
+        "tests/variance/test_cycle_service.py",
+        "tests/variance/test_entity_scoping.py",
+        "tests/variance/test_amount_precision.py",
+        "tests/variance/test_variance_item_persistence.py",
+        "tests/variance/test_rule_parser.py"
+      ],
+      "manual_checks": [
+        "GET :8004/api/v1/variance/health is 200",
+        "GET :8004/api/v1/variance/cycles/available and /entities list data from the dev DB",
+        "POST :8004/api/v1/variance/cycles creates a cycle; POST /cycles/{id}/detect returns detected lines with tiers",
+        "GET /cycles/{id} returns the cycle with its status"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ]
+    },
+    {
+      "id": "BL-02",
+      "name": "Variance analysis and explanation",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "summary": "Analyse detected lines (all, one, or regenerate one): driver decomposition and classification, context and evidence gathering, masked LLM explanation with guardrails and schema validation, confidence, evaluation routing, and versioned analyses.",
+      "paths": [
+        "service/variance/analysis/",
+        "service/variance/evaluation/",
+        "service/variance/prompts/"
+      ],
+      "routes": [
+        {
+          "file": "routes/variance_routers.py",
+          "match": "(/analyze|/regenerate)"
+        }
+      ],
+      "tests": [
+        "tests/variance/test_analyze_on_request.py",
+        "tests/variance/test_decomposition.py",
+        "tests/variance/test_driver_classification.py",
+        "tests/variance/test_explanation_and_guardrails.py",
+        "tests/variance/test_explanation_schema.py",
+        "tests/variance/test_explainability_accuracy.py",
+        "tests/variance/test_confidence.py",
+        "tests/variance/test_context_and_evidence.py",
+        "tests/variance/test_evaluation_and_routing.py",
+        "tests/variance/test_evidence_wiring.py",
+        "tests/variance/test_masking.py",
+        "tests/variance/test_analysis_versioning.py",
+        "tests/variance/test_version_history.py"
+      ],
+      "manual_checks": [
+        "POST :8004/api/v1/variance/cycles/{id}/analyze/{mdrm_id} returns an explanation with drivers, evidence and confidence",
+        "POST .../regenerate/{mdrm_id} creates a new analysis version (GET /analyses/{id}/versions lists both)",
+        "With OPENAI_API_KEY unset the run degrades visibly rather than inventing a narrative"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ],
+      "notes": [
+        "Needs an LLM key for a real narrative; without one it runs in the documented degraded mode"
+      ]
+    },
+    {
+      "id": "BL-03",
+      "name": "Variance review workflow",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "summary": "Review queue, per-analysis review state and actions (accept / correct / reject), approved analyses per cycle, and review metrics; review state survives restarts.",
+      "paths": [
+        "service/variance/review/"
+      ],
+      "routes": [
+        {
+          "file": "routes/variance_review_routers.py"
+        }
+      ],
+      "tests": [
+        "tests/variance/test_review_workflow.py",
+        "tests/variance/test_review_persistence.py",
+        "tests/variance/test_review_rehydration.py"
+      ],
+      "manual_checks": [
+        "GET :8004/api/v1/variance/review/queue lists pending analyses",
+        "POST /analyses/{id}/review with an accept action; GET /analyses/{id}/review shows the new state; GET /cycles/{id}/approved includes it",
+        "GET /review/metrics counts the decision"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ]
+    },
+    {
+      "id": "BL-04",
+      "name": "Variance audit trail and export",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "summary": "Hash-chained audit events for every analysis action, and an audit export per analysis.",
+      "paths": [
+        "service/variance/audit/"
+      ],
+      "routes": [
+        {
+          "file": "routes/variance_audit_routers.py"
+        }
+      ],
+      "tests": [
+        "tests/variance/test_audit_chain.py",
+        "tests/variance/test_audit_export.py"
+      ],
+      "manual_checks": [
+        "GET :8004/api/v1/variance/audit/analyses/{id}/export returns the chain for an analysis"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ],
+      "notes": [
+        "canonical_json here is not RFC 8785 - the open owner decision in README 'Still open'"
+      ]
+    },
+    {
+      "id": "BL-05",
+      "name": "Variance configuration and cycle lifecycle",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "summary": "Materiality thresholds (with preview), runtime model configuration with history, source-node mappings, cycle completeness, and close / reopen of a cycle.",
+      "paths": [
+        "service/variance/detection/config_repo.py",
+        "service/variance/detection/thresholds.py",
+        "service/variance/runtime_config.py",
+        "service/variance/settings.py"
+      ],
+      "routes": [
+        {
+          "file": "routes/variance_config_routers.py"
+        }
+      ],
+      "tests": [
+        "tests/variance/test_config_and_lifecycle.py",
+        "tests/variance/test_model_config.py",
+        "tests/variance/test_model_capability_fallback.py"
+      ],
+      "manual_checks": [
+        "GET/POST :8004/api/v1/variance/thresholds; POST /thresholds/preview shows the effect before saving",
+        "PUT /model-config/{key} then GET /model-config/history shows the change",
+        "GET /cycles/{id}/completeness, then POST /cycles/{id}/close and /reopen"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ]
+    },
+    {
+      "id": "BL-06",
+      "name": "Variance knowledge base",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "summary": "Regulatory knowledge documents: upload, list, download, archive, collections, semantic search, chat sessions, document relations, knowledge graph and snapshots, with pgvector retrieval.",
+      "paths": [
+        "service/variance/knowledge/",
+        "etl/"
+      ],
+      "routes": [
+        {
+          "file": "routes/variance_knowledge_routers.py"
+        }
+      ],
+      "tests": [
+        "tests/variance/test_knowledge_api.py",
+        "tests/variance/test_knowledge_chat.py",
+        "tests/variance/test_knowledge_extraction.py",
+        "tests/variance/test_knowledge_graph.py",
+        "tests/variance/test_knowledge_hub.py",
+        "tests/variance/test_retrieval.py",
+        "tests/variance/test_pg_store_retrieval.py",
+        "tests/variance/test_embedding_dimensions.py",
+        "tests/variance/test_object_store_resilience.py"
+      ],
+      "manual_checks": [
+        "POST :8004/api/v1/variance/knowledge/documents/upload, then GET /documents lists it",
+        "GET /search?q=... returns ranked passages",
+        "POST /chat answers with citations; GET/DELETE /chat/{session_id}",
+        "GET /graph/{node_type}/{node_id} returns neighbours"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ],
+      "notes": [
+        "The upload route was extended by LP-48 (reason codes); that part is listed under LP-48"
+      ]
+    },
+    {
+      "id": "BL-07",
+      "name": "VarianceAI runtime, orchestration and database",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "summary": "Runtime bootstrap (degrades visibly without infrastructure), agent runtime and adapter registry, SQL and tracing resilience, the variance schema migrations and consolidated DDL/DML, and the evidence seed script.",
+      "paths": [
+        "service/variance/bootstrap.py",
+        "service/variance/runtime/",
+        "migrations/variance/",
+        "scripts/"
+      ],
+      "routes": [],
+      "tests": [
+        "tests/variance/test_bootstrap_and_orchestrator.py",
+        "tests/variance/test_runtime_and_registry.py",
+        "tests/variance/test_sql_and_tracing_resilience.py",
+        "tests/variance/test_consolidated_sql.py",
+        "tests/variance/test_seed_evidence_script.py"
+      ],
+      "manual_checks": [
+        "Start lexie-ai without OPENAI_API_KEY: /api/v1/variance/health reports the degradations",
+        "python scripts/run_variance_migrations.py on a scratch DB applies 001..011 once and is idempotent on re-run"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ]
+    },
+    {
+      "id": "BL-08",
+      "name": "Variance demo data generator and demo console",
+      "domain": "VarianceAI (main)",
+      "repo": "lexie-ai",
+      "summary": "Generates and removes demo reporting periods (tracked so only generated periods are ever deleted), and serves a disposable demo console at /demo.",
+      "paths": [
+        "demo-ui/"
+      ],
+      "routes": [
+        {
+          "file": "routes/variance_demo_data_routers.py"
+        }
+      ],
+      "tests": [
+        "tests/variance/test_demo_data_router.py",
+        "tests/variance/test_demo_ui_mount.py"
+      ],
+      "manual_checks": [
+        "Open :8004/demo/ in a browser",
+        "Generate a demo period via the demo-data API, then delete it; a period it did not create cannot be deleted"
+      ],
+      "needs_live": [
+        "lexie",
+        "db"
+      ]
+    },
+    {
+      "id": "BL-09",
+      "name": "Rules chatbot (Lexie query)",
+      "domain": "Rules assistant (main)",
+      "repo": "lexie-ai",
+      "summary": "Natural-language rule questions answered by a streaming chatbot agent with per-user memory, plus a legacy query route.",
+      "paths": [
+        "service/agents/chatbot_agent.py",
+        "service/execution_chain.py",
+        "service/validation_service.py",
+        "service/prompt_loader_service.py",
+        "utils/query_classifier.py",
+        "utils/response_handler.py",
+        "prompts/"
+      ],
+      "routes": [
+        {
+          "file": "routes/rules_execution_routers.py",
+          "match": "(/health|/query|/memory)"
+        }
+      ],
+      "tests": [],
+      "manual_checks": [
+        "GET :8004/api/v1/chatbot/ai/health is 200",
+        "POST :8004/api/v1/chatbot/ai/query with {\"query\": \"...\", \"context\": {...}} streams an answer (needs an LLM key)",
+        "DELETE /api/v1/chatbot/ai/memory/{user_id} clears that user's conversation"
+      ],
+      "needs_live": [
+        "lexie"
+      ],
+      "notes": [
+        "NO automated tests exist on main or the branch - manual checks only"
+      ]
+    },
+    {
+      "id": "BL-10",
+      "name": "Rule description, rule summary and rule knowledge",
+      "domain": "Rules assistant (main)",
+      "repo": "lexie-ai",
+      "summary": "Generate a plain-language description or summary of a Core rule, and manage the rule knowledge index (refresh, status, clear).",
+      "paths": [
+        "service/agents/rule_summary_agent.py",
+        "service/agents/rule_summary_service.py",
+        "tools/rule_generator_tool.py",
+        "utils/rule_logical_converter.py",
+        "utils/rule_tree_util.py",
+        "rule_generator/"
+      ],
+      "routes": [
+        {
+          "file": "routes/rules_execution_routers.py",
+          "match": "(/rule-|/knowledge)"
+        }
+      ],
+      "tests": [],
+      "manual_checks": [
+        "POST :8004/api/v1/chatbot/ai/rule-description and /rule-summary with a rule return text (needs an LLM key)",
+        "POST /knowledge/refresh, then GET /knowledge/status shows the index; DELETE /knowledge/clear empties it"
+      ],
+      "needs_live": [
+        "lexie"
+      ],
+      "notes": [
+        "NO automated tests - manual checks only"
+      ]
+    },
+    {
+      "id": "BL-11",
+      "name": "MDRM recommendation",
+      "domain": "Rules assistant (main)",
+      "repo": "lexie-ai",
+      "summary": "Suggest MDRM codes for a free-text query using an embedding index.",
+      "paths": [
+        "service/mdrm_suggestion_service.py",
+        "utils/suggestions_embedding_builder_util.py",
+        "utils/semantic_service_client.py"
+      ],
+      "routes": [
+        {
+          "file": "routes/rules_execution_routers.py",
+          "match": "/mdrm"
+        }
+      ],
+      "tests": [],
+      "manual_checks": [
+        "POST :8004/api/v1/chatbot/ai/mdrm/recommend with {\"query\": \"net interest income\", \"context\": {...}} returns ranked MDRM suggestions"
+      ],
+      "needs_live": [
+        "lexie"
+      ],
+      "notes": [
+        "NO automated tests - manual checks only"
+      ]
+    },
+    {
+      "id": "BL-12",
+      "name": "Intelligence UI prototype screens (on main before the build)",
+      "domain": "UI (main)",
+      "repo": "intelligence-ui",
+      "summary": "The screens that existed on main - variance workspace with drill graph and driver cards, knowledge, presets (wizard), skills, policies, models, risk, roles, audit - with the Lexie panel, masked values, confidence signal, evidence ledger viewer and the run / preset / skills hooks. The branch changed most of them; those changes are listed under the LP features.",
+      "paths": [
+        "src/features/",
+        "src/components/",
+        "src/hooks/",
+        "src/themes/"
+      ],
+      "routes": [],
+      "tests": [
+        "src/components/__tests__/ConfidenceSignal.test.tsx",
+        "src/components/__tests__/LexiePanel.test.tsx",
+        "src/components/__tests__/MaskedValue.test.tsx",
+        "src/components/__tests__/PresetWizard.test.tsx",
+        "src/components/organisms/__tests__/EvidenceLedgerViewer.test.tsx",
+        "src/features/skills/__tests__/SkillRegistry.test.tsx",
+        "src/features/variance/__tests__/DrillGraph.test.tsx",
+        "src/features/variance/__tests__/DriverFindingCard.test.tsx",
+        "src/features/variance/__tests__/VarianceWorkspace.test.tsx",
+        "src/hooks/__tests__/useIntelligenceRun.test.tsx",
+        "src/hooks/__tests__/usePresetLifecycle.test.tsx",
+        "src/hooks/__tests__/useSkills.test.tsx"
+      ],
+      "manual_checks": [
+        "Open :5173/intelligence/ and visit each sidebar screen; each renders content",
+        "Theme selector (Appearance) switches between the six themes"
+      ],
+      "needs_live": [
+        "ui"
+      ]
+    }
   ]
 }

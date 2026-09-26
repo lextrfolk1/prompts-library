@@ -7,6 +7,7 @@ Reads feature_catalog.json (build it with tools/build_feature_catalog.py). Stdli
   python3 run_feature_tests.py list [--domain Variance] [--uc UC10]
   python3 run_feature_tests.py show LP-14                 # summary, prompts, acceptance criteria, how to test
   python3 run_feature_tests.py show module:knowledge
+  python3 run_feature_tests.py show BL-06                 # a feature that already existed on main
   python3 run_feature_tests.py test LP-14 [LP-37 ...] [--repo lexie-ai] [--dry-run]
   python3 run_feature_tests.py test module:impact
   python3 run_feature_tests.py suite [--repo lexie-ai]    # run whole repo suites once, map results to every feature
@@ -62,6 +63,9 @@ def resolve(cat: dict, key: str) -> dict:
                 return {**m, "_kind": "module"}
         sys.exit(f"unknown module {mid}; known: {', '.join(m['id'] for m in cat['modules'])}")
     k = key.upper()
+    for b in cat.get("baseline_features", []):
+        if b["id"] == k:
+            return {**b, "_kind": "baseline"}
     if re.fullmatch(r"LP-\d{2}\.\d{1,2}", k):  # a single prompt -> its parent point
         k = k.split(".")[0]
     for f in cat["features"]:
@@ -83,6 +87,13 @@ def cmd_list(cat: dict, a) -> int:
         n = lambda r: len(f["test_files"].get(r, []))
         print(f"{f['id']:6} {f['wave']:>4} {f['delivery']:10} {n('intelligence-service'):>3}/{n('lexie-ai')}/{n('intelligence-ui'):<5} "
               f"{(f['domain'] or '')[:28]:28} {f['title'][:80]}")
+    if not a.uc:
+        bl = [b for b in cat.get("baseline_features", []) if not a.domain or a.domain.lower() in (b["domain"] or "").lower()]
+        if bl:
+            print("\nbaseline features already on main:")
+            for b in bl:
+                n = sum(len(v) for v in b["test_files"].values())
+                print(f"{b['id']:6} {b['repo']:16} tests={n if n else 'none (manual)':<14} {b['name']}")
     if not a.domain and not a.uc:
         print("\nmodules:", ", ".join(f"module:{m['id']}" for m in cat["modules"]))
     return 0
@@ -93,7 +104,19 @@ def cmd_show(cat: dict, a) -> int:
     if a.json:
         print(json.dumps(x, indent=2, ensure_ascii=False))
         return 0
-    if x["_kind"] == "module":
+    if x["_kind"] == "baseline":
+        print(f"# {x['id']} - {x['name']}  [{x['repo']}, already on {x['on_base_branch']}]\n\n{x['feature_summary']}\n")
+        for e in x["endpoints"]:
+            print(f"  endpoint  {e['endpoint']}")
+        if x["manual_checks"]:
+            print("\n  manual checks (L3):")
+            for m in x["manual_checks"]:
+                print(f"    - {m}")
+        for nt in x["notes"]:
+            print(f"  NOTE: {nt}")
+        if x["changed_by_branch"]:
+            print(f"  changed by the branch since main: {', '.join(x['changed_by_branch'])}")
+    elif x["_kind"] == "module":
         print(f"# module:{x['id']} - {x['name']}  [{x['use_case']}]  reach: {x['reach']}")
         print("related LPs:", ", ".join(x["related_points"]))
         for e in x["endpoints"]:
@@ -271,6 +294,7 @@ def _write(kind: str, payload: dict) -> Path:
 
 def cmd_test(cat: dict, a, whole_suite: bool = False) -> int:
     targets = [resolve(cat, k) for k in a.keys] if not whole_suite else [{**f, "_kind": "feature"} for f in cat["features"]] + \
+        [{**b, "_kind": "baseline"} for b in cat.get("baseline_features", [])] + \
         [{**m, "_kind": "module"} for m in cat["modules"]]
     repos = [a.repo] if a.repo else list(REPOS)
     work = RESULTS / ("junit-" + dt.datetime.now().strftime("%Y%m%d-%H%M%S"))
