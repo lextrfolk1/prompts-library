@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lextr Feature Testing</title>
+<style>
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --ink: #1c2330; --muted: #5d6778; --line: #e3e6eb; --soft: #eef1f5;
+  --accent: #2f5bd3; --accent-ink: #ffffff;
+  --pass: #1f7a4d; --pass-bg: #e3f4ea; --fail: #b3261e; --fail-bg: #fbe5e3;
+  --warn: #8a5a00; --warn-bg: #fdf1d8; --none: #5d6778; --none-bg: #eef1f5;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12151b; --panel: #1a1f27; --ink: #e6e9ef; --muted: #9aa3b2; --line: #2b323d; --soft: #232a34;
+    --accent: #6f93ff; --accent-ink: #0d1117;
+    --pass: #6fd49b; --pass-bg: #173326; --fail: #ff8a80; --fail-bg: #3a1b19;
+    --warn: #f2c265; --warn-bg: #3a2f14; --none: #9aa3b2; --none-bg: #232a34;
+  }
+}
+* { box-sizing: border-box; }
+html, body { height: 100%; }
+body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+button, select, input, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 5px 10px; }
+button:hover { border-color: var(--accent); }
+button.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+button:disabled { opacity: .5; cursor: not-allowed; }
+input[type=text], input[type=search], select { border: 1px solid var(--line); background: var(--panel); border-radius: 6px; padding: 5px 8px; }
+code, .mono { font-family: var(--mono); font-size: 12.5px; }
+.app { display: grid; grid-template-rows: auto 1fr auto; height: 100vh; }
+header { display: flex; align-items: center; gap: 12px; padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+header h1 { font-size: 16px; margin: 0 8px 0 0; }
+.env { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
+.chip { display: inline-flex; align-items: center; gap: 5px; padding: 2px 8px; border-radius: 999px; font-size: 12px; background: var(--none-bg); color: var(--none); white-space: nowrap; }
+.chip.ok { background: var(--pass-bg); color: var(--pass); }
+.chip.bad { background: var(--fail-bg); color: var(--fail); }
+.dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; }
+main { display: grid; grid-template-columns: 340px 1fr; min-height: 0; }
+aside { border-right: 1px solid var(--line); display: flex; flex-direction: column; min-height: 0; background: var(--panel); }
+.filters { padding: 10px; display: grid; gap: 6px; border-bottom: 1px solid var(--line); }
+.filters .row { display: flex; gap: 6px; }
+.filters .row > * { flex: 1; min-width: 0; }
+.list { overflow: auto; flex: 1; }
+.item { padding: 8px 12px; border-bottom: 1px solid var(--line); cursor: pointer; display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; }
+.item:hover { background: var(--soft); }
+.item.sel { background: var(--soft); box-shadow: inset 3px 0 0 var(--accent); }
+.item .id { font-weight: 600; font-size: 12.5px; }
+.item .t { grid-column: 1 / -1; color: var(--muted); font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.item .meta { justify-self: end; display: flex; gap: 4px; }
+.group-h { padding: 6px 12px; font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); background: var(--bg); border-bottom: 1px solid var(--line); position: sticky; top: 0; }
+.detail { overflow: auto; padding: 18px 22px 40px; min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px; }
+.card h3 { margin: 0 0 10px; font-size: 14px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.card h3 .sp { flex: 1; }
+h2 { margin: 0 0 4px; font-size: 19px; }
+.sub { color: var(--muted); margin-bottom: 10px; }
+.badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+.v { font-size: 11px; font-weight: 600; padding: 1px 7px; border-radius: 4px; background: var(--none-bg); color: var(--none); }
+.v.PASS { background: var(--pass-bg); color: var(--pass); }
+.v.FAIL, .v.ERROR, .v.UNREACHABLE { background: var(--fail-bg); color: var(--fail); }
+.v.SKIPPED, .v.NOT_RUN, .v.blocked { background: var(--warn-bg); color: var(--warn); }
+.v.pass { background: var(--pass-bg); color: var(--pass); }
+.v.fail { background: var(--fail-bg); color: var(--fail); }
+table { width: 100%; border-collapse: collapse; }
+td, th { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { font-size: 12px; color: var(--muted); font-weight: 600; }
+.check { display: grid; grid-template-columns: 1fr auto; gap: 6px 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.check:last-child { border-bottom: 0; }
+.check .txt { min-width: 0; }
+.check .k { font-family: var(--mono); font-size: 11.5px; color: var(--muted); }
+.check input.note { grid-column: 1 / -1; width: 100%; font-size: 12.5px; }
+.seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; height: fit-content; }
+.seg button { border: 0; border-radius: 0; padding: 3px 9px; font-size: 12px; background: transparent; }
+.seg button + button { border-left: 1px solid var(--line); }
+.seg button.on.pass { background: var(--pass-bg); color: var(--pass); font-weight: 600; }
+.seg button.on.fail { background: var(--fail-bg); color: var(--fail); font-weight: 600; }
+.seg button.on.blocked { background: var(--warn-bg); color: var(--warn); font-weight: 600; }
+.muted { color: var(--muted); }
+.small { font-size: 12.5px; }
+.gap { color: var(--warn); }
+ul.plain { margin: 4px 0; padding-left: 18px; }
+details > summary { cursor: pointer; color: var(--muted); margin: 6px 0; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+.stat { background: var(--soft); border-radius: 8px; padding: 10px 12px; }
+.stat b { display: block; font-size: 20px; }
+.bar { height: 6px; border-radius: 3px; background: var(--soft); overflow: hidden; }
+.bar > span { display: block; height: 100%; background: var(--pass); }
+footer { border-top: 1px solid var(--line); background: var(--panel); }
+footer .jh { display: flex; align-items: center; gap: 10px; padding: 6px 16px; cursor: pointer; }
+footer pre { margin: 0; max-height: 34vh; overflow: auto; padding: 8px 16px 12px; font: 12px/1.4 var(--mono); background: var(--bg); white-space: pre-wrap; border-top: 1px solid var(--line); }
+footer.closed pre { display: none; }
+.spin { display: inline-block; width: 10px; height: 10px; border: 2px solid var(--line); border-top-color: var(--accent); border-radius: 50%; animation: s 0.8s linear infinite; }
+@keyframes s { to { transform: rotate(360deg); } }
+.banner { border-radius: 8px; padding: 10px 14px; margin-bottom: 14px; display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
+.banner.red { background: var(--fail-bg); color: var(--fail); }
+.banner.amber { background: var(--warn-bg); color: var(--warn); }
+.banner .grow { flex: 1; min-width: 220px; }
+a.go { color: var(--accent); cursor: pointer; text-decoration: none; }
+a.go:hover { text-decoration: underline; }
+.trk { font-size: 12px; margin: 2px 0 6px; }
+@media (max-width: 820px) { main { grid-template-columns: 1fr; } aside { max-height: 40vh; } }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Lextr Feature Testing</h1>
+    <div class="env" id="env"><span class="chip">checking environment…</span></div>
+    <button id="btnEnv" title="Re-check toolchain and live services">Re-check</button>
+    <button id="btnSmokeAll" title="Run every read-only live API check">Run all live checks</button>
+    <button id="btnSuite" class="primary" title="Run all three repo test suites (takes several minutes)">Run full suite</button>
+    <button id="btnExport" title="Download a Markdown report of every result and checklist">Export report</button>
+  </header>
+  <main>
+    <aside>
+      <div class="filters">
+        <input type="search" id="q" placeholder="Search id, title, UC, endpoint…">
+        <div class="row">
+          <select id="fScope">
+            <option value="all">All scopes</option>
+            <option value="LP">Built by prompts (LP)</option>
+            <option value="BL">Already on main (BL)</option>
+            <option value="BR">Branch changes (BR)</option>
+            <option value="MOD">Modules</option>
+          </select>
+          <select id="fStatus">
+            <option value="all">Any status</option>
+            <option value="untested">Not run yet</option>
+            <option value="failing">Failing</option>
+            <option value="passing">Passing</option>
+            <option value="open">Checklist open</option>
+          </select>
+        </div>
+        <select id="fDomain"><option value="all">All domains</option></select>
+      </div>
+      <div class="list" id="list"></div>
+    </aside>
+    <section class="detail" id="detail"></section>
+  </main>
+  <footer id="job" class="closed">
+    <div class="jh" id="jobHead"><span id="jobState" class="muted">No run yet.</span><span style="flex:1"></span><span class="muted small">log ▾</span></div>
+    <pre id="jobLog"></pre>
+  </footer>
+</div>
+
+<script>
+"use strict";
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const api = async (path, opts) => {
+  const r = await fetch(path, opts);
+  const body = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(body.error || `HTTP ${r.status}`);
+  return body;
+};
+
+let CAT, SMOKE, LATEST = { verdicts: {}, smoke: {}, runs: [] }, MANUAL = {}, ITEMS = [], SEL = null, JOB = null, ENV = [];
+// which preflight port backs each "needs_live" dependency
+const LIVE = { service: "intelligence-service :8059", lexie: "lexie-ai :5003", opa: "OPA :8181", ui: "UI vite :5173" };
+
+// ---------------------------------------------------------------- data
+function buildItems() {
+  const lp = CAT.features.map((f) => ({ key: f.id, scope: "LP", id: f.id, title: f.title, domain: f.domain || "", f }));
+  const bl = (CAT.baseline_features || []).map((b) => ({ key: b.id, scope: "BL", id: b.id, title: b.name, domain: b.domain || "", f: b }));
+  const mod = CAT.modules.map((m) => ({ key: "module:" + m.id, scope: "MOD", id: "module:" + m.id, title: m.name, domain: "Module · " + m.use_case, f: m }));
+  const br = (CAT.platform_changes || []).map((c, i) => {
+    const id = "BR-" + String(i + 1).padStart(2, "0");
+    return { key: id, scope: "BR", id, title: c.change.split(/[.;:]/)[0], domain: "Branch change · " + c.repo,
+      f: { feature_summary: c.change, repo: c.repo, commit: c.commit, manual_checks: ["How to test: " + c.test],
+           use_case: c.repo + " " + c.commit } };
+  });
+  ITEMS = [...lp, ...bl, ...br, ...mod];
+  const doms = [...new Set([...lp, ...bl].map((i) => i.domain).filter(Boolean))].sort();
+  $("#fDomain").innerHTML = '<option value="all">All domains</option>' + doms.map((d) => `<option>${esc(d)}</option>`).join("");
+}
+
+function checklist(item) {
+  const rows = [];
+  (item.f.subtasks || []).forEach((s) => (s.acceptance_criteria || []).forEach((ac, i) =>
+    rows.push({ key: `${s.sub_id}/AC${i + 1}`, text: ac, group: s.sub_id })));
+  (item.f.manual_checks || []).forEach((m, i) => rows.push({ key: `manual/${i + 1}`, text: m, group: "manual" }));
+  return rows;
+}
+function progress(item) {
+  const rows = checklist(item), st = MANUAL[item.key] || {};
+  const c = { total: rows.length, pass: 0, fail: 0, blocked: 0 };
+  rows.forEach((r) => { const s = st[r.key]?.s; if (s) c[s]++; });
+  c.done = c.pass + c.fail + c.blocked;
+  return c;
+}
+function verdictOf(item) { return LATEST.verdicts[item.id]?.verdict; }
+
+// ---------------------------------------------------------------- list
+function renderList() {
+  const q = $("#q").value.trim().toLowerCase(), scope = $("#fScope").value, status = $("#fStatus").value, dom = $("#fDomain").value;
+  const shown = ITEMS.filter((it) => {
+    if (scope !== "all" && it.scope !== scope) return false;
+    if (dom !== "all" && it.domain !== dom) return false;
+    const v = verdictOf(it), p = progress(it);
+    if (status === "untested" && v) return false;
+    if (status === "failing" && !(["FAIL", "ERROR"].includes(v) || p.fail)) return false;
+    if (status === "passing" && v !== "PASS") return false;
+    if (status === "open" && !(p.total && p.done < p.total)) return false;
+    if (!q) return true;
+    const hay = [it.id, it.title, it.domain, (it.f.use_cases || []).join(" "), it.f.use_case,
+      (it.f.endpoints || []).map((e) => e.endpoint).join(" ")].join(" ").toLowerCase();
+    return hay.includes(q);
+  });
+  const groups = { LP: "Built by the prompts", BL: "Already on main", BR: "Branch changes outside the prompts", MOD: "Capability modules" };
+  let html = "", last = null;
+  for (const it of shown) {
+    if (it.scope !== last) { html += `<div class="group-h">${groups[it.scope]}</div>`; last = it.scope; }
+    const v = verdictOf(it), p = progress(it);
+    html += `<div class="item ${SEL === it.key ? "sel" : ""}" data-k="${esc(it.key)}">
+      <span class="id">${esc(it.id)}</span>
+      <span class="meta">${v ? `<span class="v ${v}">${v}</span>` : ""}${p.total ? `<span class="v ${p.fail ? "fail" : p.done === p.total ? "pass" : ""}">${p.done}/${p.total}</span>` : ""}</span>
+      <span class="t" title="${esc(it.title)}">${esc(it.title)}</span></div>`;
+  }
+  $("#list").innerHTML = html || '<p class="muted" style="padding:12px">Nothing matches.</p>';
+}
+
+// ---------------------------------------------------------------- banners and helpers
+function staleRepos() { return ENV.filter((r) => r.name.startsWith("repo ") && (!r.ok || /HEAD moved/.test(r.detail))); }
+function banners() {
+  let h = "";
+  const stale = staleRepos();
+  if (stale.length) h += `<div class="banner amber"><div class="grow"><b>The feature list is out of date.</b> ${stale.map((r) => esc(r.name.slice(5)) + ": " + esc(r.detail)).join("; ")}.
+    Rebuild it so tests and files match the current code.</div><button class="primary" data-rebuild>Rebuild list</button></div>`;
+  const last = (LATEST.runs || []).find((r) => r.kind === "suite" || r.kind === "test");
+  if (last?.unmapped_failures?.length) h += `<div class="banner red"><div class="grow"><b>${last.unmapped_failures.length} failing test(s) in the last run belong to no feature</b>
+    (${esc(last.file)}). Every feature can look green while these fail:
+    <ul class="plain small">${last.unmapped_failures.map((u) => `<li class="mono">${esc(u)}</li>`).join("")}</ul></div></div>`;
+  return h;
+}
+function liveChips(needs) {
+  if (!needs?.length) return "";
+  return needs.map((n) => {
+    const row = ENV.find((r) => r.name === "live " + LIVE[n]);
+    const cls = row ? (row.ok ? "ok" : "bad") : "";
+    const tip = row ? row.detail : n === "db" ? "the database is not checked by preflight" : "unknown";
+    return `<span class="chip ${cls}" title="${esc(tip)}"><span class="dot"></span>${esc(n)}</span>`;
+  }).join(" ");
+}
+const goLink = (id) => ITEMS.some((i) => i.key === id) ? `<a class="go" data-go="${esc(id)}">${esc(id)}</a>` : esc(id);
+function fileList(label, files) {
+  return files?.length ? `<details><summary>${esc(label)} (${files.length})</summary>${files.map((x) => `<div class="mono">${esc(x)}</div>`).join("")}</details>` : "";
+}
+function runsTable(n) {
+  const runs = (LATEST.runs || []).slice(0, n);
+  if (!runs.length) return '<p class="muted small">No runs yet.</p>';
+  return `<table><tr><th>When</th><th>Kind</th><th>Scope</th><th>Result</th><th>Repos</th></tr>${runs.map((r) => {
+    const when = r.file.slice(0, 15).replace(/^(\d{4})(\d\d)(\d\d)-(\d\d)(\d\d)(\d\d)$/, "$1-$2-$3 $4:$5:$6");
+    return `<tr><td class="mono small">${esc(when)}</td><td>${esc(r.kind)}</td><td class="small">${esc(r.scope)}</td>
+      <td class="small">${esc(r.summary)}${r.unmapped_failures?.length ? ` <span class="v FAIL">${r.unmapped_failures.length} unmapped</span>` : ""}</td>
+      <td class="small">${Object.entries(r.repos || {}).map(([k, d]) => `<span class="v ${d.state === "passed" ? "PASS" : d.state === "failed" ? "FAIL" : ""}">${esc(k)}</span>`).join(" ")}</td></tr>`;
+  }).join("")}</table><div class="small muted" style="margin-top:6px">Full history: <code>results/RESULTS.md</code>; each run's detail is the JSON file named above.</div>`;
+}
+
+// ---------------------------------------------------------------- detail
+function overview() {
+  const all = ITEMS.filter((i) => i.scope !== "MOD");
+  const tally = {}; all.forEach((i) => { const v = verdictOf(i) || "not run"; tally[v] = (tally[v] || 0) + 1; });
+  let tot = 0, done = 0, fail = 0; all.forEach((i) => { const p = progress(i); tot += p.total; done += p.done; fail += p.fail; });
+  const b = CAT.branches;
+  return `${banners()}<h2>Start here</h2>
+  <div class="sub">${CAT.totals.points} features built by the prompts, ${CAT.totals.baseline_features} already on main and
+    ${(CAT.platform_changes || []).length} branch changes outside the prompts, on
+    ${Object.entries(b).map(([r, x]) => `<code>${esc(r)}@${esc(x.head)}</code>`).join(" · ")}.</div>
+  <div class="card"><div class="stats">
+    ${Object.entries(tally).sort().map(([k, n]) => `<div class="stat"><span class="v ${k}">${esc(k)}</span><b>${n}</b>features</div>`).join("")}
+    <div class="stat">Checklist<b>${done} / ${tot}</b><div class="bar"><span style="width:${tot ? (100 * done / tot).toFixed(1) : 0}%"></span></div>${fail ? `<span class="v fail">${fail} failed</span>` : ""}</div>
+  </div></div>
+  <div class="card"><h3>How to test</h3><ol class="small" style="margin:0;padding-left:18px">
+    <li><b>Check the environment</b> in the header. Green chips are ready. Automated tests need java/mvn, the lexie venv and UI node_modules; live checks need the services running (see the README's "Live stack").</li>
+    <li><b>Pick a feature</b> on the left. Filter by scope, domain or status, or search for an id, a use case (UC10) or an endpoint.</li>
+    <li><b>Run its automated tests</b> with one click. Verdicts and failures show on the feature and in the list.</li>
+    <li><b>Run its live checks</b> once the stack is up. They're read-only unless you tick "allow writes".</li>
+    <li><b>Work through the checklist</b>: mark each acceptance criterion and manual check Pass, Fail or Blocked, and add a note. It saves automatically to <code>results/manual_status.json</code>.</li>
+    <li><b>Export report</b> writes everything to a Markdown file you can share.</li></ol></div>
+  <div class="card"><h3>Recent runs</h3>${runsTable(12)}</div>`;
+}
+
+function repoRows(item) {
+  const v = LATEST.verdicts[item.id];
+  const repos = Object.keys(item.f.test_files || {});
+  if (!repos.length) return '<p class="muted">No automated tests are mapped to this feature. Use the checklist below.</p>';
+  return `<table><tr><th>Repo</th><th>Test files</th><th>Last result</th></tr>${repos.map((r) => {
+    const d = v?.repos?.[r];
+    return `<tr><td>${esc(r)}</td><td><details><summary>${item.f.test_files[r].length} files</summary>${item.f.test_files[r].map((t) => `<div class="mono">${esc(t)}</div>`).join("")}</details></td>
+      <td>${d ? `<span class="v ${d.verdict}">${d.verdict}</span> <span class="small muted">${d.passed} passed · ${d.failed} failed · ${d.skipped} skipped</span>
+        ${d.failures?.length ? `<ul class="plain small">${d.failures.map((x) => `<li class="mono">${esc(x)}</li>`).join("")}</ul>` : ""}
+        ${d.files_not_executed?.length ? `<div class="small gap">not executed: ${d.files_not_executed.map(esc).join(", ")}</div>` : ""}` : '<span class="muted small">not run yet</span>'}</td></tr>`;
+  }).join("")}</table>${v ? `<div class="small muted" style="margin-top:6px">from ${esc(v.file)}</div>` : ""}`;
+}
+
+function smokeFor(item) {
+  const ids = [item.id, item.id.replace(/^module:/, "module:")];
+  return (SMOKE?.checks || []).filter((c) => c.features.some((f) => ids.includes(f)));
+}
+
+function checkRow(itemKey, r) {
+  const st = (MANUAL[itemKey] || {})[r.key] || {};
+  const b = (s, label) => `<button class="${s} ${st.s === s ? "on" : ""}" data-set="${s}">${label}</button>`;
+  return `<div class="check" data-item="${esc(itemKey)}" data-key="${esc(r.key)}">
+    <div class="txt"><div class="k">${esc(r.key)}</div>${esc(r.text)}</div>
+    <div class="seg">${b("pass", "Pass")}${b("fail", "Fail")}${b("blocked", "Blocked")}</div>
+    <input type="text" class="note" placeholder="Note (what you saw, ticket, evidence)" value="${esc(st.n || "")}">
+  </div>`;
+}
+
+function renderDetail() {
+  const it = ITEMS.find((i) => i.key === SEL);
+  if (!it) { $("#detail").innerHTML = overview(); return; }
+  const f = it.f, running = !!(JOB && JOB.state === "running");
+  const badges = [it.scope === "LP" ? "Built by prompts" : it.scope === "BL" ? "Already on main" : "Capability module",
+    f.domain, f.wave && `wave ${f.wave}`, f.layer, (f.languages || []).join("/"), f.delivery && f.delivery !== "code" && f.delivery, f.repo,
+    ...(f.use_cases || []), f.use_case, f.reach].filter(Boolean);
+  const smoke = smokeFor(it);
+  const rows = checklist(it);
+  const groups = [...new Set(rows.map((r) => r.group))];
+  const sub = Object.fromEntries((f.subtasks || []).map((s) => [s.sub_id, s]));
+  const gaps = [...(f.known_gaps || []), ...(f.notes || [])];
+  $("#detail").innerHTML = `${banners()}
+    <h2>${esc(it.id)} — ${esc(it.title)}</h2>
+    <div class="badges">${badges.map((b) => `<span class="chip">${esc(b)}</span>`).join("")}</div>
+    ${f.feature_summary ? `<p>${esc(f.feature_summary)}</p>` : ""}
+    ${gaps.length ? `<div class="card"><h3>Known gaps and notes</h3><ul class="plain small">${gaps.map((g) => `<li class="gap">${esc(g)}</li>`).join("")}</ul></div>` : ""}
+
+    <div class="card"><h3>Automated tests <span class="sp"></span>
+      <select id="runRepo"><option value="">all repos</option>${Object.keys(f.test_files || {}).map((r) => `<option>${esc(r)}</option>`).join("")}</select>
+      <button class="primary" id="btnTest" ${running || !Object.keys(f.test_files || {}).length ? "disabled" : ""}>Run tests</button></h3>
+      ${repoRows(it)}
+      ${(f.test_files_missing || []).length ? `<div class="small gap">Named test files that no longer exist: ${f.test_files_missing.map(esc).join(", ")}</div>` : ""}
+      ${Object.keys(f.test_commands || {}).length ? `<details><summary>Command-line equivalent</summary>
+        <div class="mono small">python3 run_feature_tests.py test ${esc(it.key)}</div>
+        ${Object.entries(f.test_commands).map(([r, c]) => `<div class="mono small" style="margin-top:4px"># ${esc(r)}<br>${esc(c)}</div>`).join("")}</details>` : ""}</div>
+
+    <div class="card"><h3>Live checks <span class="sp"></span>
+      <label class="small"><input type="checkbox" id="allowWrites"> allow writes</label>
+      <button id="btnSmoke" ${running || !smoke.length ? "disabled" : ""}>Run live checks</button></h3>
+      ${smoke.length ? `<table><tr><th>Check</th><th>Request</th><th>Last result</th></tr>${smoke.map((c) => {
+        const l = LATEST.smoke[c.id];
+        return `<tr><td class="mono">${esc(c.id)}${c.mutating ? ' <span class="v blocked">writes</span>' : ""}</td>
+          <td class="mono small">${esc(c.method)} ${esc(c.url)}${c.note ? `<div class="muted">${esc(c.note)}</div>` : ""}</td>
+          <td>${l ? `<span class="v ${l.result}">${l.result}</span> <span class="small muted">${esc(l.status ?? "")} ${esc((l.problems || []).join("; ") || l.why || "")}</span>` : '<span class="muted small">not run yet</span>'}</td></tr>`;
+      }).join("")}</table>` : '<p class="muted">No live checks are tagged with this feature. Use the manual checks below.</p>'}</div>
+
+    <div class="card"><h3>Checklist <span class="sp"></span><span class="small muted" id="ckCount">${progress(it).done} of ${rows.length} marked</span></h3>
+      ${rows.length ? groups.map((g) => `
+        <details open><summary><b>${g === "manual" ? "Manual checks (against the running stack)" : esc(g) + " — acceptance criteria"}</b>
+          ${sub[g] ? `<span class="small muted"> · ${esc(sub[g].summary || "")} · <span class="mono">${esc(sub[g].prompt_file || "")}</span></span>` : ""}
+          ${g === "manual" && (f.needs_live || []).length ? `<span class="small muted"> · needs </span>${liveChips(f.needs_live)}` : ""}</summary>
+          ${sub[g] ? `<div class="trk"><span class="v ${sub[g].tracker_status === "DELIVERED" ? "PASS" : ""}">tracker: ${esc(sub[g].tracker_status || "—")}</span>
+            <span class="muted">repo ${esc(sub[g].target_repo || "—")} · manifest ${esc(sub[g].manifest_status || "—")}</span>
+            ${sub[g].evidence ? `<div class="muted"><b>Evidence:</b> ${esc(sub[g].evidence)}</div>` : ""}
+            ${sub[g].notes_risks ? `<div class="gap"><b>Notes / risks:</b> ${esc(sub[g].notes_risks)}</div>` : ""}</div>` : ""}
+          ${rows.filter((r) => r.group === g).map((r) => checkRow(it.key, r)).join("")}
+        </details>`).join("") : '<p class="muted">Nothing to tick for this item.</p>'}</div>
+
+    <div class="card"><h3>Where it lives</h3>
+      ${f.commit ? `<div class="small"><b>Commit:</b> <span class="mono">${esc(f.repo)} ${esc(f.commit)}</span></div>` : ""}
+      ${(f.related_points || []).length ? `<div class="small"><b>Related features:</b> ${f.related_points.map(goLink).join(", ")}</div>` : ""}
+      ${Object.entries(f.implementation_files || {}).map(([r, fs]) => fileList("Implementation files in " + r, fs)).join("")}
+      ${Object.entries(f.files || {}).map(([r, fs]) => fileList("Files in " + r, fs)).join("")}
+      ${fileList("Source files on " + (f.on_base_branch || "main"), f.source_files)}
+      ${fileList("Of those, changed by the branch", f.changed_by_branch)}
+      ${(subtasksFiles(f)).length ? fileList("Files named by its prompts", subtasksFiles(f)) : ""}
+      ${(f.ui_screens || []).length ? `<div class="small"><b>UI:</b> ${f.ui_screens.map((s) => esc((s.group && s.group !== "—" ? s.group + " › " : "") + s.label)).join("; ")}</div>` : ""}
+      ${(f.endpoints || []).length ? `<details><summary>${f.endpoints.length} endpoints</summary>${f.endpoints.map((e) => `<div class="mono">${esc(e.endpoint)} <span class="muted">${esc(e.repo)}</span></div>`).join("")}</details>` : ""}
+    </div>`;
+
+  $("#btnTest")?.addEventListener("click", () => startRun({ kind: "test", keys: [it.key], repo: $("#runRepo").value || null }));
+  $("#btnSmoke")?.addEventListener("click", () => startRun({ kind: "smoke", keys: [it.id], allow_writes: $("#allowWrites").checked }));
+}
+
+function subtasksFiles(f) { return [...new Set((f.subtasks || []).flatMap((s) => s.files || []))]; }
+
+// ---------------------------------------------------------------- checklist persistence
+let saveTimer = null;
+function saveManual() { clearTimeout(saveTimer); saveTimer = setTimeout(() => api("/api/manual", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(MANUAL) }).catch((e) => alert("Could not save: " + e.message)), 400); }
+$("#detail").addEventListener("click", (e) => {
+  const btn = e.target.closest("[data-set]"); if (!btn) return;
+  const row = btn.closest(".check"), item = row.dataset.item, key = row.dataset.key, s = btn.dataset.set;
+  MANUAL[item] = MANUAL[item] || {};
+  const cur = MANUAL[item][key] || {};
+  MANUAL[item][key] = { ...cur, s: cur.s === s ? "" : s, at: new Date().toISOString() };
+  row.querySelectorAll("[data-set]").forEach((b) => b.classList.toggle("on", b.dataset.set === MANUAL[item][key].s));
+  saveManual(); renderList();
+  const hdr = $("#ckCount"); // refresh the "n of m marked" counter without re-rendering the notes
+  if (hdr) { const it = ITEMS.find((i) => i.key === item); hdr.textContent = `${progress(it).done} of ${checklist(it).length} marked`; }
+});
+document.addEventListener("click", async (e) => {
+  const go = e.target.closest("[data-go]");
+  if (go) { SEL = go.dataset.go; history.replaceState(null, "", "#" + encodeURIComponent(SEL)); renderList(); renderDetail(); $("#detail").scrollTop = 0; return; }
+  const rb = e.target.closest("[data-rebuild]");
+  if (!rb) return;
+  rb.disabled = true; rb.textContent = "Rebuilding…";
+  try {
+    await api("/api/rebuild", { method: "POST" });
+    [CAT, LATEST] = await Promise.all([api("/api/catalog"), api("/api/latest")]);
+    buildItems(); await loadEnv(); renderList(); renderDetail();
+  } catch (err) { alert("Rebuild failed: " + err.message); rb.disabled = false; rb.textContent = "Rebuild list"; }
+});
+$("#detail").addEventListener("input", (e) => {
+  if (!e.target.classList.contains("note")) return;
+  const row = e.target.closest(".check"), item = row.dataset.item, key = row.dataset.key;
+  MANUAL[item] = MANUAL[item] || {};
+  MANUAL[item][key] = { ...(MANUAL[item][key] || {}), n: e.target.value, at: new Date().toISOString() };
+  saveManual();
+});
+
+// ---------------------------------------------------------------- runs
+async function startRun(body) {
+  if (body.kind === "suite" && !confirm("Run all three repo test suites? This takes several minutes (Maven is the slowest).")) return;
+  if (body.allow_writes && !confirm("Allow checks that WRITE rows to the dev database?")) return;
+  try {
+    const { job } = await api("/api/run", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
+    JOB = { id: job, state: "running", log: "", request: body };
+    $("#job").classList.remove("closed");
+    renderJob(); renderDetail(); poll();
+  } catch (e) { alert(e.message); }
+}
+async function poll() {
+  if (!JOB) return;
+  try { JOB = await api("/api/jobs/" + JOB.id); } catch (e) { JOB.state = "error"; JOB.log += "\n" + e.message; }
+  renderJob();
+  if (JOB.state === "running") return setTimeout(poll, 1500);
+  LATEST = await api("/api/latest"); renderList(); renderDetail();
+}
+function renderJob() {
+  if (!JOB) return;
+  const r = JOB.request || {}, what = r.kind === "suite" ? "full suite" : `${r.kind} ${(r.keys || []).join(" ")}${r.repo ? " (" + r.repo + ")" : ""}`;
+  $("#jobState").innerHTML = JOB.state === "running" ? `<span class="spin"></span> Running ${esc(what)}…`
+    : `${JOB.state === "done" ? "Finished" : "Failed"}: ${esc(what)} — ${esc(JOB.result?.summary || "")} ${JOB.result?.file ? `<span class="muted small">(${esc(JOB.result.file)})</span>` : ""}
+       ${JOB.result?.unmapped_failures?.length ? `<span class="v FAIL">${JOB.result.unmapped_failures.length} failures belong to no feature (see banner)</span>` : ""}`;
+  const pre = $("#jobLog"), atEnd = pre.scrollTop + pre.clientHeight >= pre.scrollHeight - 20;
+  pre.textContent = JOB.log || "";
+  if (atEnd) pre.scrollTop = pre.scrollHeight;
+  ["#btnSuite", "#btnSmokeAll"].forEach((s) => ($(s).disabled = JOB.state === "running"));
+}
+$("#jobHead").addEventListener("click", () => $("#job").classList.toggle("closed"));
+$("#btnSuite").addEventListener("click", () => startRun({ kind: "suite" }));
+$("#btnSmokeAll").addEventListener("click", () => startRun({ kind: "smoke" }));
+
+// ---------------------------------------------------------------- environment
+async function loadEnv() {
+  $("#env").innerHTML = '<span class="chip">checking…</span>';
+  try {
+    const rows = await api("/api/preflight");
+    ENV = rows;
+    $("#env").innerHTML = rows.map((r) => `<span class="chip ${r.ok ? "ok" : r.name.startsWith("live") || r.name.startsWith("opa cli") ? "" : "bad"}" title="${esc(r.detail)}"><span class="dot"></span>${esc(r.name.replace(/^live /, ""))}</span>`).join("");
+  } catch (e) { $("#env").innerHTML = `<span class="chip bad">${esc(e.message)}</span>`; }
+  if (CAT) renderDetail();
+}
+$("#btnEnv").addEventListener("click", loadEnv);
+
+// ---------------------------------------------------------------- export
+$("#btnExport").addEventListener("click", () => {
+  const L = [`# Lextr feature testing report`, ``, `Generated ${new Date().toLocaleString()} · ` +
+    Object.entries(CAT.branches).map(([r, x]) => `${r}@${x.head}`).join(" · "), ``,
+    `| Item | Title | Automated | Live checks | Checklist | Failed / blocked items |`, `|---|---|---|---|---|---|`];
+  for (const it of ITEMS) {
+    const p = progress(it), v = verdictOf(it) || "not run", sm = smokeFor(it).map((c) => LATEST.smoke[c.id]?.result).filter(Boolean);
+    const bad = checklist(it).filter((r) => ["fail", "blocked"].includes(MANUAL[it.key]?.[r.key]?.s))
+      .map((r) => `${r.key} ${MANUAL[it.key][r.key].s}${MANUAL[it.key][r.key].n ? ": " + MANUAL[it.key][r.key].n : ""}`);
+    if (it.scope === "MOD" && v === "not run" && !p.done) continue;
+    L.push(`| ${it.id} | ${it.title.replace(/\|/g, "/")} | ${v} | ${sm.length ? sm.join(", ") : "—"} | ${p.done}/${p.total} | ${bad.join("<br>").replace(/\|/g, "/") || "—"} |`);
+  }
+  const last = (LATEST.runs || []).find((r) => r.kind === "suite" || r.kind === "test");
+  if (last?.unmapped_failures?.length) L.push("", `## Failures that belong to no feature (${last.file})`, "", ...last.unmapped_failures.map((u) => "- " + u));
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([L.join("\n") + "\n"], { type: "text/markdown" }));
+  a.download = `lextr-feature-testing-${new Date().toISOString().slice(0, 10)}.md`;
+  a.click();
+});
+
+// ---------------------------------------------------------------- boot
+["#q", "#fScope", "#fStatus", "#fDomain"].forEach((s) => $(s).addEventListener("input", renderList));
+$("#list").addEventListener("click", (e) => {
+  const el = e.target.closest(".item"); if (!el) return;
+  SEL = el.dataset.k; history.replaceState(null, "", "#" + encodeURIComponent(SEL));
+  renderList(); renderDetail(); $("#detail").scrollTop = 0;
+});
+(async () => {
+  try {
+    [CAT, SMOKE, LATEST, MANUAL] = await Promise.all([api("/api/catalog"), api("/api/smoke-spec"), api("/api/latest"), api("/api/manual")]);
+  } catch (e) {
+    $("#detail").innerHTML = `<div class="card"><h3>Can't reach the local runner</h3><p>Start it with <code>python3 run_feature_tests.py serve</code> and open the address it prints.</p><p class="muted">${esc(e.message)}</p></div>`;
+    return;
+  }
+  buildItems();
+  SEL = decodeURIComponent(location.hash.slice(1)) || null;
+  renderList(); renderDetail(); loadEnv();
+})();
+</script>
+</body>
+</html>

@@ -3,6 +3,7 @@
 
 Reads feature_catalog.json (build it with tools/build_feature_catalog.py). Stdlib only.
 
+  python3 run_feature_tests.py serve                      # the testing page in your browser (http://127.0.0.1:8765)
   python3 run_feature_tests.py preflight                  # what can run on this machine right now
   python3 run_feature_tests.py list [--domain Variance] [--uc UC10]
   python3 run_feature_tests.py show LP-14                 # summary, prompts, acceptance criteria, how to test
@@ -279,6 +280,9 @@ def verdict_for(feature: dict, repo_results: dict) -> dict:
     return {"id": feature["id"], "title": feature.get("title") or feature.get("name"), "verdict": top, "repos": per_repo}
 
 
+LAST_RUN: dict = {}
+
+
 def _write(kind: str, payload: dict) -> Path:
     RESULTS.mkdir(exist_ok=True)
     ts = dt.datetime.now().strftime("%Y%m%d-%H%M%S")
@@ -289,6 +293,8 @@ def _write(kind: str, payload: dict) -> Path:
         md.write_text("# Feature test results log\n\n| When | Command | Scope | Summary | Detail |\n|---|---|---|---|---|\n")
     with md.open("a") as fh:
         fh.write(f"| {ts} | {kind} | {payload.get('scope', '')} | {payload.get('summary', '')} | [{out.name}]({out.name}) |\n")
+    LAST_RUN.clear()
+    LAST_RUN.update({"file": out.name, "kind": kind, **payload})
     return out
 
 
@@ -430,6 +436,13 @@ def cmd_smoke(cat: dict, a) -> int:
 
 
 def cmd_preflight(cat: dict, a) -> int:
+    for n, ok, d in preflight_rows(cat):
+        print(f"  {'OK ' if ok else '-- '} {n:40} {d}")
+    print("\nL0/L1 automated tests need: java+mvn, lexie venv, node_modules. L2 smoke needs the live services.")
+    return 0
+
+
+def preflight_rows(cat: dict) -> list[tuple[str, bool, str]]:
     root = repos_root()
     rows = []
 
@@ -461,9 +474,153 @@ def cmd_preflight(cat: dict, a) -> int:
         ok = s.connect_ex(("127.0.0.1", port)) == 0
         s.close()
         chk(f"live {name}", ok, "listening" if ok else "not running (needed only for smoke / manual checks)")
-    for n, ok, d in rows:
-        print(f"  {'OK ' if ok else '-- '} {n:40} {d}")
-    print("\nL0/L1 automated tests need: java+mvn, lexie venv, node_modules. L2 smoke needs the live services.")
+    return rows
+
+
+# ---------------------------------------------------------------- serve: the local testing page
+
+UI_FILE = HERE / "testing_ui.html"
+MANUAL = RESULTS / "manual_status.json"
+
+
+def latest_results() -> dict:
+    """Newest automated verdict per feature id and newest smoke result per check id, from results/*.json."""
+    verdicts, smoke, runs = {}, {}, []
+    for f in sorted(RESULTS.glob("*.json")):
+        if f.name == MANUAL.name:
+            continue
+        try:
+            payload = json.loads(f.read_text())
+        except (ValueError, OSError):
+            continue
+        for v in payload.get("verdicts", []):
+            verdicts[v["id"]] = {**v, "file": f.name}
+        for c in payload.get("checks", []):
+            smoke[c["id"]] = {**c, "file": f.name}
+        runs.append({"file": f.name, "kind": f.stem.split("-", 2)[-1], "scope": payload.get("scope", ""),
+                     "summary": payload.get("summary", ""), "unmapped_failures": payload.get("unmapped_failures", []),
+                     "repos": {r: {k: v for k, v in d.items() if k in ("state", "counts", "exit_code")}
+                               for r, d in payload.get("repos", {}).items()}})
+    return {"verdicts": verdicts, "smoke": smoke, "runs": list(reversed(runs))}
+
+
+def serve(cat: dict, port: int) -> int:
+    import contextlib
+    import io
+    import threading
+    import types
+    import webbrowser
+    from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+    jobs: dict[str, dict] = {}
+    busy = threading.Lock()
+
+    class Log(io.StringIO):
+        def __init__(self, job):
+            super().__init__()
+            self.job = job
+
+        def write(self, text):
+            self.job["log"] += text
+            sys.__stdout__.write(text)
+            return len(text)
+
+    def run_job(job, body):
+        ns = types.SimpleNamespace(keys=body.get("keys") or [], repo=body.get("repo") or None, dry_run=False,
+                                   timeout=int(body.get("timeout") or (30 if body["kind"] == "smoke" else 3600)),
+                                   only=body.get("keys") or None, allow_writes=bool(body.get("allow_writes")))
+        try:
+            with contextlib.redirect_stdout(Log(job)):
+                LAST_RUN.clear()
+                if body["kind"] == "smoke":
+                    job["rc"] = cmd_smoke(cat, ns)
+                else:
+                    job["rc"] = cmd_test(cat, ns, whole_suite=body["kind"] == "suite")
+            job["result"] = dict(LAST_RUN)
+            job["state"] = "done"
+        except BaseException as e:  # a job must never take the server down
+            job["log"] += f"\nERROR: {e!r}\n"
+            job["state"] = "error"
+        finally:
+            busy.release()
+
+    class Handler(BaseHTTPRequestHandler):
+        def log_message(self, *args):
+            pass
+
+        def _send(self, code, obj=None, raw=None, ctype="application/json"):
+            data = raw if raw is not None else json.dumps(obj, default=str).encode()
+            self.send_response(code)
+            self.send_header("Content-Type", ctype)
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            self.wfile.write(data)
+
+        def _body(self):
+            n = int(self.headers.get("Content-Length") or 0)
+            return json.loads(self.rfile.read(n) or b"{}")
+
+        def do_GET(self):
+            path = self.path.split("?", 1)[0]
+            if path in ("/", "/index.html"):
+                return self._send(200, raw=UI_FILE.read_bytes(), ctype="text/html; charset=utf-8")
+            if path == "/api/catalog":
+                return self._send(200, raw=CATALOG.read_bytes())
+            if path == "/api/smoke-spec":
+                return self._send(200, raw=SMOKE.read_bytes())
+            if path == "/api/preflight":
+                return self._send(200, [{"name": n, "ok": ok, "detail": d} for n, ok, d in preflight_rows(cat)])
+            if path == "/api/latest":
+                return self._send(200, latest_results())
+            if path == "/api/manual":
+                return self._send(200, json.loads(MANUAL.read_text()) if MANUAL.exists() else {})
+            if path.startswith("/api/jobs/"):
+                job = jobs.get(path.rsplit("/", 1)[-1])
+                return self._send(200, job) if job else self._send(404, {"error": "no such job"})
+            return self._send(404, {"error": "not found"})
+
+        def do_POST(self):
+            path = self.path.split("?", 1)[0]
+            if path == "/api/rebuild":
+                # regenerate the list from the repos, then serve the new catalog to this and every later run
+                if not busy.acquire(blocking=False):
+                    return self._send(409, {"error": "a run is in progress; rebuild after it finishes"})
+                try:
+                    p = subprocess.run([sys.executable, str(HERE / "tools" / "build_feature_catalog.py")],
+                                       capture_output=True, text=True, timeout=600)
+                    if p.returncode != 0:
+                        return self._send(500, {"error": (p.stderr or p.stdout)[-800:]})
+                    cat.clear()
+                    cat.update(load())
+                    return self._send(200, {"rebuilt": True, "output": p.stdout.strip()[-400:]})
+                finally:
+                    busy.release()
+            if path == "/api/manual":
+                RESULTS.mkdir(exist_ok=True)
+                MANUAL.write_text(json.dumps(self._body(), indent=2, ensure_ascii=False))
+                return self._send(200, {"saved": True})
+            if path == "/api/run":
+                body = self._body()
+                if body.get("kind") not in ("test", "suite", "smoke"):
+                    return self._send(400, {"error": "kind must be test, suite or smoke"})
+                if body["kind"] == "test" and not body.get("keys"):
+                    return self._send(400, {"error": "test needs keys"})
+                if not busy.acquire(blocking=False):
+                    return self._send(409, {"error": "a run is already in progress"})
+                jid = dt.datetime.now().strftime("%H%M%S%f")
+                jobs[jid] = {"id": jid, "state": "running", "log": "", "request": body,
+                             "started": dt.datetime.now().isoformat(timespec="seconds")}
+                threading.Thread(target=run_job, args=(jobs[jid], body), daemon=True).start()
+                return self._send(202, {"job": jid})
+            return self._send(404, {"error": "not found"})
+
+    httpd = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    url = f"http://127.0.0.1:{port}/"
+    print(f"Feature testing page: {url}   (Ctrl+C to stop)")
+    with contextlib.suppress(Exception):
+        webbrowser.open(url)
+    with contextlib.suppress(KeyboardInterrupt):
+        httpd.serve_forever()
     return 0
 
 
@@ -482,6 +639,7 @@ def main() -> int:
     p = sub.add_parser("smoke"); p.add_argument("--only", nargs="*"); p.add_argument("--allow-writes", action="store_true")
     p.add_argument("--timeout", type=int, default=30)
     sub.add_parser("preflight")
+    p = sub.add_parser("serve", help="open the local testing page"); p.add_argument("--port", type=int, default=8765)
     a = ap.parse_args()
     cat = load()
     if a.cmd == "list":
@@ -494,6 +652,8 @@ def main() -> int:
         return cmd_test(cat, a, whole_suite=True)
     if a.cmd == "smoke":
         return cmd_smoke(cat, a)
+    if a.cmd == "serve":
+        return serve(cat, a.port)
     return cmd_preflight(cat, a)
 
 

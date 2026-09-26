@@ -17,6 +17,7 @@ Which features exist, and how to test each one. There are two scopes:
 | [FEATURES.md](FEATURES.md) | The feature list. It covers all 59 logic points, 31 capability modules, branch changes made outside the prompts, and the 12 baseline features (section 4). Each feature's detail section gives its prompts, acceptance criteria (as a checklist), how to test it and its known gaps. |
 | [feature_catalog.json](feature_catalog.json) | The same data in machine-readable form, for agents and for the runner. |
 | [run_feature_tests.py](run_feature_tests.py) | The runner, using only the Python standard library. Commands: `preflight`, `list`, `show`, `test`, `suite`, `smoke`. |
+| [testing_ui.html](testing_ui.html) | The testing page, served by `python3 run_feature_tests.py serve`. It lets you browse features, run tests and live checks, and mark the checklist; checklist state is saved to `results/manual_status.json`. |
 | [smoke_checks.json](smoke_checks.json) | Live API checks. Read-only unless you pass `--allow-writes`. |
 | [tools/](tools/) | `build_feature_catalog.py` regenerates the two files above from the repos. `feature_summaries.json` is its only hand-written input: summaries, manual checks, known gaps and modules. |
 
@@ -26,6 +27,7 @@ The runner writes its output to `results/`, which git ignores.
 
 ```bash
 cd /Users/tejal/codebase/utils/prompts-library/Lextr_Intelligence_Final_Package/feature-testing
+python3 run_feature_tests.py serve              # the testing page: opens http://127.0.0.1:8765
 python3 run_feature_tests.py preflight          # what can run here: toolchain, branches, live ports
 python3 run_feature_tests.py list --uc UC10     # features, filterable by --uc or --domain
 python3 run_feature_tests.py show LP-57         # summary, prompts, acceptance criteria, tests, manual checks (also BL-06)
@@ -86,7 +88,7 @@ A failing test that belongs to no feature is reported as `UNMAPPED_FAIL`. Each r
 | 1 | OPA (Docker) | `intelligence-service/scripts/opa-docker.sh`, then `… reload` after each restart (serves :8181) |
 | 2 | config-service | `cd lextr/java/config-service && ./mvnw spring-boot:run` (serves :8888) |
 | 3 | lexie-ai | `cd lexie-ai && ENV=dev ../.venv-lexie-ai/bin/python app.py` (listens on 5003) |
-| 4 | intelligence-service | `mvn clean spring-boot:run` (serves :8059) |
+| 4 | intelligence-service | `LEXIE_URL=http://localhost:5003 mvn clean spring-boot:run` (serves :8059; its built-in default looks for lexie-ai on 8004) |
 | 5 | UI | `cd intelligence-ui && npx vite`, then open http://localhost:5173/intelligence/ (proxies `/api` to :8059) |
 
 ## Status as of 2026-09-26
