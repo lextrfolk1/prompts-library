@@ -454,7 +454,7 @@ def cmd_preflight(cat: dict, a) -> int:
     chk("node/npx", shutil.which("npx") is not None, shutil.which("npx") or "not on PATH")
     chk("ui node_modules", (root / "intelligence-ui" / "node_modules" / "vitest").exists(), "npm ci in intelligence-ui if missing")
     chk("opa cli (optional, rego unit tests)", shutil.which("opa") is not None, shutil.which("opa") or "not installed; Docker OPA still works")
-    for name, port in (("intelligence-service :8059", 8059), ("lexie-ai :8004", 8004), ("OPA :8181", 8181),
+    for name, port in (("intelligence-service :8059", 8059), ("lexie-ai :5003", 5003), ("OPA :8181", 8181),
                        ("UI vite :5173", 5173), ("config-service :8888", 8888)):
         s = socket.socket()
         s.settimeout(0.5)

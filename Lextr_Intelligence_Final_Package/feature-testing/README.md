@@ -85,7 +85,7 @@ A failing test that belongs to no feature is reported as `UNMAPPED_FAIL`. Each r
 |---|---|---|
 | 1 | OPA (Docker) | `intelligence-service/scripts/opa-docker.sh`, then `… reload` after each restart (serves :8181) |
 | 2 | config-service | `cd lextr/java/config-service && ./mvnw spring-boot:run` (serves :8888) |
-| 3 | lexie-ai | `cd lexie-ai && ENV=dev ../.venv-lexie-ai/bin/uvicorn app:app --port 8004` |
+| 3 | lexie-ai | `cd lexie-ai && ENV=dev ../.venv-lexie-ai/bin/python app.py` (listens on 5003) |
 | 4 | intelligence-service | `mvn clean spring-boot:run` (serves :8059) |
 | 5 | UI | `cd intelligence-ui && npx vite`, then open http://localhost:5173/intelligence/ (proxies `/api` to :8059) |
 

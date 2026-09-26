@@ -2,7 +2,7 @@
   "_readme": "L2 live smoke checks run by `run_feature_tests.py smoke`. URLs use {SVC} {LEXIE} {OPA} {UI} (override with env SVC_URL, LEXIE_URL, OPA_URL, UI_URL). 'mutating: true' checks write rows and only run with --allow-writes. expect.status = allowed HTTP codes; expect.json = dotted-path equality; expect.json_has = dotted paths that must exist; expect.body_contains = substrings.",
   "defaults": {
     "SVC": "http://localhost:8059",
-    "LEXIE": "http://localhost:8004",
+    "LEXIE": "http://localhost:5003",
     "OPA": "http://localhost:8181",
     "UI": "http://localhost:5173/intelligence/",
     "headers": {

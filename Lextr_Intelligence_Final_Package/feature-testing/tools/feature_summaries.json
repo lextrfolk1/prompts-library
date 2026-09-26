@@ -125,7 +125,7 @@
     ],
     "manual_checks": [
       "After a run completes, its status is in_review/pending_review, not completed",
-      "Variance review queue: GET :8004/api/v1/variance/review/queue lists items; POST /api/v1/variance/analyses/{id}/review with an approve action advances state"
+      "Variance review queue: GET :5003/api/v1/variance/review/queue lists items; POST /api/v1/variance/analyses/{id}/review with an approve action advances state"
     ],
     "needs_live": [
       "service",
@@ -147,7 +147,7 @@
     "manual_checks": [
       "UI: Knowledge Hub screen -> upload a PDF/DOCX; it appears in the list with a disposition",
       "POST :8059/knowledge/retrieve with a question returns ranked chunks with citations",
-      "lexie: GET :8004/api/v1/variance/knowledge/search?q=... returns hits"
+      "lexie: GET :5003/api/v1/variance/knowledge/search?q=... returns hits"
     ],
     "needs_live": [
       "service",
@@ -235,9 +235,9 @@
       "UC1a"
     ],
     "manual_checks": [
-      "lexie: POST :8004/api/v1/variance/cycles, then /cycles/{id}/detect, then /cycles/{id}/analyze/{mdrm_id}; each returns a result with drivers and evidence",
+      "lexie: POST :5003/api/v1/variance/cycles, then /cycles/{id}/detect, then /cycles/{id}/analyze/{mdrm_id}; each returns a result with drivers and evidence",
       "UI: Analyst Workspace > Variance Analysis -> pick a cycle and line; an explanation with driver cards renders and a review banner is shown",
-      "POST :8004/run with use_case=UC1a runs the VarianceAI pipeline"
+      "POST :5003/run with use_case=UC1a runs the VarianceAI pipeline"
     ],
     "needs_live": [
       "lexie",
@@ -338,7 +338,7 @@
     ],
     "manual_checks": [
       "POST :8059/api/v1/operational/query with a question returns an answer + evidence, or a reasoned refusal",
-      "POST :8004/run use_case=UC12 is refused with RUN_ADAPTER_UNBOUND (expected until a Core host adapter exists)"
+      "POST :5003/run use_case=UC12 is refused with RUN_ADAPTER_UNBOUND (expected until a Core host adapter exists)"
     ],
     "needs_live": [
       "service",
@@ -403,7 +403,7 @@
     ],
     "manual_checks": [
       "Lexie panel: an orchestration question renders the Digital Twin answer inline",
-      "POST :8004/run use_case=UC9 runs the orchestrator"
+      "POST :5003/run use_case=UC9 runs the orchestrator"
     ],
     "needs_live": [
       "lexie",
@@ -527,7 +527,7 @@
     "use_cases": [],
     "manual_checks": [
       "Open :8059/swagger-ui/index.html and :8059/v3/api-docs; /run, rerun, knowledge, presets and governance definitions are documented",
-      "Open :8004/docs (FastAPI)"
+      "Open :5003/docs (FastAPI)"
     ],
     "needs_live": [
       "service",
@@ -577,7 +577,7 @@
     "summary": "One error contract in Java and Python: the same envelope, ErrorDetail and ReasonRef, a mapping table and a catch-all.",
     "use_cases": [],
     "manual_checks": [
-      "Send a malformed body to :8059/run and to :8004/run; both return the error envelope with a reason code, no stack trace"
+      "Send a malformed body to :8059/run and to :5003/run; both return the error envelope with a reason code, no stack trace"
     ],
     "needs_live": [
       "service",
@@ -626,7 +626,7 @@
     ],
     "manual_checks": [
       "Lexie panel: an impact question renders ImpactAnswer with bounds banner and delta table",
-      "POST :8004/run use_case=UC2 with a numeric delta returns propagated impacts; a non-numeric delta is refused",
+      "POST :5003/run use_case=UC2 with a numeric delta returns propagated impacts; a non-numeric delta is refused",
       "POST :8059/api/v1/impact/run"
     ],
     "needs_live": [
@@ -647,7 +647,7 @@
     ],
     "manual_checks": [
       "Lexie panel: a trend question renders TrendAnswer (verdict chips + chart)",
-      "POST :8004/run use_case=UC3 with a series",
+      "POST :5003/run use_case=UC3 with a series",
       "POST :8059/api/v1/trend/run"
     ],
     "needs_live": [
@@ -672,7 +672,7 @@
       "UI: Training > Training Data lists datasets",
       "GET :8059/api/intelligence/training/datasets; POST a dataset, freeze, attest, approve (approval by a second principal)",
       "GET /api/intelligence/training/runs/eligibility explains why a run is/isn't allowed",
-      "lexie: POST :8004/api/v1/training/jobs accepts a job (NullTrainer)"
+      "lexie: POST :5003/api/v1/training/jobs accepts a job (NullTrainer)"
     ],
     "needs_live": [
       "service",
@@ -803,7 +803,7 @@
       "UC10"
     ],
     "manual_checks": [
-      "lexie: GET :8004/api/v1/variance/knowledge/graph/{node_type}/{node_id} returns neighbours with provenance"
+      "lexie: GET :5003/api/v1/variance/knowledge/graph/{node_type}/{node_id} returns neighbours with provenance"
     ],
     "needs_live": [
       "lexie"
@@ -1767,9 +1767,9 @@
         "tests/variance/test_rule_parser.py"
       ],
       "manual_checks": [
-        "GET :8004/api/v1/variance/health is 200",
-        "GET :8004/api/v1/variance/cycles/available and /entities list data from the dev DB",
-        "POST :8004/api/v1/variance/cycles creates a cycle; POST /cycles/{id}/detect returns detected lines with tiers",
+        "GET :5003/api/v1/variance/health is 200",
+        "GET :5003/api/v1/variance/cycles/available and /entities list data from the dev DB",
+        "POST :5003/api/v1/variance/cycles creates a cycle; POST /cycles/{id}/detect returns detected lines with tiers",
         "GET /cycles/{id} returns the cycle with its status"
       ],
       "needs_live": [
@@ -1810,7 +1810,7 @@
         "tests/variance/test_version_history.py"
       ],
       "manual_checks": [
-        "POST :8004/api/v1/variance/cycles/{id}/analyze/{mdrm_id} returns an explanation with drivers, evidence and confidence",
+        "POST :5003/api/v1/variance/cycles/{id}/analyze/{mdrm_id} returns an explanation with drivers, evidence and confidence",
         "POST .../regenerate/{mdrm_id} creates a new analysis version (GET /analyses/{id}/versions lists both)",
         "With OPENAI_API_KEY unset the run degrades visibly rather than inventing a narrative"
       ],
@@ -1842,7 +1842,7 @@
         "tests/variance/test_review_rehydration.py"
       ],
       "manual_checks": [
-        "GET :8004/api/v1/variance/review/queue lists pending analyses",
+        "GET :5003/api/v1/variance/review/queue lists pending analyses",
         "POST /analyses/{id}/review with an accept action; GET /analyses/{id}/review shows the new state; GET /cycles/{id}/approved includes it",
         "GET /review/metrics counts the decision"
       ],
@@ -1870,7 +1870,7 @@
         "tests/variance/test_audit_export.py"
       ],
       "manual_checks": [
-        "GET :8004/api/v1/variance/audit/analyses/{id}/export returns the chain for an analysis"
+        "GET :5003/api/v1/variance/audit/analyses/{id}/export returns the chain for an analysis"
       ],
       "needs_live": [
         "lexie",
@@ -1903,7 +1903,7 @@
         "tests/variance/test_model_capability_fallback.py"
       ],
       "manual_checks": [
-        "GET/POST :8004/api/v1/variance/thresholds; POST /thresholds/preview shows the effect before saving",
+        "GET/POST :5003/api/v1/variance/thresholds; POST /thresholds/preview shows the effect before saving",
         "PUT /model-config/{key} then GET /model-config/history shows the change",
         "GET /cycles/{id}/completeness, then POST /cycles/{id}/close and /reopen"
       ],
@@ -1939,7 +1939,7 @@
         "tests/variance/test_object_store_resilience.py"
       ],
       "manual_checks": [
-        "POST :8004/api/v1/variance/knowledge/documents/upload, then GET /documents lists it",
+        "POST :5003/api/v1/variance/knowledge/documents/upload, then GET /documents lists it",
         "GET /search?q=... returns ranked passages",
         "POST /chat answers with citations; GET/DELETE /chat/{session_id}",
         "GET /graph/{node_type}/{node_id} returns neighbours"
@@ -2000,7 +2000,7 @@
         "tests/variance/test_demo_ui_mount.py"
       ],
       "manual_checks": [
-        "Open :8004/demo/ in a browser",
+        "Open :5003/demo/ in a browser",
         "Generate a demo period via the demo-data API, then delete it; a period it did not create cannot be deleted"
       ],
       "needs_live": [
@@ -2031,8 +2031,8 @@
       ],
       "tests": [],
       "manual_checks": [
-        "GET :8004/api/v1/chatbot/ai/health is 200",
-        "POST :8004/api/v1/chatbot/ai/query with {\"query\": \"...\", \"context\": {...}} streams an answer (needs an LLM key)",
+        "GET :5003/api/v1/chatbot/ai/health is 200",
+        "POST :5003/api/v1/chatbot/ai/query with {\"query\": \"...\", \"context\": {...}} streams an answer (needs an LLM key)",
         "DELETE /api/v1/chatbot/ai/memory/{user_id} clears that user's conversation"
       ],
       "needs_live": [
@@ -2064,7 +2064,7 @@
       ],
       "tests": [],
       "manual_checks": [
-        "POST :8004/api/v1/chatbot/ai/rule-description and /rule-summary with a rule return text (needs an LLM key)",
+        "POST :5003/api/v1/chatbot/ai/rule-description and /rule-summary with a rule return text (needs an LLM key)",
         "POST /knowledge/refresh, then GET /knowledge/status shows the index; DELETE /knowledge/clear empties it"
       ],
       "needs_live": [
@@ -2093,7 +2093,7 @@
       ],
       "tests": [],
       "manual_checks": [
-        "POST :8004/api/v1/chatbot/ai/mdrm/recommend with {\"query\": \"net interest income\", \"context\": {...}} returns ranked MDRM suggestions"
+        "POST :5003/api/v1/chatbot/ai/mdrm/recommend with {\"query\": \"net interest income\", \"context\": {...}} returns ranked MDRM suggestions"
       ],
       "needs_live": [
         "lexie"

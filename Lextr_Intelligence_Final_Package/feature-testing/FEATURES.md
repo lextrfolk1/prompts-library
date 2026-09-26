@@ -162,9 +162,9 @@ Create a reporting cycle, list available cycles and entities, and detect materia
 
 - L0/L1 `lexie-ai`: `cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_amount_precision.py tests/variance/test_cycle_availability.py tests/variance/test_cycle_persistence.py tests/variance/test_cycle_service.py tests/variance/test_detection_engine.py tests/variance/test_entity_scoping.py tests/variance/test_rule_parser.py tests/variance/test_variance_item_persistence.py`
 - Runner: `python3 run_feature_tests.py test BL-01`
-- L3 manual: GET :8004/api/v1/variance/health is 200
-- L3 manual: GET :8004/api/v1/variance/cycles/available and /entities list data from the dev DB
-- L3 manual: POST :8004/api/v1/variance/cycles creates a cycle; POST /cycles/{id}/detect returns detected lines with tiers
+- L3 manual: GET :5003/api/v1/variance/health is 200
+- L3 manual: GET :5003/api/v1/variance/cycles/available and /entities list data from the dev DB
+- L3 manual: POST :5003/api/v1/variance/cycles creates a cycle; POST /cycles/{id}/detect returns detected lines with tiers
 - L3 manual: GET /cycles/{id} returns the cycle with its status
 - Live dependencies for manual checks: lexie, db
 
@@ -180,7 +180,7 @@ Analyse detected lines (all, one, or regenerate one): driver decomposition and c
 
 - L0/L1 `lexie-ai`: 13 test files — `python3 run_feature_tests.py test BL-02`
 - Runner: `python3 run_feature_tests.py test BL-02`
-- L3 manual: POST :8004/api/v1/variance/cycles/{id}/analyze/{mdrm_id} returns an explanation with drivers, evidence and confidence
+- L3 manual: POST :5003/api/v1/variance/cycles/{id}/analyze/{mdrm_id} returns an explanation with drivers, evidence and confidence
 - L3 manual: POST .../regenerate/{mdrm_id} creates a new analysis version (GET /analyses/{id}/versions lists both)
 - L3 manual: With OPENAI_API_KEY unset the run degrades visibly rather than inventing a narrative
 - Live dependencies for manual checks: lexie, db
@@ -198,7 +198,7 @@ Review queue, per-analysis review state and actions (accept / correct / reject),
 
 - L0/L1 `lexie-ai`: `cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_review_persistence.py tests/variance/test_review_rehydration.py tests/variance/test_review_workflow.py`
 - Runner: `python3 run_feature_tests.py test BL-03`
-- L3 manual: GET :8004/api/v1/variance/review/queue lists pending analyses
+- L3 manual: GET :5003/api/v1/variance/review/queue lists pending analyses
 - L3 manual: POST /analyses/{id}/review with an accept action; GET /analyses/{id}/review shows the new state; GET /cycles/{id}/approved includes it
 - L3 manual: GET /review/metrics counts the decision
 - Live dependencies for manual checks: lexie, db
@@ -215,7 +215,7 @@ Hash-chained audit events for every analysis action, and an audit export per ana
 
 - L0/L1 `lexie-ai`: `cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_audit_chain.py tests/variance/test_audit_export.py`
 - Runner: `python3 run_feature_tests.py test BL-04`
-- L3 manual: GET :8004/api/v1/variance/audit/analyses/{id}/export returns the chain for an analysis
+- L3 manual: GET :5003/api/v1/variance/audit/analyses/{id}/export returns the chain for an analysis
 - Live dependencies for manual checks: lexie, db
 - Note: canonical_json here is not RFC 8785 - the open owner decision in README 'Still open'
 
@@ -231,7 +231,7 @@ Materiality thresholds (with preview), runtime model configuration with history,
 
 - L0/L1 `lexie-ai`: `cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_config_and_lifecycle.py tests/variance/test_model_capability_fallback.py tests/variance/test_model_config.py`
 - Runner: `python3 run_feature_tests.py test BL-05`
-- L3 manual: GET/POST :8004/api/v1/variance/thresholds; POST /thresholds/preview shows the effect before saving
+- L3 manual: GET/POST :5003/api/v1/variance/thresholds; POST /thresholds/preview shows the effect before saving
 - L3 manual: PUT /model-config/{key} then GET /model-config/history shows the change
 - L3 manual: GET /cycles/{id}/completeness, then POST /cycles/{id}/close and /reopen
 - Live dependencies for manual checks: lexie, db
@@ -249,7 +249,7 @@ Regulatory knowledge documents: upload, list, download, archive, collections, se
 
 - L0/L1 `lexie-ai`: 9 test files — `python3 run_feature_tests.py test BL-06`
 - Runner: `python3 run_feature_tests.py test BL-06`
-- L3 manual: POST :8004/api/v1/variance/knowledge/documents/upload, then GET /documents lists it
+- L3 manual: POST :5003/api/v1/variance/knowledge/documents/upload, then GET /documents lists it
 - L3 manual: GET /search?q=... returns ranked passages
 - L3 manual: POST /chat answers with citations; GET/DELETE /chat/{session_id}
 - L3 manual: GET /graph/{node_type}/{node_id} returns neighbours
@@ -285,7 +285,7 @@ Generates and removes demo reporting periods (tracked so only generated periods 
 
 - L0/L1 `lexie-ai`: `cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_demo_data_router.py tests/variance/test_demo_ui_mount.py`
 - Runner: `python3 run_feature_tests.py test BL-08`
-- L3 manual: Open :8004/demo/ in a browser
+- L3 manual: Open :5003/demo/ in a browser
 - L3 manual: Generate a demo period via the demo-data API, then delete it; a period it did not create cannot be deleted
 - Live dependencies for manual checks: lexie, db
 
@@ -301,8 +301,8 @@ Natural-language rule questions answered by a streaming chatbot agent with per-u
 
 - No automated tests exist for this feature.
 - Runner: `python3 run_feature_tests.py test BL-09`
-- L3 manual: GET :8004/api/v1/chatbot/ai/health is 200
-- L3 manual: POST :8004/api/v1/chatbot/ai/query with {"query": "...", "context": {...}} streams an answer (needs an LLM key)
+- L3 manual: GET :5003/api/v1/chatbot/ai/health is 200
+- L3 manual: POST :5003/api/v1/chatbot/ai/query with {"query": "...", "context": {...}} streams an answer (needs an LLM key)
 - L3 manual: DELETE /api/v1/chatbot/ai/memory/{user_id} clears that user's conversation
 - Live dependencies for manual checks: lexie
 - Note: NO automated tests exist on main or the branch - manual checks only
@@ -319,7 +319,7 @@ Generate a plain-language description or summary of a Core rule, and manage the 
 
 - No automated tests exist for this feature.
 - Runner: `python3 run_feature_tests.py test BL-10`
-- L3 manual: POST :8004/api/v1/chatbot/ai/rule-description and /rule-summary with a rule return text (needs an LLM key)
+- L3 manual: POST :5003/api/v1/chatbot/ai/rule-description and /rule-summary with a rule return text (needs an LLM key)
 - L3 manual: POST /knowledge/refresh, then GET /knowledge/status shows the index; DELETE /knowledge/clear empties it
 - Live dependencies for manual checks: lexie
 - Note: NO automated tests - manual checks only
@@ -336,7 +336,7 @@ Suggest MDRM codes for a free-text query using an embedding index.
 
 - No automated tests exist for this feature.
 - Runner: `python3 run_feature_tests.py test BL-11`
-- L3 manual: POST :8004/api/v1/chatbot/ai/mdrm/recommend with {"query": "net interest income", "context": {...}} returns ranked MDRM suggestions
+- L3 manual: POST :5003/api/v1/chatbot/ai/mdrm/recommend with {"query": "net interest income", "context": {...}} returns ranked MDRM suggestions
 - Live dependencies for manual checks: lexie
 - Note: NO automated tests - manual checks only
 
@@ -755,7 +755,7 @@ Always-on review queue: every completed run moves to pending_review; a server-si
 - L0/L1 `intelligence-service`: `cd intelligence-service && mvn -q test -Dsurefire.failIfNoSpecifiedTests=false -Dtest='ReviewActionResolverTest,ReviewQueueServiceTest,ReviewQueueSqlReadTest'`
 - Runner: `python3 run_feature_tests.py test LP-07`
 - L3 manual: After a run completes, its status is in_review/pending_review, not completed
-- L3 manual: Variance review queue: GET :8004/api/v1/variance/review/queue lists items; POST /api/v1/variance/analyses/{id}/review with an approve action advances state
+- L3 manual: Variance review queue: GET :5003/api/v1/variance/review/queue lists items; POST /api/v1/variance/analyses/{id}/review with an approve action advances state
 - Live dependencies for manual checks: service, lexie, db
 
 ### LP-08
@@ -841,7 +841,7 @@ Knowledge Hub ingestion and retrieval: regulatory documents are chunked, embedde
 - Runner: `python3 run_feature_tests.py test LP-08`
 - L3 manual: UI: Knowledge Hub screen -> upload a PDF/DOCX; it appears in the list with a disposition
 - L3 manual: POST :8059/knowledge/retrieve with a question returns ranked chunks with citations
-- L3 manual: lexie: GET :8004/api/v1/variance/knowledge/search?q=... returns hits
+- L3 manual: lexie: GET :5003/api/v1/variance/knowledge/search?q=... returns hits
 - Live dependencies for manual checks: service, lexie, db, ui
 
 ### LP-09
@@ -1174,9 +1174,9 @@ Variance horizontal analysis (UC1a): reporting cycles (open -> detect -> analyse
 - L0/L1 `intelligence-service`: `cd intelligence-service && mvn -q test -Dsurefire.failIfNoSpecifiedTests=false -Dtest='ReportingCycleMaterialityMigrationTest,ToolScopeVariancePolicyTest,VarianceCrossLayerWireThroughTest,VarianceRunCoordinatorTest'`
 - L0/L1 `lexie-ai`: `cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/test_variance_horizontal_skill.py tests/test_variance_horizontal_wire_through.py`
 - Runner: `python3 run_feature_tests.py test LP-14`
-- L3 manual: lexie: POST :8004/api/v1/variance/cycles, then /cycles/{id}/detect, then /cycles/{id}/analyze/{mdrm_id}; each returns a result with drivers and evidence
+- L3 manual: lexie: POST :5003/api/v1/variance/cycles, then /cycles/{id}/detect, then /cycles/{id}/analyze/{mdrm_id}; each returns a result with drivers and evidence
 - L3 manual: UI: Analyst Workspace > Variance Analysis -> pick a cycle and line; an explanation with driver cards renders and a review banner is shown
-- L3 manual: POST :8004/run with use_case=UC1a runs the VarianceAI pipeline
+- L3 manual: POST :5003/run with use_case=UC1a runs the VarianceAI pipeline
 - Live dependencies for manual checks: lexie, service, db, opa, ui
 
 ### LP-15
@@ -1474,7 +1474,7 @@ UC12 Operational Data Query: a lexie skill answers operational questions from th
 - L0/L1 `lexie-ai`: `cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/test_operational_cross_layer_wire_through.py tests/test_operational_query_skill.py`
 - Runner: `python3 run_feature_tests.py test LP-20`
 - L3 manual: POST :8059/api/v1/operational/query with a question returns an answer + evidence, or a reasoned refusal
-- L3 manual: POST :8004/run use_case=UC12 is refused with RUN_ADAPTER_UNBOUND (expected until a Core host adapter exists)
+- L3 manual: POST :5003/run use_case=UC12 is refused with RUN_ADAPTER_UNBOUND (expected until a Core host adapter exists)
 - Live dependencies for manual checks: service, lexie, opa, db
 - ⚠ Known gap: No Core host adapter bound in lexie /run
 
@@ -1727,7 +1727,7 @@ UC2 Impact Analysis: deterministic two-pass impact propagation (no SLM at three 
 - L0/L1 `intelligence-ui`: `cd intelligence-ui && npx vitest run src/features/impact/__tests__/ImpactWorkspace.test.tsx`
 - Runner: `python3 run_feature_tests.py test LP-37`
 - L3 manual: Lexie panel: an impact question renders ImpactAnswer with bounds banner and delta table
-- L3 manual: POST :8004/run use_case=UC2 with a numeric delta returns propagated impacts; a non-numeric delta is refused
+- L3 manual: POST :5003/run use_case=UC2 with a numeric delta returns propagated impacts; a non-numeric delta is refused
 - L3 manual: POST :8059/api/v1/impact/run
 - Live dependencies for manual checks: lexie, service, ui
 
@@ -1814,7 +1814,7 @@ UC3 Trend Analysis: bounded <=5-step trend read with a shared deterministic clas
 - L0/L1 `intelligence-ui`: `cd intelligence-ui && npx vitest run src/features/trend/__tests__/TrendWorkspace.test.tsx`
 - Runner: `python3 run_feature_tests.py test LP-38`
 - L3 manual: Lexie panel: a trend question renders TrendAnswer (verdict chips + chart)
-- L3 manual: POST :8004/run use_case=UC3 with a series
+- L3 manual: POST :5003/run use_case=UC3 with a series
 - L3 manual: POST :8059/api/v1/trend/run
 - Live dependencies for manual checks: lexie, service, ui
 - ⚠ Known gap: OPEN: two trend classifiers with different vocabularies - owner decision
@@ -1926,7 +1926,7 @@ Training Data & Model Improvement: governed datasets/samples/fine-tune runs/line
 - L3 manual: UI: Training > Training Data lists datasets
 - L3 manual: GET :8059/api/intelligence/training/datasets; POST a dataset, freeze, attest, approve (approval by a second principal)
 - L3 manual: GET /api/intelligence/training/runs/eligibility explains why a run is/isn't allowed
-- L3 manual: lexie: POST :8004/api/v1/training/jobs accepts a job (NullTrainer)
+- L3 manual: lexie: POST :5003/api/v1/training/jobs accepts a job (NullTrainer)
 - Live dependencies for manual checks: service, lexie, db, opa, ui
 - ⚠ Known gap: Trainer port unfilled, evaluator model call unwired
 - ⚠ Known gap: training_env_ready shipped false
@@ -1972,7 +1972,7 @@ UC9 Analyst Digital Twin: a lexie orchestrator composing other use cases with ag
 - L0/L1 `intelligence-ui`: `cd intelligence-ui && npx vitest run src/features/digitaltwin/__tests__/DigitalTwinWorkspace.test.tsx`
 - Runner: `python3 run_feature_tests.py test LP-23`
 - L3 manual: Lexie panel: an orchestration question renders the Digital Twin answer inline
-- L3 manual: POST :8004/run use_case=UC9 runs the orchestrator
+- L3 manual: POST :5003/run use_case=UC9 runs the orchestrator
 - Live dependencies for manual checks: lexie, ui
 - ⚠ Known gap: FIXED 2026-09-26 (svc 33b6330): the UC9 Java coordinator now runs the orchestration in lexie-ai (/run UC9), persists exactly what lexie returns, enqueues only completed runs, and fails closed on a missing OPA decision; the 10004L fabricated run id (and 10001-10003L in impact/analytical/trend) is gone
 
@@ -2787,7 +2787,7 @@ OpenAPI/Swagger documentation over the intelligence-service controllers and lexi
 - L0/L1 `intelligence-service`: `cd intelligence-service && mvn -q test -Dsurefire.failIfNoSpecifiedTests=false -Dtest='OpenApiRouteCoverageTest'`
 - Runner: `python3 run_feature_tests.py test LP-29`
 - L3 manual: Open :8059/swagger-ui/index.html and :8059/v3/api-docs; /run, rerun, knowledge, presets and governance definitions are documented
-- L3 manual: Open :8004/docs (FastAPI)
+- L3 manual: Open :5003/docs (FastAPI)
 - Live dependencies for manual checks: service, lexie
 
 ### LP-30
@@ -2939,7 +2939,7 @@ One error contract in Java and Python: the same envelope, ErrorDetail and Reason
 - L0/L1 `intelligence-service`: `cd intelligence-service && mvn -q test -Dsurefire.failIfNoSpecifiedTests=false -Dtest='IngestionBatchServiceTest'`
 - L0/L1 `lexie-ai`: `cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/variance/test_model_config.py`
 - Runner: `python3 run_feature_tests.py test LP-33`
-- L3 manual: Send a malformed body to :8059/run and to :8004/run; both return the error envelope with a reason code, no stack trace
+- L3 manual: Send a malformed body to :8059/run and to :5003/run; both return the error envelope with a reason code, no stack trace
 - Live dependencies for manual checks: service, lexie
 
 ### LP-34
@@ -3763,7 +3763,7 @@ Knowledge-graph access layer: one client exposing named ops only (no query strin
 - L0/L1 `intelligence-service`: `cd intelligence-service && mvn -q test -Dsurefire.failIfNoSpecifiedTests=false -Dtest='ToolScopeKgPolicyTest'`
 - L0/L1 `lexie-ai`: `cd lexie-ai && ../.venv-lexie-ai/bin/pytest -q tests/test_kg_client.py tests/test_kg_core.py`
 - Runner: `python3 run_feature_tests.py test LP-44`
-- L3 manual: lexie: GET :8004/api/v1/variance/knowledge/graph/{node_type}/{node_id} returns neighbours with provenance
+- L3 manual: lexie: GET :5003/api/v1/variance/knowledge/graph/{node_type}/{node_id} returns neighbours with provenance
 - Live dependencies for manual checks: lexie
 
 ### LP-49
