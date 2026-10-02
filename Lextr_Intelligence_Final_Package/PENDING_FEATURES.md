@@ -1,6 +1,6 @@
 # Lextr Intelligence: Pending Work by Use Case and Feature
 
-- **Last updated:** 2026-10-02
+- **Last updated:** 2026-10-03
 - **Branch:** `feature/lextr-intelligence-v1.38.0` (intelligence-service, lexie-ai, intelligence-ui)
 - **How to use this file:** one section per use case or feature. Each lists what is built and what is pending, with an owner and what it waits on. Update the section when work lands; add a section when a use case is reviewed.
 
@@ -10,7 +10,7 @@
 |---|---|---|
 | [Cross-cutting](#cross-cutting) | Partly in place | Semantic Layer, Core integration, gateway entitlements |
 | [Platform & integration](#platform--integration) | 3 required items open | Core gateway route, Lexie resolver, AU9 persistence |
-| [UC10 Analytical Assist](#uc10-analytical-assist) | **Built and tested.** Waiting on external sources. | Semantic Layer report catalog |
+| [UC10 Analytical Assist](#uc10-analytical-assist) | **Built and tested.** Discovery, parse and operation batches run on an interim Postgres catalog (report store + MDRM), verified live. Committed on the feature branches, not pushed. | Semantic Layer report catalog; tenant mapping (10.13) |
 | [UC2 Impact Analysis](#uc2-impact-analysis) | **Built and tested** (steps 1–8), including live API checks (23/23) and a browser E2E. With `LEXIE_IMPACT_GRAPH_URL` set, runs walk Core's Neo4j dependency graph (structural reach); unset, they are refused; the cross-report slice is an honest empty. **Not committed.** | Impact adapter (KG / Core graph) binding |
 | [UC11 Rules & Logic Assist](#uc11-rules--logic-assist) | **Built and tested**, including live API checks (29/29). Every assist is refused until the rules adapter is bound. | Semantic Layer + rule store adapter |
 | [Other screens](#other-screens-not-reviewed-in-this-pass) | Not reviewed in this pass | — |
@@ -56,8 +56,11 @@ These are required items still open from the earlier integration plan. Everythin
 **Status:** built and tested.
 
 - **Tests:** JUnit, pytest, vitest, OPA (21/21), and live API checks (38/38) all pass.
-- **Commits:** intelligence-service `13274aa`, lexie-ai `8e20dea`, intelligence-ui `c061eb5`.
-- **What users see today:** every ask returns `CATALOG_NOT_READY`. This is correct while no catalog is bound.
+- **Commits:** intelligence-service `13274aa`, lexie-ai `8e20dea`, intelligence-ui `c061eb5`; catalog, parse, batch and UI follow-up: intelligence-service `65ecc21`, lexie-ai `9c7480e`, intelligence-ui `a5ada45`, config-service `a741e19` (`feat/lexie-impact-bindings`); run preset and measure fixes: intelligence-service `32c04a7`, lexie-ai `54f3004`; evidence test gates: lexie-ai `e971cd3`, `2acb3dc`.
+- **What users see today:** while no catalog is bound, every ask returns `CATALOG_NOT_READY`. On 2026-10-03 an **interim catalog** was bound (committed):
+  - `ReportStoreCatalog` (`lexie_ai/adapter/analytical_catalog.py`) reads `meta.report_store_metadata` (6 forms), with each form's active MDRM items as elements.
+  - It is bound only by config: `lexie.analytical_catalog: report_store`. The tenant's Core client id comes from `tenant_profile.core_client_id` (10.13).
+  - With it, `catalog_ready: true`, and asks return MATCHED / NO_MATCH, a structured parse and, when anchored, an operation batch. Live checks matched SQL ground truth.
 
 > **What "catalog" means here:** the list of existing report *definitions* (name, kind, elements, owner, visibility, entitlement). It holds no data values. It comes from the Semantic Layer; Intelligence keeps no copy.
 
@@ -66,29 +69,36 @@ These are required items still open from the earlier integration plan. Everythin
 | # | Item | Owner | Waits on |
 |---|---|---|---|
 | 10.1 | Semantic Layer report catalog endpoint | Semantic Layer team | — (X.1) |
-| 10.2 | lexie adapter implementing `ReportCatalogSource` (`skills/analytical/catalog_source.py`), bound in `lexie_ai/run/dispatcher.py`; stays on-prem (LP-24.5) | Intelligence | 10.1 |
-| 10.3 | `catalog_ready: true` in `opa/data/lextr/ai/analytical/data.json` for the deployment | Deployment | 10.2 |
+| 10.2 | lexie adapter implementing `ReportCatalogSource` (`skills/analytical/catalog_source.py`), bound in `lexie_ai/run/dispatcher.py`; stays on-prem (LP-24.5). **Interim:** `ReportStoreCatalog` over Postgres is built and bound by config; the Semantic Layer adapter is still pending. | Intelligence | 10.1 |
+| 10.3 | `catalog_ready: true` in `opa/data/lextr/ai/analytical/data.json` for the deployment. **Done** (committed); lexie still answers `CATALOG_NOT_READY` wherever no catalog or tenant is bound. | Deployment | 10.2 |
+| 10.13 | ~~Tenant mapping as a trusted input~~ **Done:** `V9__tenant_profile_core_client_id.sql` adds `tenant_profile.core_client_id` (`client_001` → 1, applied locally). lexie's catalog reads it by the validated tenant id — never from the request (generic `/run` forwards the caller's payload) — and caches it; the `lexie.analytical_catalog_tenants` config key is removed. A tenant with no core id stays `CATALOG_NOT_READY` | Intelligence | — |
 
 ### Pending: production prerequisites
 
 | # | Item | Owner | Waits on |
 |---|---|---|---|
-| 10.4 | Apply `V44__lp24_analytical_ledger_actions.sql` (adds `RUN`, `ACCEPT_BATCH` to the ledger's allowed actions) in every environment | Deployment / DBA | — (X.5) |
-| 10.5 | Seed an `ANALYTICAL_ASSIST` preset with no report type per tenant | Platform | X.6 |
+| 10.4 | ~~Apply the ledger migration adding `RUN` / `ACCEPT_BATCH`~~ **Done:** the squashed `V6__evidence_ledger.sql` allows both, and the local DB constraint does (126 `RUN`, 9 `ACCEPT_BATCH` rows) | Deployment / DBA | — |
+| 10.5 | ~~Seed an `ANALYTICAL_ASSIST` preset with no report type~~ **Done:** `V8__seed_analytical_assist_preset.sql` seeds `ENV_ANALYTICAL_ASSIST` (no model; binds `lextr.ai.tool_scope_analytical`) and the operational family-less preset `UC10_ANALYTICAL_DISCOVERY` for `client_001`; applied locally. The code fallback stays for unseeded tenants (X.6) | Platform | — |
 | 10.6 | Core mounts the panel at `an-lexie` and applies batches with `surface=CORE` | Lextr Core | X.3 |
-| 10.7 | Entitlements reach lexie's visibility filter | Gateway | X.4 |
+| 10.7 | Entitlements reach lexie's visibility filter. **Path done:** `X-User-Entitlements` → controller → coordinator → lexie `entitlements`. Still needs the gateway to send the header (X.4); the interim catalog carries no entitlement column, so nothing is filtered on today's data | Gateway | X.4 |
 
 ### Pending: Refine & build
 
 | # | Item | Owner | Waits on |
 |---|---|---|---|
-| 10.8 | lexie generates operation batches (LP-41.3); the batch review UI and apply endpoint are already built | Intelligence | 10.1, X.2 |
-| 10.9 | lexie returns a structured parse (measure, dimensions, filters, period); shown as "not recorded" today | Intelligence | 10.1 |
+| 10.8 | lexie generates operation batches (LP-41.3); the batch review UI and apply endpoint are already built. **Backend built**: an anchored run (`target_report_id` + `against_version`) returns `operation_batch`, `batch_rejections` and `batch_refusal`. Every operation of the ask travels in the batch; dimensions, filters, relative periods and unresolved measures are flagged `is_grounded: false` with a note (no Semantic Layer to resolve them), and the apply path never applies an ungrounded operation. `batch_rejections` now holds only what the report's refine mode forbids. | Intelligence | — |
+| 10.9 | lexie returns a structured parse (measure, dimensions, filters, period). **Backend built**, rule-based with no model call. The measure resolves to a catalog element only on an exact line name; several lines with that name leave it unresolved and return them as `measure_candidates`; anything else keeps the ask's own words with no candidates (a word inside a line name no longer resolves to that line: "exposure by counterparty" used to read as the hedge-funds OTC derivatives line). Whole report names, groups and tags are taken out of the measure ("FRY9C goodwill" → GOODWILL). Each match also returns `covers` / `gaps` / `unverified`: the measure is covered or a gap only where the report carries elements; dimensions and filters stay unverified until X.2. | Intelligence | — |
+| 10.14 | Render the new response fields. **Intelligence UI done:** match cards show `covers` (✓), `gaps` (⚠), `unverified` (?) and the matched MDRM lines with "+N more"; an unresolved measure lists its candidates; refining a match runs the ask anchored to that report at preview version 1 and reviews the returned batch — ungrounded operations shown but not acceptable, Apply disabled off Core with its reason, `batch_refusal` and mode rejections shown. **Still Core's:** rendering these inside Core, and anchoring to Core's real builder version | Lextr Core | 10.6 |
+| 10.15 | ~~Ask Lexie route for UC10~~ **Done:** when the resolver picks UC10, the Lexie panel no longer calls generic `/run` (which skipped `tool_scope_analytical`); it offers "Open in Analytical Assist", which carries the question to the workspace, where it is submitted once through `/api/v1/analytical/run` under the UC10 policy | Intelligence | — |
+| 10.16 | Run button: off Core it is disabled with a reason (done); on Core it has no action until Core supplies one | Lextr Core | 10.6 |
 | 10.10 | Period calendar source | Lextr Core | Source decision |
 | 10.11 | Report Store source (LP-45), then `report_store_ready: true` | Lextr Core | Source decision |
 | 10.12 | Core builder state available to the panel | Lextr Core | — |
 
 ### Open decisions
+
+- **Intent confidence and FACT asks:** the design shows an intent confidence and answers FACT asks ("When is FR Y-9C due?") from a filing calendar. There is no source for either (no due-date or filing-calendar table locally; see 10.10), so neither is built.
+- **Functions check:** `tool_scope_analytical` never reads `X-User-Functions` (a run with no functions gets the same answer as an analyst's). Add a function gate?
 
 - **Physical names on outage:** show physical names when the Semantic Layer is unreachable? Today the screen shows `[UNRESOLVED]`. Changing it needs DD-48 / LP-24.5 sign-off.
 - **Readiness flags:** are KG, derived attributes and parameter defaults bound? If not, set `kg_ready` / `derive_ready` / `parameter_default_ready` to `false`.
@@ -96,8 +106,10 @@ These are required items still open from the earlier integration plan. Everythin
 
 ### Housekeeping
 
-- **Unused message keys:** about 20 `analytical.*` keys left from the removed legacy screens.
-- **Card wording:** the `CATALOG_NOT_READY` title reads like an access denial ("Report catalog not ready" would be more accurate). The footer says "run is logged" even when the policy blocks the ask and no run executes.
+- **Unused message keys:** the 41 keys of the removed legacy screens are deleted. About 64 `analytical.uc10.*` keys with no use yet remain on purpose: they are the design's copy for 10.14 (asset narrowing, store hints, coverage).
+- ~~**Card wording**~~ **Done:** title "Report catalog not ready (CATALOG_NOT_READY)"; the footer no longer claims a run was logged when the policy blocked it.
+- **Run preset recorded:** a UC10 run now records `agent_run.preset_id` / `preset_version` (the seeded `UC10_ANALYTICAL_DISCOVERY`); a run on the code fallback preset leaves them NULL. Other use cases still do not record a preset. SQL checked locally; live check pending an intelligence-service restart.
+- **Evidence test gates:** the LP-26 and rules gates read every `V*__*.sql` migration instead of named files, and `claims.json` finds a claimed control by what implements it (`implements: fn_evidence_fence` under the migration folder), so a migration squash no longer breaks them.
 - **Dev test data:** tenant `client_001` in the local database holds test runs and ledger rows.
 
 ---
