@@ -11,7 +11,7 @@
 | [Cross-cutting](#cross-cutting) | Partly in place | Semantic Layer, Core integration, gateway entitlements |
 | [Platform & integration](#platform--integration) | 3 required items open | Core gateway route, Lexie resolver, AU9 persistence |
 | [UC10 Analytical Assist](#uc10-analytical-assist) | **Built and tested.** Waiting on external sources. | Semantic Layer report catalog |
-| [UC2 Impact Analysis](#uc2-impact-analysis) | Discovery plan done, **not implemented** | Plan decisions; KG edges in lexie |
+| [UC2 Impact Analysis](#uc2-impact-analysis) | **Built and tested** (steps 1–8), including live API checks (23/23) and a browser E2E. With `LEXIE_IMPACT_GRAPH_URL` set, runs walk Core's Neo4j dependency graph (structural reach); unset, they are refused; the cross-report slice is an honest empty. **Not committed.** | Impact adapter (KG / Core graph) binding |
 | [UC11 Rules & Logic Assist](#uc11-rules--logic-assist) | **Built and tested**, including live API checks (29/29). Every assist is refused until the rules adapter is bound. | Semantic Layer + rule store adapter |
 | [Other screens](#other-screens-not-reviewed-in-this-pass) | Not reviewed in this pass | — |
 
@@ -104,26 +104,23 @@ These are required items still open from the earlier integration plan. Everythin
 
 ## UC2 Impact Analysis
 
-**Status:** planned; discovery plan dated 2026-10-02. **No implementation yet.** The screen runs on seeded scenarios.
+**Status:** implemented on 2026-10-02 (plan steps 1–8; step 8, ImpactPathView, built on owner request after first being deferred). Branch `feature/lextr-intelligence-v1.38.0` in all three repos, **uncommitted** (owner: do not commit yet). No migration needed: `RUN` is already a governed ledger action (V44/V45) and no table was added.
 
-| # | Pending item | Owner | Waits on |
-|---|---|---|---|
-| 2.1 | Identity from headers only (400 when missing); drop the `analyst_user` / `FR_Y_9C` defaults; a null OPA response is a denial | Intelligence | — |
-| 2.2 | Readiness: `cross_report_ready` and `evaluate_ready` set to `false`; add `tool_scope_impact_test.rego` | Intelligence | — |
-| 2.3 | Coordinator delegates to lexie `/run` UC2, deleting the local one-hop arithmetic; persist honest-empty and needs_input runs | Intelligence | — |
-| 2.4 | Estate ledger `RUN` record (capability `impact`, decision under `allow`); CORE surface guard | Intelligence | — |
-| 2.5 | lexie skill reads its own edges from the KG (`kg_client.get_dependents`) and wires the OPA evaluator | Intelligence | KG binding |
-| 2.6 | UI on one render model: delete `IMPACT_SCENARIOS`, add featureClient calls with `useRefusal`, show "not recorded" for gaps | Intelligence | 2.3 |
-| 2.7 | UI conventions: `HowThisWorks destinationId="impact"`, i18n, `useIdentity()` surface, token colours | Intelligence | — |
-| 2.8 | ImpactPathView (Cytoscape + ELK, LP-37.4) | Intelligence | Decision (deferred) |
+- **Tests:** JUnit `ImpactServiceTest` 17/17 (incl. controller 400s, ledger, surface guard, mocked `LexieAiClient`), `ImpactCrossLayerWireThroughTest` 2/2, `ToolScopeImpactPolicyTest` 3/3. OPA `tool_scope_impact_test.rego` 16/16, policy coverage 97.2% (`opa check --strict --v0-compatible` clean; the 6 `evidence_test` failures predate this work). pytest: `tests/impact` + `test_impact_analysis_skill.py` + `test_run_route.py` + no-composed-prose 40/40; full lexie suite 491 passed / 1 skipped / 7 xfailed. vitest: `features/impact` 22/22 (incl. a real headless Cytoscape + ELK layout: no NaN position, deterministic twice, top-down); whole suite 546/547 (the 1 failure is the pre-existing hardcoded-string gate in `knowledge/KhSubcomponents.tsx`). Typecheck 76 → 73 errors, none in touched files.
+- **LP-47 gates:** unchanged from baseline, already RED before this work: reachability (`governance` slice reachable but declared unmounted), typecheck debt (73, declared 0), gate mutants (anchor `const TENANTS = {` missing in App.tsx). None of them involves impact.
+- **Live API checks (2026-10-02, `client_001`): 23/23 pass** (`intelligence-service/scripts/impact-live-check.sh`). They cover the 400s for each identity header, the OPA decisions (within-report allowed, `CROSS_REPORT_NOT_READY`, `EVALUATE_NOT_READY`, model op denied), the lexie `/run` UC2 calls (`RUN_ADAPTER_UNBOUND`, `needs_input`), the svc refusal passed through verbatim, the cross-report honest empty (persisted and reviewed, verbatim policy reason), needs_input (persisted, not reviewed), and `SURFACE_NOT_CORE` (422) for a DRAWER run off the Core surface.
+- **Browser E2E (headless Chromium, :5173): 16/16 pass, no console or page errors.** It checks the honest empty grid, no seeded subjects, no use-case codes in visible text, "not recorded" for Core's period, the HowThisWorks impact flow, and no impact call without a Core adjustment.
+- **Inline path (2026-10-02, follow-up):** the generic `/run` lane refuses a complete UC2 adjustment (`IMPACT_RUN_NOT_GOVERNED`, 422) so impact is only ever computed through the governed `/api/v1/impact/run`; an Ask-Lexie question still gets `needs_input`, and its answer now carries a form for exactly the missing fields that posts `entry_point=INLINE` to the governed endpoint. The UC9 twin's UC2 branch asks for the adjustment instead of inventing `BHCK2170` / `FRY9C` / `100.0`.
+- **Graph bound (2026-10-02):** `GraphImpactAdapter` (`lexie_ai/adapter/impact_ops.py`) reads Core's `DEPENDS_ON` projection in Neo4j (Taxonomy → Rule → Dataset) over its HTTP API; it is bound only when `LEXIE_IMPACT_GRAPH_URL` is set (credentials from the config service), otherwise UC2 stays `RUN_ADAPTER_UNBOUND`. The projection has no edge operators, so every reached node is STRUCTURAL_ONLY with no Δ (the propagator no longer defaults a missing operator to `sum`, and structural reach now walks every hop). Live: `dataset:ds.regulatory_ledger_ds` reached 154 nodes (77 rules, 77 FR Y-9C lines) over all 154 edges, depth 4, persisted and reviewed. Node refs are `taxonomy:<id>`, `rule:<id>`, `dataset:<name>`.
+- **Decisions applied:** host grid = honest empty state (no picker, no seeds); OPA package kept as `lextr.ai.tool_scope_impact`; catalogue row BUILT, `go: "impact"` + `ask: "impact"` (dual = DRAWER + INLINE; `SurfaceMode` has no dual value, so none was added); ImpactPathView built afterwards (decision reversed by owner).
 
-**Open decisions:**
-- **Host-grid rows:** with no Core feed, show an empty state or a subject picker?
-- **OPA package name:** keep the current package or rename it?
-- **Catalogue row:** change it to BUILT / dual?
-- **Path view:** build it now or later?
+### Pending
 
-**Risk:** the `agent_run` schema mismatch (LP-37.2 B3) may surface when runs are persisted.
+| # | Item | Owner | Waits on | Status |
+|---|---|---|---|---|
+| 2.10 | Core mounts `ImpactWorkspace` with `adjustments` (its launch context), `period` and `openEvidence`, and calls with `?surface=CORE`, `X-User-Id` and `X-User-Functions` (required, 400 without) | Lextr Core | X.3 | Open |
+| 2.14 | `agent_run` schema mismatch (LP-37.2 B3). Honest-empty and needs_input runs persisted fine live; no mismatch surfaced. | — | — | Watch |
+| 2.15 | Ledger decision ids are null (same as 11.10: the dev OPA has no decision logging) | Platform | OPA config | Open (platform-wide) |
 
 ---
 
