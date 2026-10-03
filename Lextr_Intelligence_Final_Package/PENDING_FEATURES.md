@@ -151,7 +151,7 @@ These are required items still open from the earlier integration plan. Everythin
   - **Fixed during the run:** a React style warning on the tab buttons (`border` mixed with `borderBottom`).
 - **Integration scripts (session scratchpad, not in a repo):** `uc11_http_checks.sh` (API, Core side) and `e2e/uc11_e2e.mjs` (browser; `playwright-core` installed in the scratchpad only).
 - **What users see today:** pressing Check returns an honest refusal, `RUN_ADAPTER_UNBOUND`, with lexie's reason verbatim. Core's rule, version and session show as "not recorded" on the nav harness.
-- **Decisions applied:** Q1, the radar label, is out of scope (11.9). Q2: `RulesAssistWorkspace` is the one renderer and `RulesAssistPanel` is deleted. Q3: "Submit for approval" and the step ring are removed. Q4: the route prefix `/api/intelligence/rules` is kept. Q5: the rules adapter seam exists and is unbound by default.
+- **Decisions applied:** Q1, the radar label, is out of scope (11.9). Q2: `RulesAssistWorkspace` is the one renderer and `RulesAssistPanel` is deleted. Q3: "Submit for approval" and the step ring are removed. **Reversed 2026-10-03 for JSX parity:** both are drawn again, disabled and read-only (Core owns the workflow; the track shows "Position: not recorded" because Core reports no step). "How this works" moved from the top bar into the panel header beside Check, as in the JSX (the top bar skips it for `rules` only). Q4: the route prefix `/api/intelligence/rules` is kept. Q5: the rules adapter seam exists and is unbound by default.
 
 ### Pending
 
