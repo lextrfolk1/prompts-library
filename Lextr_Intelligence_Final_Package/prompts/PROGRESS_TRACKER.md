@@ -348,7 +348,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 
 | Prompt ID | Target Repo / Layer | Scope | Owner | Status | Evidence | Last Updated | Notes / Risks |
 |:---:|---|---|---|---|---|---|---|
-| `LP-52.1_PY` | `lexie-ai` | Docling pipeline config | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
+| `LP-52.1_PY` | `lexie-ai` | Docling pipeline config | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl); gap-fill 2026-10-03: Docling+RapidOCR wired into KH upload (extraction.extract_with_ocr), models provisioned in Dockerfile; Docling v2 labels mapped in label_decisions (LP-52.4); real model commit pins + verify_artifacts() on disk, Docker build fails on drift (scripts/verify_ocr_artifacts.py), docling 2.132.0 pinned | 2026-10-03 | gates NOT RUN |
 | `LP-52.2_PY` | `lexie-ai` | Adapter and `ParsedChunk` contract | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
 | `LP-52.3_PY` | `lexie-ai` | Traversal and reconciliation logic | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
 | `LP-52.4_PY` | `lexie-ai` | Label policy and error handling | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
@@ -380,7 +380,7 @@ This section is the operational tracker. Each prompt gets a row and must be upda
 | `LP-53.3_SQL` | `intelligence-service` | Vector-store re-pointing and cleanup | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl); gap-fill svc 25e02e3 | 2026-09-25 | gates NOT RUN |
 | `LP-53.4_JAVA` | `intelligence-service` | Chunk retrieval and provenance DAO | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl); gap-fill svc 25e02e3 | 2026-09-25 | gates NOT RUN |
 | `LP-53.5_TEST` | `intelligence-service` (+ `lexie-ai`) | Chunking wire-through tests | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
-| `LP-54.1_PY` | `lexie-ai` | OCR configuration and language seam | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
+| `LP-54.1_PY` | `lexie-ai` | OCR configuration and language seam | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl); gap-fill 2026-10-03: OCR live on KH upload for scanned PDFs + images (png/jpg/jpeg/tif/tiff/bmp/webp); parse report in doc metadata.parse; chunk-level text_source/page_numbers/figures_needing_review on chunks, scanned-table cells into figure check, knowledge_chat 1.2.0 rule 9 OCR caveat; OCR file sha256 checked on disk, contradicted figures per chunk, DOCLING_MAX_CONCURRENT cap, background=true 202 PARSING upload + UI polling, opt-in VAI_KH_OCR_RETRIEVAL filter | 2026-10-03 | gates NOT RUN |
 | `LP-54.2_PY` | `lexie-ai` | Text source provenance logic | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
 | `LP-54.3_PY` | `lexie-ai` | Figure verification logic | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
 | `LP-54.4_PY` | `lexie-ai` | Completeness checks and verification gate | - | `DELIVERED` | verified on `feature/lextr-intelligence-v1.38.0` (base impl) | 2026-09-25 | gates NOT RUN |
