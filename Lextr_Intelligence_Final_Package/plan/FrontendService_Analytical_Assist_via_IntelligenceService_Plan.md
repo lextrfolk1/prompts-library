@@ -293,7 +293,9 @@ VALIDATE
 
 **Status:** PENDING (reviewed 2026-10-06). The Phase 1 port matches the prototype's structure: tabs, Find → Refine hand-off, ask bar, wording toggle, "Read as…" line, match cards (score bar, coverage and gap chips, refine labels), no-match / regulatory / "The answer" / guided construction cards, seed / builder-not-offered / describe-the-change / what-was-recorded / Lexie-signals cards, operation batch with stale warning. The prototype runs on browser-side mock data; the port follows intelligence-ui and shows only what the service returns. The features below are therefore not present yet.
 
-### 14.1 Can be added in frontend-service now (no backend change)
+### 14.1 Can be added in frontend-service now (no backend change): DONE (2026-10-07, frontend-service `88b812e`)
+
+Implemented: P1 in `AnalyticalFindBuild.tsx` (`fullCover` = some match with no gaps); P2 as `AN_SAVED_ASKS`, `AN_FREE_ASKS`, `AN_REFINE_TRY` in `analyticalData.ts`, rendered with `components/AskPromptChip.tsx` (fill the ask box only; free-text chips dashed; refine chips show the label and carry the full ask as `title`); P3 in `OperationBatchReview.tsx` (`secondary` tone row + note). Lint clean; scoped `tsc` (§9) clean on `assist/`. Manual check pending.
 
 | # | Prototype feature | Prototype ref | Pending change |
 |---|---|---|---|
