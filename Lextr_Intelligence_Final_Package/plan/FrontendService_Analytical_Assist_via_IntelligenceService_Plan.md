@@ -286,3 +286,44 @@ VALIDATE
 | Validated | §9 greps return nothing; ESLint clean on `assist/`, `intelligenceHttp.ts`, `apiEndpoints.ts`; scoped `tsc` (per §9) shows no errors in new or changed files |
 | Not yet validated | Manual §9 checks (devtools, side-by-side with intelligence-ui, not-ready, lexie-ai down, themes / dark mode); `layout.tsx` under `tsc` (its import graph runs out of memory) |
 
+
+---
+
+## 14. Pending: gaps against the prototype (`files/Lextr_Intelligence_UI_v1.38.0_FINAL.jsx`, UC10 section)
+
+**Status:** PENDING (reviewed 2026-10-06). The Phase 1 port matches the prototype's structure: tabs, Find → Refine hand-off, ask bar, wording toggle, "Read as…" line, match cards (score bar, coverage and gap chips, refine labels), no-match / regulatory / "The answer" / guided construction cards, seed / builder-not-offered / describe-the-change / what-was-recorded / Lexie-signals cards, operation batch with stale warning. The prototype runs on browser-side mock data; the port follows intelligence-ui and shows only what the service returns. The features below are therefore not present yet.
+
+### 14.1 Can be added in frontend-service now (no backend change)
+
+| # | Prototype feature | Prototype ref | Pending change |
+|---|---|---|---|
+| P1 | Guided construction offered **alongside partial matches**: shown unless one match covers the ask with no gaps | `…FINAL.jsx:2990-2993` | In `AnalyticalFindBuild.tsx`, show the guided card when `!allRegulatory && (construction_proposal \|\| visible.length === 0 \|\| !visible.some(m => (m.gaps \|\| []).length === 0))`. Departs from intelligence-ui; confirm before doing |
+| P2 | Example asks: saved prompts + "… or free text" chips (Find & build) and "try:" prompts (Refine & build) | `:2713-2718`, `:3471-3486` | Static lists from the prototype (`AN_SAVED`, `AN_FREE`, refine "try:" pairs) as chips that **only fill the ask box**, never submit: each run is persisted, queued for review and calls the LLM (B9). The refine placeholder already says "or click a prompt to build one" |
+| P3 | REPORT-LOCAL note on `derive_attribute` operations (secondary/purple tone) | `:3519-3525` | In `OperationBatchReview.tsx`, show "REPORT-LOCAL. A derived attribute is a DEFINITION, and definitions are governed — publishing every analyst’s private ratio into the Semantic Layer would end its single-meaning invariant. Promotion is a separate, governed act." under `derive_attribute` rows, with the row in the `secondary` tone |
+
+### 14.2 Needs data the service does not return today
+
+| # | Prototype feature | Prototype ref | Needs |
+|---|---|---|---|
+| D1 | Intent confidence % ("I’m N% sure I understood this") | `:2724-2729` | A confidence field on `AnalyticalRunResponse` (shown as "not recorded" today) |
+| D2 | ⊕ gap chips under the ask (refinement affordances) | `:2735-2743` | Suggested refinements in the run response |
+| D3 | "Which data asset did you mean?" narrowing + "built on" provenance on match cards | `:2896-2924`, `:3130-3144` | Data asset(s) per match in `CatalogMatchDto` |
+| D4 | Report Store cards: "Already submitted" (filed artefact, formats, ref) and "An executed copy may already exist" (store link) | `:2748-2805` | `report_store_ready=true` in OPA and a store result in the run response (StoreEntryPanel, §6.6) |
+| D5 | Clarification card for an unclear ask (clarify and stop, no matches) | `:2809-2814` | A clarification field in the run response |
+| D6 | Due-date answer with uniform date or per-schedule table, "Answered by UC12" | `:2836-2886` | Structured UC12 due-date data; today only `route_out_uc` + `narrative` |
+| D7 | Match card: "why" line, dashboard panels (per-panel gaps), parameters, consolidation + entitled scopes, last run / owner / visibility values | `:3103-3215` | These fields in `CatalogMatchDto` (shown as "not recorded" / omitted today); also the seed card's scope / params lines (§6.3) |
+| D8 | Operations with logical labels and op labels (`N(attr)`, `AN_OPS[op].label`) instead of raw `op_name` / `target_field` | `:3511-3518` | Logical labels from the Semantic Layer in the batch operations |
+| D9 | Plan: dataset choice, maturity-banding choice, "Propose these operations" | `:3590+` (`AnalyticalPlan`) | Server-side plan with dataset candidates and banding options; operations are proposed by lexie, never built in the browser |
+
+### 14.3 Phase 2 (§11) or a hand-off not built yet
+
+| # | Prototype feature | Prototype ref | Needs |
+|---|---|---|---|
+| H1 | Working Core builder: dataset, filter, column tick boxes, preview / history / visualization, Generate, state version + "last change by" | `:3907+` (`AnalyticalCoreBuilder`), `:3462-3466` | Core report id + builder version from Ad-hoc reporting (G1) |
+| H2 | Apply operations, version bump, receipts in "What was recorded" | `:3369-3403`, `:3560-3570` | Phase 2 Apply (A3), §11 |
+| H3 | "arrived from LexiAI" card (ask, parse and matches carried over as structure) | `:4062-4072` | Global Ask-Lexie routing UC10 asks into this tab (§6.1, §11) |
+| H4 | Match card **Run** button | `:3218-3221` | Out of scope for UC10 here (Core runs reports); stays excluded |
+
+### 14.4 Not carried over on purpose (intelligence-ui dropped them)
+
+"changed" pill next to Best matches (`:2889`), "UC10" in the screen title and the EMBEDDED pill (`:4060`, `:2704`), the prefilled and auto-shown "Exposure by counterparty" ask (`:2609`, would start a persisted run on open).
