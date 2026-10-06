@@ -1,6 +1,6 @@
 # frontend-service Variance "Explain" → intelligence-service: Integration Plan
 
-**Status:** PLANNED (not started)
+**Status:** IMPLEMENTED (Phase 1 + Phase 2, 2026-10-05, branch `feature/variance-via-intelligence-service`, uncommitted). Not yet run against a live stack; see §11
 **Repo to change:** `lextr/typescript/frontend-service` only. No backend changes, unless identity option C is chosen (see §5).
 **Reference implementation:** `lextrai/intelligence-ui/src/features/variance/` (`varianceApiClient.ts`, `varianceConsoleStore.ts`, `components/VarianceExplanationDrawer.tsx`)
 **Related doc:** `Surface_Map_Drawer_API_Inventory.md` §2
@@ -173,6 +173,14 @@ As in intelligence-ui, the drawer content renders only after steps 7–9 have al
 | C3 | `features/workbench/hooks/useAnalysis.ts` | Add `useEntities`, `useAvailableCycles`, `useDetection`, `useLineHistory` and a review mutation. Replace the hardcoded `legal_entity` (P2) |
 | C4 | `features/workbench/components/AiExplainationDetails.tsx` | Take the MDRM id from the detection item (P3). Replace `runUntilNoActions` with explicit buttons (P1, §7.2). Add the history sparkline |
 
+| C5 | `features/workbench/components/ReRunWithInput.tsx` | Accept an optional `mdrmId` prop (the detected id) for `regenerate/{mdrmId}`. Added at re-verification: without it, Re-run still sent `${form_name}.${taxonomyId}` (P3) |
+| C6 | `features/workbench/components/AiExplainationDetails.tsx` | Added at re-verification: (a) an error state that shows lexie/intelligence-service `detail` (for example the 502 "lexie-ai variance service unavailable") instead of an endless skeleton (§8); (b) versions and the evidence pack keyed by the **viewed** `analysisId`, so "Click a version" and Re-run re-read steps 7–9 for that version (§7.2); (c) review actions hidden while a superseded version is viewed, as intelligence-ui does |
+
+Notes:
+- `legal_entity` is the first entity from `GET entities`. If the list is empty, the `X-Client-Id` value is used, matching the intelligence-ui fallback. There is no entity picker in the Workbench.
+- `useAvailableCycles` exists but isn't called: the Workbench already supplies the report, period and restatement version for `POST cycles`.
+- `useAnalysis` falls back to analyze only on a **404**; other errors surface. `useCycle`, `useDetection` and `useAnalysis` set `retry: false`: they POST (analyze runs the LLM, with a 120s timeout), and the app QueryClient's default of 3 retries would repeat them before an error appears. Detection matches rows by line code (`mdrm_id.split(".").pop()`), as lexie does.
+
 Out of scope: the workbench grid API, `ruleApi.ts`, intelligence-service and lexie-ai code, Explain-all, cycle close/reopen, and threshold/model-config admin.
 
 ---
@@ -333,3 +341,24 @@ VALIDATE
 - grep -rn "runUntilNoActions\|Citigroup" src/features/workbench -> no matches.
 - Report: files changed, what was validated, anything not done.
 ```
+
+---
+
+## 11. Implementation status and re-verification (2026-10-05)
+
+| Area | Status |
+|---|---|
+| Phase 1 S1–S6 | Done |
+| Phase 2 C1–C4 | Done |
+| Re-verification additions C5, C6 | Done |
+| Backend path check (gateway `gateway-service.yml:158-160`; all 12 routes in `LexieVarianceController` with both headers and query pass-through) | Verified by reading the code |
+| `grep` checks (§8) | Pass |
+| `tsc --noEmit` | **Not run**: tsc runs out of memory on `tsconfig.app.json` (8 GB heap), including a config scoped to the changed files. `tsconfig.shared-ui.json` passes |
+| Lint on touched files | Only errors that predate this work (unused imports, `any`, rules-of-hooks in `ReRunWithInput`) |
+| Manual / devtools check (§8) | **Pending** |
+
+Open items:
+- §9 "disable or hide Explain for an undetected row" is not done in the grid (that would need detection in `ReportTable`). The drawer shows lexie's "not detected" message instead.
+- Identity (fixed 2026-10-05): nothing in frontend-service calls `configureHttp()` or sets `localStorage.userId`, so `getUserId()` was always `"lextradmin"`. That attributed every review to one user and made the four-eyes second approval always fail (`SelfApprovalError`, 403). `X-User-Id` now comes from the Redux `user.profile` (`preferred_username` with SSO, `name` with the form login), then `getUserId()`. `X-Client-Id` is still `VITE_LEXTR_CLIENT_ID` (`1`) until a tenant claim exists (option A/C).
+- `NEEDS_INFO` → `INFO_ATTACHED` (answering the analyst questions) is not wired; it isn't in §7.2.
+
