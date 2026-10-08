@@ -305,6 +305,8 @@ Implemented: P1 in `AnalyticalFindBuild.tsx` (`fullCover` = some match with no g
 
 ### 14.2 Needs data the service does not return today
 
+**2026-10-08:** D1 (intent confidence), D2 (refinement chips, catalog-grounded only), D5 (clarification), D7 partial (why line, owner / visibility / consolidation when the catalog records them; last run, panels and parameters still not recorded) and D8 op labels are delivered in lexie-ai, intelligence-service, intelligence-ui and frontend-service (uncommitted). See `Analytical_Assist_Pending_Backend_Prompts.md` §2. D3, D4, D6, D8 attribute names and D9 stay blocked.
+
 | # | Prototype feature | Prototype ref | Needs |
 |---|---|---|---|
 | D1 | Intent confidence % ("I’m N% sure I understood this") | `:2724-2729` | A confidence field on `AnalyticalRunResponse` (shown as "not recorded" today) |
