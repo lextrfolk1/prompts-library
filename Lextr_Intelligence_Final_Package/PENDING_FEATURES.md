@@ -64,6 +64,8 @@ These are required items still open from the earlier integration plan. Everythin
 
 > **What "catalog" means here:** the list of existing report *definitions* (name, kind, elements, owner, visibility, entitlement). It holds no data values. It comes from the Semantic Layer; Intelligence keeps no copy.
 
+- **2026-10-08 additions** (commits in `plan/Analytical_Assist_Pending_Backend_Prompts.md` §2): ranking by what a report carries (measure 0.6 / 0.45) + named (0.3) + idf-weighted shared words (0.4); clarification for unclear asks; refinement chips; intent confidence; Semantic Layer dataset candidates (semantic-service approved objects, rendered in logical names by intelligence-service, LP-41.7); Report Store artefact cards and functional Run in frontend-service; operation target naming (DD-48).
+
 ### Pending: report discovery (removes the `CATALOG_NOT_READY` card)
 
 | # | Item | Owner | Waits on |
@@ -90,14 +92,15 @@ These are required items still open from the earlier integration plan. Everythin
 | 10.9 | lexie returns a structured parse (measure, dimensions, filters, period). **Backend built**, rule-based with no model call. The measure resolves to a catalog element only on an exact line name; several lines with that name leave it unresolved and return them as `measure_candidates`; anything else keeps the ask's own words with no candidates (a word inside a line name no longer resolves to that line: "exposure by counterparty" used to read as the hedge-funds OTC derivatives line). Whole report names, groups and tags are taken out of the measure ("FRY9C goodwill" → GOODWILL). Each match also returns `covers` / `gaps` / `unverified`: the measure is covered or a gap only where the report carries elements; dimensions and filters stay unverified until X.2. | Intelligence | — |
 | 10.14 | Render the new response fields. **Intelligence UI done:** match cards show `covers` (✓), `gaps` (⚠), `unverified` (?) and the matched MDRM lines with "+N more"; an unresolved measure lists its candidates; refining a match runs the ask anchored to that report at preview version 1 and reviews the returned batch — ungrounded operations shown but not acceptable, Apply disabled off Core with its reason, `batch_refusal` and mode rejections shown. **Still Core's:** rendering these inside Core, and anchoring to Core's real builder version | Lextr Core | 10.6 |
 | 10.15 | ~~Ask Lexie route for UC10~~ **Done:** when the resolver picks UC10, the Lexie panel no longer calls generic `/run` (which skipped `tool_scope_analytical`); it offers "Open in Analytical Assist", which carries the question to the workspace, where it is submitted once through `/api/v1/analytical/run` under the UC10 policy | Intelligence | — |
-| 10.16 | Run button: off Core it is disabled with a reason (done); on Core it has no action until Core supplies one | Lextr Core | 10.6 |
+| 10.16 | ~~Run button~~ **Done (2026-10-08):** off Core (intelligence-ui) disabled with a reason; on Core (frontend-service) functional through Core's own report generation (formats, AFT validation, generateBulkReport, Report Store) | Lextr Core | — |
 | 10.10 | Period calendar source | Lextr Core | Source decision |
 | 10.11 | Report Store source (LP-45), then `report_store_ready: true` | Lextr Core | Source decision |
 | 10.12 | Core builder state available to the panel | Lextr Core | — |
 
 ### Open decisions
 
-- **Intent confidence and FACT asks:** the design shows an intent confidence and answers FACT asks ("When is FR Y-9C due?") from a filing calendar. There is no source for either (no due-date or filing-calendar table locally; see 10.10), so neither is built.
+- **Intent confidence:** built 2026-10-08 as a deterministic parse-completeness score (lexie `ask_parse.intent_confidence`); the weights await owner sign-off.
+- **FACT asks:** answering due dates ("When is FR Y-9C due?") needs a filing calendar (10.10); not built.
 - **Functions check:** `tool_scope_analytical` never reads `X-User-Functions` (a run with no functions gets the same answer as an analyst's). Add a function gate?
 
 - **Physical names on outage:** show physical names when the Semantic Layer is unreachable? Today the screen shows `[UNRESOLVED]`. Changing it needs DD-48 / LP-24.5 sign-off.

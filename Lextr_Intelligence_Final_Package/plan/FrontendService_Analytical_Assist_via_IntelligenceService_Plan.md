@@ -331,3 +331,11 @@ Implemented: P1 in `AnalyticalFindBuild.tsx` (`fullCover` = some match with no g
 ### 14.4 Not carried over on purpose (intelligence-ui dropped them)
 
 "changed" pill next to Best matches (`:2889`), "UC10" in the screen title and the EMBEDDED pill (`:4060`, `:2704`), the prefilled and auto-shown "Exposure by counterparty" ask (`:2609`, would start a persisted run on open).
+
+### 14.5 Delivered after Phase 1 (2026-10-08)
+
+- **Find & build:** bold intent confidence (prototype), clarification card, ⊕ refinement chips (fill only), "Datasets that carry this ask" card in logical names (Semantic Layer via intelligence-service, LP-41.7), Report Store artefact cards from Core's Report Store APIs ("Already submitted" + downloads, "may already exist" + Open Report Store).
+- **Match card:** why line, owner / visibility / consolidation when recorded, and a **functional ▶ Run** (reverses §6.4 / H4 on owner request): Core generation through `RunReportDialog` (formats from `getReportMetadata`, `validateAFT`, `generateBulkReport`, then Report Store), enabled for forms in `FORM_CONFIG_MAP`.
+- **Refine & build:** operation labels and target naming (name with physical code small; unnamed code marked "physical").
+- Still open: §14.2 D3 (regulatory "built on"), D6 (due dates), D7 rest, D9 (plan choices); §14.3 H1–H3 (Phase 2). Commits: see `Analytical_Assist_Pending_Backend_Prompts.md` §2.
+

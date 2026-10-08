@@ -35,7 +35,29 @@
 
 Run order: AA-1 → AA-2 → AA-4 (op labels) → AA-3 after the decision → AA-5/6/7 only once their source exists.
 
-**Delivered 2026-10-08 (uncommitted, tests written but NOT RUN):** AA-1, AA-2, AA-3 (proposed formula, pending owner sign-off) and AA-4 step 1, both phases. Deviations: AA-2 checks catalog readiness before clarifying (a not-ready catalog still wins) and returns `catalog_state: NO_MATCH_IN_INVENTORY` with the clarification (no new state); refinements offer catalog lines for an unresolved measure and "Filter to last quarter" for a missing period, never a dimension or filter; the match "why" reason now reads "Matched on the words: a, b" instead of a Python list. Not done: AA-4 step 2, AA-5, AA-6, AA-7 (blocked).
+**Delivery record (2026-10-08, live-checked through the gateway; unit suites green):**
+
+| Item | Status |
+|---|---|
+| AA-1 match provenance | DONE (why line; owner / visibility only when the catalog records them) |
+| AA-2 clarify + refinements | DONE (clarify keeps catalog readiness first; measure chips only for lines carrying the whole phrase; dimension chips only for Semantic Layer DIMENSION attributes) |
+| AA-3 intent confidence | DONE, formula pending owner sign-off (0.1 for a measure no line or report knows) |
+| AA-4 operation labels | DONE (labels + target naming: name with physical code small, unnamed code marked "physical") |
+| AA-8 Semantic Layer grounding | PARTIAL: dataset candidates (measure / dimension -> attribute, gaps) from semantic-service; grounding into regulatory batches impossible (no report -> dataset link) |
+| AA-9 readable names | PARTIAL: semantic-service HTTP client + render seam for dataset candidates (RESOLVED / CATALOG_GAP / UNRESOLVED, no physical field); batch targets still travel physical because apply needs them |
+| AA-5 / AA-10 / AA-11 | data assets "built on", outbound catalog, plan dataset choice: NOT DONE (no outbounds; regulatory reports have no dataset link) |
+| AA-6 Report Store | DONE in frontend-service only, from Core's own Report Store APIs ("Already submitted" with downloads, "may already exist" with Open Report Store) |
+| AA-7 due dates | BLOCKED (filing calendar, UC12 adapter) |
+| Run (H4) | REVERSED on owner request: functional in frontend-service (Core generation: getReportMetadata -> validateAFT -> generateBulkReport -> Report Store); disabled in intelligence-ui |
+
+| Repo | Commits (local, not pushed) |
+|---|---|
+| lexie-ai `feature/lextr-intelligence-v1.38.0` | `05838fb` AA-1/2/3 · `75c3b1a` ranking · `95da7c7` Semantic Layer datasets + 0.1 confidence for unknown measures · `d441e27` whole-phrase measure chips |
+| intelligence-service `feature/lextr-intelligence-v1.38.0` | `77f97bf` AA-1/2 pass-through · `31c5108` semantic-service client + logical-name render (LP-41.7) · `cb4d7ac` Spring wiring test |
+| intelligence-ui `feature/lextr-intelligence-v1.38.0` | `8557164` AA-1/2/3/4 · `81cbc5c` ranking text, short chips · `cf02623` datasets card, bold % · `5896133` operation target naming |
+| frontend-service `feature/analytical-assist-pending-uc10` | `6c0a133` port · `3f5af67` ranking text, short chips · `d4c3708` datasets card, bold %, functional Run · `2ed8e03` Report Store artefact cards · `391eda3` operation target naming |
+
+Config (config-service, local only, never committed): `lexie.semantic_catalog`, `lexie.semantic_service_url` (backend-service dev/prod), `lextr.semantic.url` (intelligence-service dev/prod).
 
 ## 3. Rules shared by every prompt
 
