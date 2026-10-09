@@ -1,6 +1,6 @@
 # frontend-service Rules & Logic Assist (UC11) via intelligence-service: Status, Pending Work and Plans
 
-- **Last updated:** 2026-10-10
+- **Last updated:** 2026-10-10 (JSX parity review)
 - **Branch:** `feature/lextr-intelligence-v1.38.0` (intelligence-service, lexie-ai, intelligence-ui); `feature/rules-logic-assist` (frontend-service, uncommitted)
 - **Design:** `files/Lextr_Intelligence_UI_v1.38.0_FINAL.jsx`: `RulesAssistWorkspace` (lines 4112–4818), fixtures (1826–1990), Lexie inline answer (~838), LexiePanel handoff (~17007)
 - **Spec prompts:** `prompts/wave_07/LP-25.1` … `LP-25.9`
@@ -16,7 +16,7 @@
 |---|---|
 | lexie-ai | Rules skill `skills/rules/` (contract, checks, patches, compare, skill, manifest). Core rule store `lexie_ai/adapter/rules_ops.py` (Core's meta tables, read-only). Governed catalog through semantic-service `rules_semantic.py` (POL-DM-001 applied to values). Drafter `rules_drafter.py` (bound per deployment). Read routes `routes/rules_routers.py`. Dispatcher `RulesRoute`. |
 | intelligence-service | `/api/intelligence/rules/*`: assist, acceptance (`surface=CORE` only), session runs, catalog, rule detail, siblings, instruction. `RulesAssistCoordinator` (origin gate, OPA, review guard, session-bounded persistence, ledger). OPA `tool_scope_rules` with readiness data all `true`. |
-| frontend-service | `src/features/rules/assist/` (panel, four tabs, `useRulesAssist`, `copilotRule` = TS port of `translate_rule`, `applyCopilotPatch`), `shared-ui/services/intelligenceRulesApi.ts`; toggle and panel in `RuleDetailTabs`; receipt after Core's save / APPROVE (§4). Uncommitted. |
+| frontend-service | `src/features/rules/assist/` (panel, four tabs, `useRulesAssist`, `copilotRule` = TS port of `translate_rule`, `applyCopilotPatch`), `shared-ui/services/intelligenceRulesApi.ts`; toggle and panel in `RuleDetailTabs`; receipt after Core's save / APPROVE (§4). Uncommitted.; graph decorations (finding underline, clause ring on `RuleFlowNode`) and the evidence-ledger drawer (`GET /api/v1/runs/{runId}`), 2026-10-10. |
 | intelligence-ui | `features/rules/`: the one renderer `RulesAssistWorkspace` at JSX parity (entry states, Core form, track, receipt, four tabs, How this works). Standalone nav page with rule picker; Save draft and Submit go to rule-service. Ask Lexie hands rules asks (typed or clicked) to Rules Authoring. |
 
 **Commits** (`feature/lextr-intelligence-v1.38.0`):
@@ -46,7 +46,7 @@
 | eslint (touched paths) | new files clean; edited Core files keep their existing counts |
 | tsc | whole project runs out of memory even on `main` (`src/shared-ui/interfaces/index.ts`); the pure assist modules typecheck with 0 errors; the rest NOT CHECKED by tsc |
 | Live API flow (panel modules, in screen order, dev gateway) | 8/8: VIEW review; revise with a REMOVE patch accepted on the graph and re-checked (no findings, persisted); assist after a Build edit; new rule; 176 Draft from anchor; Lexie handoff; guards (unsupported type makes no call, review never drafts, `surface=PANEL` 422); only `/api/intelligence/rules/*` called, never `/lexie/ai` or rule-service save/workflow |
-| Browser UI | NOT CHECKED |
+| Browser UI | Checked by the owner 2026-10-10: EDIT, VIEW popup (review), formula findings, unsaved-rule instruction, rule-input columns, Build, panel styling, graph decorations, evidence ledger. NOT CHECKED: pending-approval review (1c), Ask AI handoff (1d), panel-closed regression (1e); the acceptance receipt (1a) cannot be triggered with dev data (no patchable finding, 11.22) |
 | Findings | Empty drafts (11.17, 11.31, 11.33) and no anchor for a new empty rule (11.29, 11.30, 11.32) |
 
 **frontend-service release blockers (2026-10-10), all resolved or accepted by the owner:** push / PR (11.13, handled outside this plan); `X-User-Functions` from the build env (11.23, later); ledger migration (11.1, in V4 / V6, run everywhere); OPA readiness and drafter binding (RU3 / 11.8, configured dev and prod); frontend-service `tsc` out of memory (pre-existing on `main`, accepted). Remaining before calling the integration complete: the browser pass (receipt after save, MDRM popup review, pending-approval review, Ask AI handoff, panel-closed regression) and the small panel fixes.
@@ -117,6 +117,8 @@
 | 11.37 | **Draft the whole rule** (steps, not only predicates) (§6) | lexie-ai | Slice 1 accepted | Planned (slice 2) |
 | 11.38 | **Apply the draft to the graph** (§6) | frontend-service | 11.37 | Planned (slice 2) |
 | 11.39 | **Column lookup fails for rule inputs.** Core's node properties panel calls `POST /rules/api/metadata/dataset/{name}` for every input value (`RulePropertiesPanel.tsx:613-679`, `selectedDatasets`), including `rl.*` rule outputs (500 "Dataset not found with name: rl.BHCKB488") and upstream node outputs (`filter_0_out0`). It uses `Promise.all`, so one failure empties the column list for the whole node, `ds.*` columns included. A calculated rule's formula builder therefore offers no columns (e.g. `AMOUNT_BHCKB488`) and the author types them. Fix (§6): only `ds.*` goes to the metadata endpoint; an `rl.X` input takes its columns from rule X's outputs (rule-service read: `search-rule` → `fetch-rule-by-name-and-version` → map outputs, aggregate columns and group-by); `Promise.allSettled` so one input can't blank the others. | Lextr Core (frontend-service) | Go-ahead | Built 2026-10-10, uncommitted; live check after lexie-ai restart |
+| 11.40 | **JSX parity: graph decorations and evidence ledger.** Findings underline their node, a clicked clause rings its nodes (JSX 4330–4339, 4459–4463); "Open evidence ledger" opens a drawer over `GET /api/v1/runs/{runId}` for a persisted run (steps, hash-chain verdict) | Lextr Core (frontend-service) | — | Done 2026-10-10 (`211e723`) |
+| 11.41 | **Remaining JSX gaps:** save confirmation in the panel ("Core committed vN · x of y patches accepted", JSX 4370–4377); the Workbench popup and the Rules workspace share a tab id (`MdrmRules.tsx`), so the popup shows a rule editable while it is open in the workspace. Blocked elsewhere: request registration (11.19), arrival details (11.18) | Lextr Core (frontend-service) | — | Open |
 
 **Open decisions:** whether Draft from anchor and Build composition are in the next demo or release, which is what makes 11.17, 11.31 and 11.33 needed; the radar's use-case id (11.9); the drafter outside dev (11.8); which tab Check opens (11.21); rule kinds for other Core types (11.27); frontend-service Q1–Q4 (§4.10).
 
@@ -328,7 +330,7 @@ R2–R4 are cached per tab in the slice (`assist.reads`) and re-read after a sav
 | C10 | `RuleToolbar.tsx` (save success) and `RuleWorkFlowActions.tsx` (APPROVE success) | `void recordRulesAcceptance(tabId, ruleId, version)`: a helper in `useRulesAssist`/api reads the tab's run from the slice and posts R5 only if persisted. `.catch` logs a warning. Called after Core's own dispatches; never awaited, never toasts. |
 | C11 | `features/rules/assist/__tests__/` | §4.8 unit tests |
 
-Node decorations (severity outline on `RuleFlowNode`) are dropped from this round (**Q4**): they mean editing an 800-line node renderer for a visual that is not in the §2 rules.
+Node decorations: **built 2026-10-10** (Q4 reversed after the JSX review): a node named by an open finding gets a wavy underline on its label in the error / warning colour while the run is current; the nodes a clicked clause binds to get a primary ring (visible once 11.15 records binding). The panel publishes them in `ruleDetailTabs[tabId].assist.decorations`; `RuleFlowNode` draws them; they clear when the panel closes.
 
 **Out of scope:** `RuleDocumentation`, `RuleMapTab`, `AskAi` (unchanged); the inline UC11 answer (11.24); rule-service save and workflow APIs; any change to intelligence-service, lexie-ai, OPA, gateway or config-service.
 
@@ -434,7 +436,7 @@ Report files changed, validation results, and anything NOT CHECKED.
 | Q1 | Entry state for a plain APPROVED rule opened read-only (MDRM popup) | `review`: deterministic only, derivations open. The gate line reads as evidence ("No blocking findings" or "N blocking findings in the approved version"), not "do not approve". Alternative: `assist` with writes hidden. |
 | Q2 | REJECTED and DISCARD(ED) rules in the editor | `revise`, because rules-service saves them as a new version (B1) |
 | Q3 | When the Lexie-handoff provenance ends | It clears on that tab's first successful save. Alternative: for the life of the tab. |
-| Q4 | Node decorations on the graph (old C8) | Leave them out of this round |
+| Q4 | Node decorations on the graph (old C8) | Leave them out of this round | **Reversed 2026-10-10:** built after the JSX review (see the note under §4.7).
 
 ### 4.11 Follow-ups after §4
 
