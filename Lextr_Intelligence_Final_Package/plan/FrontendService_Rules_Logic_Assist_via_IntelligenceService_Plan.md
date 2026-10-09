@@ -49,6 +49,8 @@
 | Browser UI | NOT CHECKED |
 | Findings | Empty drafts (11.17, 11.31, 11.33) and no anchor for a new empty rule (11.29, 11.30, 11.32) |
 
+**frontend-service release blockers (2026-10-10), all resolved or accepted by the owner:** push / PR (11.13, handled outside this plan); `X-User-Functions` from the build env (11.23, later); ledger migration (11.1, in V4 / V6, run everywhere); OPA readiness and drafter binding (RU3 / 11.8, configured dev and prod); frontend-service `tsc` out of memory (pre-existing on `main`, accepted). Remaining before calling the integration complete: the browser pass (receipt after save, MDRM popup review, pending-approval review, Ask AI handoff, panel-closed regression) and the small panel fixes.
+
 **Deviations from the JSX, accepted:**
 - Content is thinner than the fixtures where Core's data is thin (§3: 11.15, 11.16).
 - The inline Lexie rules answer (two readings) is hosted by Core (LP-25.9, DD-40).
@@ -80,15 +82,15 @@
 
 | # | Item | Owner | Waits on | Status |
 |---|---|---|---|---|
-| 11.1 | Apply `V45__lp25_rules_ledger_actions.sql` (`SUGGEST`/`ACCEPT` ledger actions, `agent_run.accepted_by`). Without it every assist and acceptance fails its ledger write. | Deployment / DBA | — | Applied in dev; other environments open |
+| 11.1 | Apply `V45__lp25_rules_ledger_actions.sql` (`SUGGEST`/`ACCEPT` ledger actions, `agent_run.accepted_by`). Without it every assist and acceptance fails its ledger write. | Deployment / DBA | — | Resolved 2026-10-10: consolidated into database-migration-platform `V4__reporting_cycle_agent_run.sql` (`accepted_by`, `invocation_origin`) and `V6__evidence_ledger.sql` (`SUGGEST`/`ACCEPT`); executed in all environments (owner) |
 | 11.2 | Core sends `X-Client-Id`, `X-User-Id` (required, 400 without it) and `X-User-Functions` on every endpoint, and posts acceptance receipts with `?surface=CORE`. Risk: any Core caller that sends only `X-Client-Id` breaks. | Lextr Core | — | Open |
 | 11.3 | Core mounts the copilot in its rule editor (§4): VIEW (MDRM popup, pending approval) and EDIT (Rules workspace tab), with entry state, rule, version, authoring session, work begun, patches into the graph and the acceptance receipt | Lextr Core (frontend-service) | — | Implemented, uncommitted (`feature/rules-logic-assist`, 2026-10-10); browser UI not checked |
-| 11.8 | Choose the drafter for `rules.draft` (`LEXIE_RULES_DRAFTER`) in each deployment; only a model approved for this data | Intelligence / Deployment | Model approval | Bound in dev |
+| 11.8 | Choose the drafter for `rules.draft` (`LEXIE_RULES_DRAFTER`) in each deployment; only a model approved for this data | Intelligence / Deployment | Model approval | Resolved 2026-10-10: `rules_drafter: variance_llm` in config-service `backend-service-dev.yml` and `-prod.yml` |
 | 11.9 | Relabel the Supervisory Radar off UC11 (`skills/supervisory_radar_skill.py`, `SupervisoryRadarCoordinatorImpl.java:206`, the `useCaseAliases.ts` sources). Ask Lexie works around it for rules answers. | Owner | Radar id | Deferred |
 | 11.10 | Ledger decision ids are always null: the dev OPA server has no decision logging | Platform / Deployment | OPA config | Open (platform-wide) |
 | 11.11 | Ledger ctx is not stored: `EstateLedgerServiceImpl.estateRecord` keeps only `actor`, `track` and `to` | Intelligence (shared ledger) | Shared-service approval | Open (platform-wide) |
 | 11.12 | A rules kind in HistoryDrawer `RECORD_KINDS` (backed by `GET /sessions/{ref}/runs`) | Intelligence | Decision | Deferred |
-| 11.13 | Push the local commits (§1) | Owner | Review | Open |
+| 11.13 | Push the local commits (§1) | Owner | Review | Resolved 2026-10-10 (owner decision: pushing and PRs handled outside this plan) |
 | 11.14 | Dev test data: run `uc11-httpcheck-*` and about 330 SUGGEST ledger rows from the 2026-10-09 sweep, in the dev tenant | Owner | — | Delete when no longer needed |
 | 11.15 | **Clause binding is never recorded on Core rules**, so every clause shows "no predicate" and the guide says the rule "will over-report". Store `clause_ref` on the filter step's `properties` in `rule_json` and have `translate_rule` read it; tell requirements from notes (cross-references, glossary, comparability) in the MDRM source; later, suggest a binding (POSSIBLE) for the author to confirm. | Lextr Core (rule-service, editor) + lexie-ai | Core change | Open |
 | 11.16 | Logical names and value descriptions: semantic-service holds no logical name for `internal_reg_coa` (the code is shown) and no descriptions for COA values | Semantic Layer | Data | Open |
@@ -98,7 +100,7 @@
 | 11.20 | Ship a Spanish catalogue. The i18n runtime ships only complete catalogues (all codes; `localeCatalogue.test.ts`), so Spanish can't be enabled for Rules alone. | Intelligence | Translation source and review | Open (decided 2026-10-09: wait) |
 | 11.21 | Which tab Check opens. Today it follows the guide, which on Core rules is almost always Understand because of 11.15. Options: go to Check when there are findings; stay on the current tab; keep following the guide. | Owner | Decision | Decision |
 | 11.22 | Retired-value patches and accept-all can't be seen in dev: no dev rule uses a retired value (the code path is fixed and tested against the live OPA) | Semantic Layer / Owner | Test data | Open |
-| 11.23 | frontend-service sends `X-User-Functions` from the build env (`VITE_LEXTR_FUNCTIONS`, as Impact does), not the logged-in user's functions; the shared `intelligenceIdentity` has no functions | Lextr Core (frontend-service / auth) | User functions in the profile | Open |
+| 11.23 | frontend-service sends `X-User-Functions` from the build env (`VITE_LEXTR_FUNCTIONS`, as Impact does), not the logged-in user's functions; the shared `intelligenceIdentity` has no functions | Lextr Core (frontend-service / auth) | User functions in the profile | Resolved for this release 2026-10-10 (owner decision: user functions to be integrated later) |
 | 11.24 | The inline UC11 rules answer in frontend-service `AskAi` (LP-25.9, DD-40: Core draws it from the render model); AskAi keeps `/lexie/ai/` query → expression today | Lextr Core (frontend-service) | §4 done | Deferred |
 | 11.25 | Core leaves the graph editable on a PENDING_APPROVAL rule (only Save is hidden, `RuleToolbar.tsx:703`); the panel treats it as `review` and offers no writes, but Core's own editor doesn't lock | Lextr Core (frontend-service) | Decision | Open |
 | 11.26 | An unsaved (new or cloned) rule has no `target`: lexie's target is `form_nm.taxonomy_nm` and the editor tab holds no taxonomy name before save, so the panel sends `target:null` (instruction and siblings come only after save or a first Check) | Lextr Core (frontend-service) | — | Open; fix planned as 11.30 |
@@ -212,7 +214,7 @@ The AI-authored mark is that transient flag (F13), so the copilot latches it (§
 |---|---|---|
 | RU1 | `rule_ref = String(ruleId)` when `ruleId > 0`. A new or cloned rule (`ruleId` 0 or null) has no `rule_ref`, so R2–R4 are skipped. | Compare is empty until saved; Draft from anchor needs an anchor (§4.5.4) |
 | RU2 | Global SNAKE_CASE: `AssistRequest` silently drops unknown camelCase keys | Snake_case top-level keys; `rule` opaque; response `extra_fields`/`output_payload`/`workflow` opaque |
-| RU3 | OPA readiness is all `true` in dev | Other deployments set their own `data.json`. When a gate is off, show "not recorded". |
+| RU3 | OPA readiness is all `true` in dev | Other deployments set their own `data.json`. When a gate is off, show "not recorded". | **Resolved 2026-10-10:** `opa/data/lextr/ai/rules/data.json` (instruction/catalog/rule_store ready, max_fanout 25) is committed and intelligence-service loads it into OPA at startup in dev and prod (`load-on-startup: true`).
 | RU4 | 400 without `X-Client-Id`/`X-User-Id` | Shared interceptor (F2) plus `X-User-Functions` per call (F3) |
 | RU5 | `rules.draft` is refused in review; the drafter is bound per deployment (11.8) | Draft from anchor only in `author` on a blank rule; show `draft_status` DRAFTER_UNBOUND / DRAFT_DENIED verbatim |
 | RU6 | Registration belongs to the Semantic Layer steward (11.19) | Disabled "operand not registered" state; no request button (no `onRequestRegistration`) |
