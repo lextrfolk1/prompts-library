@@ -12,7 +12,7 @@
 | [Platform & integration](#platform--integration) | 3 required items open | Core gateway route, Lexie resolver, AU9 persistence |
 | [UC10 Analytical Assist](#uc10-analytical-assist) | **Built and tested.** Discovery, parse and operation batches run on an interim Postgres catalog (report store + MDRM), verified live. Committed on the feature branches, not pushed. | Semantic Layer report catalog; tenant mapping (10.13) |
 | [UC2 Impact Analysis](#uc2-impact-analysis) | **Built and tested** (steps 1–8), including live API checks (23/23) and a browser E2E. With `LEXIE_IMPACT_GRAPH_URL` set, runs walk Core's Neo4j dependency graph (structural reach); unset, they are refused; the cross-report slice is an honest empty. **Not committed.** | Impact adapter (KG / Core graph) binding |
-| [UC11 Rules & Logic Assist](#uc11-rules--logic-assist) | **Built and running in dev.** All 77 rules check in all four entry states (308/308); the rule store, the catalog through semantic-service and a drafter are bound in dev. Some commits are local, not pushed. | Core mount and identity (11.2, 11.3); clause binding in Core (11.15) |
+| UC11 Rules & Logic Assist | **Built and running in dev.** Status and pending work now live in [`plan/FrontendService_Rules_Logic_Assist_via_IntelligenceService_Plan.md`](plan/FrontendService_Rules_Logic_Assist_via_IntelligenceService_Plan.md) §1 and §3. | Core mount and identity (11.2, 11.3); clause binding in Core (11.15) |
 | [Other screens](#other-screens-not-reviewed-in-this-pass) | Not reviewed in this pass | — |
 
 **Status meanings:**
@@ -135,83 +135,7 @@ These are required items still open from the earlier integration plan. Everythin
 |---|---|---|---|---|
 | 2.10 | Core mounts `ImpactWorkspace` with `adjustments` (its launch context), `period` and `openEvidence`, and calls with `?surface=CORE`, `X-User-Id` and `X-User-Functions` (required, 400 without) | Lextr Core | X.3 | Open |
 | 2.14 | `agent_run` schema mismatch (LP-37.2 B3). Honest-empty and needs_input runs persisted fine live; no mismatch surfaced. | — | — | Watch |
-| 2.15 | Ledger decision ids are null (same as 11.10: the dev OPA has no decision logging) | Platform | OPA config | Open (platform-wide) |
-
----
-
-## UC11 Rules & Logic Assist
-
-**Status:** built and running end to end in dev (validated 2026-10-09). The rule store (Core's meta tables), the governed catalog (through semantic-service) and a drafter are bound in dev, and all three OPA readiness gates are on. intelligence-ui is at parity with the reference JSX `RulesAssistWorkspace`.
-Commits on `feature/lextr-intelligence-v1.38.0`:
-- intelligence-service: `be1bee6` (pushed), `2396232` (local)
-- lexie-ai: `ae711a5` (pushed), `bf05b65`, `b978fec` (local)
-- intelligence-ui: `51f385c` (pushed), `4171d8e`, `170e9c1`, `cd05014` (local), plus the 2026-10-09 test and wording pass (uncommitted at the time of writing)
-
-- **Tests (2026-10-09):**
-  - JUnit `RulesAssistTest`: 24/24
-  - pytest `tests/rules`: 137 pass, 1 known failure (`test_origin_vocabulary_agrees_sql_and_java`: the migrations are no longer in intelligence-service, so the test finds no SQL)
-  - vitest `src/features/rules` + `src/components/__tests__`: 87/87
-  - `tsc`: clean on the touched files
-  - OPA `opa test`: not re-run (no `opa` binary on the validation machine)
-- **Live API sweep (2026-10-09, tenant `1`):** every rule in the catalog (77) through detail, instruction, siblings and `/assist` in all four entry states.
-  - detail 77/77, siblings 77/77, instruction 74/77 (3 `INSTRUCTION_NOT_FOUND`), `/assist` 308/308 COMPLETED
-  - every finding has a severity, and every patch has all 10 fields
-  - no draft without `generate:true`; review never drafts
-  - identity: 400 without `X-Client-Id` or `X-User-Id` on all 5 endpoints; acceptance on another surface: 422 `SURFACE_NOT_CORE`
-- **Browser (2026-10-09, headless Chromium on :5173):**
-  - BHCK3521 through Check, every tab, Build (values, search, In, apply), accepting a patch, Re-check and review
-  - Draft from anchor on a blank rule (BHCK3196)
-  - How this works
-  - Ask Lexie → Accept → arrival banner, typed and clicked
-  - no HTTP ≥ 400 and no console errors (other than the AG Grid licence banner)
-- **What users see today:**
-  - findings with server severity and node-anchored patches
-  - Semantic Layer attributes and governed values
-  - sibling containment and the KEEP/MODIFY/ADD/REMOVE disposition
-  - Core's maker-checker track
-  - a generated draft with grounding coverage (attributes and literals resolved)
-- **Fixed on 2026-10-09:**
-  - lexie-ai: `rules.compose_predicate` is asked with the polarity and value it gates on (it was always denied, so no retired-value patch or accept-all ever reached the panel); proposals require governed AND rules-eligible; the drafter returns the confidence breakdown; the run carries `rule_instruction_version`
-  - intelligence-ui: Check moves to the guide's tab; Draft from anchor only on a blank rule; no fixture confidence in Ask Lexie; a typed UC11 ask gets the Rules handoff; the answer is shown once
-- **Decisions applied:**
-  - Q1: the radar label is out of scope (11.9).
-  - Q2: `RulesAssistWorkspace` is the one renderer.
-  - Q3: Save draft and Submit call rule-service on the standalone page.
-  - Q4: the route prefix `/api/intelligence/rules` is kept.
-  - Registration requests belong to semantic-service's steward queue; the panel offers one only through `onRequestRegistration`.
-
-### Pending
-
-| # | Item | Owner | Waits on | Status |
-|---|---|---|---|---|
-| 11.1 | Apply `V45__lp25_rules_ledger_actions.sql`. It adds `SUGGEST` and `ACCEPT` to the ledger's allowed actions, plus the nullable `agent_run.accepted_by` column. Without it, every assist and acceptance fails its ledger write. | Deployment / DBA | — (X.5) | Applied in dev; other environments open |
-| 11.2 | Core sends `X-User-Id` (required, 400 without it) and `X-User-Functions` on all endpoints, and posts acceptance receipts with `?surface=CORE` (any other surface gets `SURFACE_NOT_CORE`, 422) | Lextr Core | X.3 | Open |
-| 11.3 | Core mounts `RulesAssistWorkspace` and supplies `core` (the rule, its version, the authoring session, work begun), `onAcceptPatch`, `onRequestRegistration` and `openEvidence` | Lextr Core | X.3 | Open |
-| 11.4 | Rules adapter: `CoreRuleStore` (`lexie_ai/adapter/rules_ops.py`) over Core's meta tables, the catalog through semantic-service (`rules_semantic.py`), per-op `tool_scope_rules` gate | Intelligence | — | Done in dev |
-| 11.5 | `instruction_ready` / `catalog_ready` / `rule_store_ready` in `opa/data/lextr/ai/rules/data.json` | Deployment | — | All `true`; set per deployment |
-| 11.6 | lexie returns instruction, attributes, siblings with containment, disposition, node-anchored patches and confidence | Intelligence | — | Done |
-| 11.7 | Core's maker-checker position: the workflow definition is read from Core's meta tables and drawn; position comes from the rule status | Lextr Core / Intelligence | — | Done (read-only) |
-| 11.8 | Drafter for `rules.draft` (`LEXIE_RULES_DRAFTER`) | Intelligence | Model approval per deployment | Bound in dev; choose per deployment |
-| 11.9 | Relabel the Supervisory Radar off UC11 (`skills/supervisory_radar_skill.py`, `SupervisoryRadarCoordinatorImpl.java:206`, the `useCaseAliases.ts` sources). Ask Lexie works around it for rules answers. | Owner | Radar id | Deferred (owner: leave as is) |
-| 11.10 | **Ledger decision ids are always null.** The dev OPA server returns no `decision_id` (decision logging not configured). | Platform / Deployment | OPA config change | Open (platform-wide; not re-checked 2026-10-09) |
-| 11.11 | **Ledger ctx is not stored.** `EstateLedgerServiceImpl.estateRecord` keeps only `actor`, `track` and `to`. | Intelligence (shared ledger) | Shared-service change approval | Open (platform-wide; not re-checked 2026-10-09) |
-| 11.12 | Add a rules kind to HistoryDrawer `RECORD_KINDS` (backed by `GET /sessions/{ref}/runs`) | Intelligence | Decision | Deferred (owner: not now) |
-| 11.13 | Push the local UC11 commits (svc `2396232`; lexie `bf05b65`, `b978fec`; ui `4171d8e`, `170e9c1`, `cd05014` and later) | Owner | Review | Open |
-| 11.14 | Dev test data: run `uc11-httpcheck-*`, and about 330 SUGGEST ledger rows from the 2026-10-09 sweep, in the dev tenant | Owner | — | Open (delete when no longer needed) |
-| 11.15 | **Clause binding is never recorded on Core rules**, so every clause shows "no predicate" and the guide says the rule "will over-report". Store `clause_ref` on the filter step (plan B5), tell requirements from notes (B6), suggest bindings (B7). | Lextr Core + Intelligence | Core rule-service / editor change | Open |
-| 11.16 | Logical names and value descriptions: semantic-service holds no logical name for `internal_reg_coa` (the code is shown) and no descriptions for COA values | Semantic Layer | Data | Open |
-| 11.17 | Catalog scope per job (`RulesAssist_Catalog_Scope_Plan.md`): Build lists only the attributes the rule uses, and drafts on a blank rule have an empty catalog (coverage 0.00) | Intelligence | — | Planned |
-| 11.18 | Handoff provenance (run id, semantic coverage, resolved n/m, language) in the Ask Lexie → Rules handoff; the banner shows only the question until then (plan G1/B4) | Intelligence | lexie handoff payload | Open |
-| 11.19 | A semantic-service endpoint that raises the steward's registration task, passed as `onRequestRegistration` (plan B1) | Lextr Core (semantic-service) | — | Open |
-| 11.20 | Ship a Spanish catalogue. The i18n runtime only ships complete catalogues (all codes, enforced by `localeCatalogue.test.ts`); only en-US ships. | Intelligence | Translation source and review | Open |
-| 11.21 | Decide which tab Check opens. Today it follows the guide, which on Core rules is almost always Understand (because of 11.15). | Owner | Decision | Decision |
-
-**Open decisions:**
-- **Radar id:** which use-case id should the Supervisory Radar take?
-- **Drafter:** which model backs `rules.draft` outside dev?
-- **Check tab (11.21):** go to Check when there are findings, stay on the current tab, or keep following the guide?
-
-**Risk:** making `X-User-Id` required breaks any Core caller that sends only `X-Client-Id`.
+| 2.15 | Ledger decision ids are null (same as UC11 11.10 in `plan/FrontendService_Rules_Logic_Assist_via_IntelligenceService_Plan.md`: the dev OPA has no decision logging) | Platform | OPA config | Open (platform-wide) |
 
 ---
 
