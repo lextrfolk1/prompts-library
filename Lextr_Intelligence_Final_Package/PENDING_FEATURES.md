@@ -13,6 +13,7 @@
 | [UC10 Analytical Assist](#uc10-analytical-assist) | **Built and tested.** Discovery, parse and operation batches run on an interim Postgres catalog (report store + MDRM), verified live. Committed on the feature branches, not pushed. | Semantic Layer report catalog; tenant mapping (10.13) |
 | [UC2 Impact Analysis](#uc2-impact-analysis) | **Built and tested** (steps 1–8), including live API checks (23/23) and a browser E2E. With `LEXIE_IMPACT_GRAPH_URL` set, runs walk Core's Neo4j dependency graph (structural reach); unset, they are refused; the cross-report slice is an honest empty. **Not committed.** | Impact adapter (KG / Core graph) binding |
 | UC11 Rules & Logic Assist | **Built and running in dev.** Status and pending work now live in [`plan/FrontendService_Rules_Logic_Assist_via_IntelligenceService_Plan.md`](plan/FrontendService_Rules_Logic_Assist_via_IntelligenceService_Plan.md) §1 and §3. | Core mount and identity (11.2, 11.3); clause binding in Core (11.15) |
+| To-do Inbox | **Built and tested** as a notification list (2026-10-14): what is waiting, read from existing tables, and a row opens the item in its own module. Committed on `feature/todo-inbox-notifications` (intelligence-service `e794cfe`, lexie-frontend `2f53c4c`), not pushed. Status and follow-ups live in [`plan/Todo_Inbox_Notifications_via_IntelligenceService_Plan.md`](plan/Todo_Inbox_Notifications_via_IntelligenceService_Plan.md) | Modules do not write approval-chain `SUBMIT` rows yet (L1) |
 | [Other screens](#other-screens-not-reviewed-in-this-pass) | Not reviewed in this pass | — |
 
 **Status meanings:**
@@ -144,7 +145,7 @@ These are required items still open from the earlier integration plan. Everythin
 These are not yet assessed against current code. Add a section when each is reviewed:
 - UC1 Variance
 - UC3 / UC8 / UC9 / UC12 inline answers
-- Presets, Knowledge Hub, Drop Profiles, To-do Inbox
+- Presets, Knowledge Hub, Drop Profiles
 - Training Data & Models, Runtime Policies, Model Registry
 - AI Risk & Controls, Audit & Evidence, Role Mapping, Governance Profiles
 - Skill Registry, the Lexie panel
